@@ -287,7 +287,7 @@ html.phone .g4{grid-template-columns:1fr 1fr}
 
 <script>
 /* ================== VERİ ================== */
-const APP_VER = '4 · 25.11';
+const APP_VER = '6 · 25.11';
 const KEY = 'vadi-at-ciftligi-v1';
 const STATUS = {
   plan:    {t:'Planlandı', c:'b-info'},
@@ -321,6 +321,20 @@ let S;
 try { S = Object.assign(defaults(), JSON.parse(localStorage.getItem(KEY)) || {}); } catch(e){ S = defaults(); }
 S.settings = Object.assign(defaults().settings, S.settings);
 S.cafe = Object.assign(defaults().cafe, S.cafe);
+/* Vadi At Çiftliği'nin kendi atları (ilk açılışta bir kez eklenir; müşteri verisi değil, yayında da var) */
+if(!S.seededOwnHorses){
+  const t = new Date(); const d0 = `${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}-01`;
+  const own = [['Rüzgar'],['Safir'],['Çarli'],['Bozok'],['Bozkır'],['Aras'],['Şimşek'],
+    ['Boldi','Manej','Sadece manej alanında kullanılıyor. Manej fiyatı diğer atlardan farklı.'],
+    ['Poni'],['Poyraz'],['Esanadolu'],['Ulubey']];
+  own.forEach(([name, role, note], i)=>{
+    if(S.boarders.some(h=>h.own && h.name.toLocaleLowerCase('tr')===name.toLocaleLowerCase('tr'))) return;
+    S.boarders.push({id:'v'+i+Date.now().toString(36), own:true, ownerId:'', name, role:role||'', breed:'', gender:'', birthYear:'', box:'',
+      startDate:d0, endDate:'', monthlyFee:0, services:[], nextFarrier:'', nextVaccine:'', nextDeworm:'', vet:'', note:note||'', photo:'', log:[], created:d0});
+  });
+  S.seededOwnHorses = true;
+  try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){}
+}
 function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); return true; }
   catch(e){ if(e && /quota/i.test(e.name+e.message)){ alert('Cihaz hafızası doldu (fotoğraflar çok yer kaplıyor olabilir). Değişiklik kaydedilemedi.'); }
     else toast('Kaydedilemedi!'); return false; } }
@@ -454,6 +468,9 @@ function vHome(){
   return `
   <div class="hello"><div><h2>${greet}, ${esc(u.name.split(' ')[0])}</h2>
     <div class="muted">${GUN[new Date().getDay()]}, ${fmt(t)} · Bugün ${nLessons} ders, ${nVisits} tur</div></div></div>
+  ${isAdmin() && window._veriVar && !S.students.length && !S.seededStudents ? `<div class="card" style="border-left:4px solid var(--warn)"><b>Kayıtlı veriler bu telefonda yok</b>
+    <div class="muted" style="margin:4px 0 10px">Kursiyerleri ve pansiyon atlarını şifreyle yükleyin.</div>
+    <button class="btn" onclick="openRealDataForm()">${ic('lock')} Gerçek verileri yükle</button></div>` : ''}
   <div class="tiles">
     ${tile('sun','Bugün', `${nLessons} ders · ${nVisits} tur`, "go('panel')", {cnt:(nLessons+nVisits)||''})}
     ${tile('calendar','Takvim','Haftalık program',"go('takvim')")}
@@ -695,6 +712,8 @@ function vAyarlar(){
         <label class="btn ghost" style="margin:0;color:var(--brand);border:1px solid var(--line);padding:8px 14px;border-radius:6px;cursor:pointer">⬆ Yedek yükle
           <input type="file" accept=".json" style="display:none" onchange="importData(this.files[0])"></label>
       </div>
+      <p class="muted" style="margin-top:12px">Yeni telefonda kurulumdan sonra kayıtlı kursiyerleri ve pansiyon atlarını şifreyle yükleyebilirsiniz.</p>
+      <button class="btn ghost" onclick="openRealDataForm()">${ic('lock')} Gerçek verileri yükle</button>
     </div>
   </div>`;
 }
@@ -1785,6 +1804,38 @@ function importData(file){ if(!file) return; const r=new FileReader(); r.onload=
     if(!confirm('Mevcut tüm veriler yedekteki verilerle değiştirilecek. Devam edilsin mi?')) return;
     S = Object.assign(defaults(), d); save(); render(); toast('Yedek yüklendi');
   }catch(e){ alert('Geçersiz yedek dosyası.'); } }; r.readAsText(file); }
+
+/* Gerçek veriler: yayındaki şifreli dosyadan (veri.enc.json) yüklenir */
+if(location.protocol.startsWith('http')) fetch('veri.enc.json',{method:'HEAD',cache:'no-store'}).then(r=>{ if(r.ok){ window._veriVar=true; if(view==='home') render(); } }).catch(()=>{});
+function openRealDataForm(){
+  modal(`<h3>${ic('lock')} Gerçek verileri yükle</h3>
+  <p class="muted">Kursiyerler ve pansiyon atları (sahipleriyle) bu telefona eklenir. Mevcut kullanıcılar ve kayıtlar silinmez; zaten olan kayıtlar tekrar eklenmez.</p>
+  <form id="rd-f"><label>Veri şifresi<input name="pw" required autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="xxxx-xxxx-xxxx"></label>
+  <div id="rd-msg" class="muted"></div>
+  <div class="row" style="margin-top:12px"><span class="spacer"></span><button type="button" class="btn ghost" onclick="closeModal()">Vazgeç</button><button class="btn" id="rd-btn">Yükle</button></div></form>`);
+  $('#rd-f').onsubmit = async ev => { ev.preventDefault();
+    const btn = $('#rd-btn'), msg = $('#rd-msg'); btn.disabled = true; btn.textContent = 'Açılıyor…'; msg.textContent = '';
+    try{ const b0 = S.boarders.length, s0 = S.students.length;
+      await loadRealData(ev.target.pw.value.trim().toLowerCase());
+      closeModal(); render(); toast(`Yüklendi: ${S.students.length - s0} kursiyer, ${S.boarders.length - b0} at`);
+    }catch(e){ btn.disabled = false; btn.textContent = 'Yükle';
+      msg.innerHTML = `<span style="color:var(--bad)">${e.message==='sifre' ? 'Şifre yanlış. Tekrar deneyin.' : 'Veri dosyasına ulaşılamadı. İnternet bağlantısını kontrol edin.'}</span>`; }
+  };
+}
+async function loadRealData(pw){
+  const r = await fetch('veri.enc.json?'+Date.now(), {cache:'no-store'}); if(!r.ok) throw new Error('yok');
+  const j = await r.json();
+  const b64 = x => Uint8Array.from(atob(x), c => c.charCodeAt(0));
+  const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(pw), 'PBKDF2', false, ['deriveBits']);
+  const bits = new Uint8Array(await crypto.subtle.deriveBits({name:'PBKDF2', salt:b64(j.salt), iterations:j.iter, hash:'SHA-256'}, base, 384));
+  const key = await crypto.subtle.importKey('raw', bits.slice(0,32), 'AES-CBC', false, ['decrypt']);
+  let plain;
+  try{ plain = new TextDecoder().decode(await crypto.subtle.decrypt({name:'AES-CBC', iv:bits.slice(32)}, key, b64(j.data))); }
+  catch(e){ throw new Error('sifre'); }
+  if(!plain.startsWith('/*VADI-VERI*/')) throw new Error('sifre');
+  (0, eval)(plain);
+  save();
+}
 
 /* ================== BAŞLAT ================== */
 (function init(){
