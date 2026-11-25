@@ -12,6 +12,35 @@
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <title>Vadi At Çiftliği</title>
+<script>
+/* iPhone ekran düzeltmesi: Safari sayfayı küçültülmüş (uzaklaştırılmış) açarsa
+   uygulamayı telefonun gerçek genişliğine geri ölçekler; durum çubuğu payı
+   gelmezse (saat başlığa biniyorsa) elle verir. */
+(function(){
+  if(!/iPhone|iPod/.test(navigator.userAgent)) return;
+  var de = document.documentElement;
+  function fit(){
+    de.style.zoom = '';
+    var land = Math.abs(window.orientation||0) === 90;
+    var dev = land ? Math.max(screen.width, screen.height) : Math.min(screen.width, screen.height);
+    var r = window.innerWidth / dev;
+    if(r > 1.1) de.style.zoom = r.toFixed(3);
+    var standalone = navigator.standalone || matchMedia('(display-mode: standalone)').matches;
+    if(standalone && document.body){
+      var p = document.createElement('div');
+      p.style.cssText = 'position:fixed;top:0;height:0;padding-top:env(safe-area-inset-top);visibility:hidden';
+      document.body.appendChild(p);
+      var t = parseFloat(getComputedStyle(p).paddingTop) || 0;
+      p.remove();
+      if(t < 20 && !land) de.style.setProperty('--safe-t', (screen.height >= 852 ? 59 : 47) + 'px');
+      else de.style.removeProperty('--safe-t');
+    }
+  }
+  fit();
+  document.addEventListener('DOMContentLoaded', fit);
+  window.addEventListener('orientationchange', function(){ setTimeout(fit, 300); });
+})();
+</script>
 <style>
 :root{
   --bg:#f6f3ee; --card:#fff; --ink:#2b2620; --muted:#7a7066; --line:#e4ddd2;
@@ -33,7 +62,7 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,san
 .appbar .user{margin-left:auto;background:rgba(255,255,255,.15);border:0;color:#fff;border-radius:999px;padding:6px 12px;font-size:13px;cursor:pointer;white-space:nowrap;flex:none}
 /* alt sekme çubuğu */
 .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:6;background:#fff;border-top:1px solid var(--line);display:flex;justify-content:space-around;
-  padding:6px 4px calc(6px + var(--safe-b));box-shadow:0 -4px 14px rgba(60,40,20,.06)}
+  padding:6px 4px calc(6px + var(--safe-b));box-shadow:0 -4px 14px rgba(60,40,20,.06), 0 80px 0 0 #fff}
 .tabbar button{flex:1;max-width:120px;background:none;border:0;color:var(--muted);font-size:11px;display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 0;cursor:pointer}
 .tabbar button .i{font-size:23px;line-height:1;display:flex}
 .tabbar button.active{color:var(--brand);font-weight:700}
