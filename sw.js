@@ -1,11 +1,11 @@
-/* Uygulama dosyalarını önbelleğe alır: internet olmasa da açılır. Sürüm değişince eski önbellek silinir. */
-const CACHE = 'vadi-v1';
+/* Uygulama dosyalarını önbelleğe alır: internet olmasa da açılır.
+   Her açılışta önce internetten EN YENİ sürüm alınır (tarayıcı önbelleği atlanır). */
+const CACHE = 'vadi-v3';
 const FILES = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png'];
-self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES))); self.skipWaiting(); });
+self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES.map(f => new Request(f, {cache:'reload'}))))); self.skipWaiting(); });
 self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k))))); self.clients.claim(); });
-// Önce ağ, olmazsa önbellek: güncellemeler hemen gelir, internet yoksa yine açılır
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET' || new URL(e.request.url).origin !== location.origin) return;
-  e.respondWith(fetch(e.request).then(r => { const c = r.clone(); caches.open(CACHE).then(x => x.put(e.request, c)); return r; })
+  e.respondWith(fetch(e.request, {cache:'no-store'}).then(r => { const c = r.clone(); caches.open(CACHE).then(x => x.put(e.request, c)); return r; })
     .catch(() => caches.match(e.request).then(r => r || caches.match('./index.html'))));
 });

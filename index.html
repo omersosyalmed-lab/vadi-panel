@@ -13,31 +13,38 @@
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <title>Vadi At Çiftliği</title>
 <script>
-/* iPhone ekran düzeltmesi: Safari sayfayı küçültülmüş (uzaklaştırılmış) açarsa
-   uygulamayı telefonun gerçek genişliğine geri ölçekler; durum çubuğu payı
-   gelmezse (saat başlığa biniyorsa) elle verir. */
+/* Telefon görünümü: iPhone'da (veya dar ekranda) html'e "phone" sınıfı eklenir.
+   Safari sayfayı uzaklaştırılmış açarsa (yakınlaştırma ayarı) uygulama telefonun
+   gerçek genişliğine ölçeklenir; durum çubuğu payı gelmezse elle verilir. */
 (function(){
-  if(!/iPhone|iPod/.test(navigator.userAgent)) return;
   var de = document.documentElement;
+  var iphone = /iPhone|iPod/.test(navigator.userAgent);
   function fit(){
     de.style.zoom = '';
-    var land = Math.abs(window.orientation||0) === 90;
-    var dev = land ? Math.max(screen.width, screen.height) : Math.min(screen.width, screen.height);
-    var r = window.innerWidth / dev;
-    if(r > 1.1) de.style.zoom = r.toFixed(3);
-    var standalone = navigator.standalone || matchMedia('(display-mode: standalone)').matches;
-    if(standalone && document.body){
+    var land = Math.abs(window.orientation||0) === 90 || innerWidth > innerHeight;
+    var phone = iphone || window.innerWidth <= 520;
+    de.classList.toggle('phone', phone);
+    if(iphone && !land){
+      var sw = Math.min(screen.width, screen.height);
+      var target = sw >= 320 && sw <= 440 ? sw : 393;
+      var r = window.innerWidth / target;
+      if(r > 1.08) de.style.zoom = r.toFixed(3);
+    }
+    if(iphone && document.body){
       var p = document.createElement('div');
       p.style.cssText = 'position:fixed;top:0;height:0;padding-top:env(safe-area-inset-top);visibility:hidden';
       document.body.appendChild(p);
       var t = parseFloat(getComputedStyle(p).paddingTop) || 0;
       p.remove();
-      if(t < 20 && !land) de.style.setProperty('--safe-t', (screen.height >= 852 ? 59 : 47) + 'px');
+      var standalone = navigator.standalone || matchMedia('(display-mode: standalone)').matches;
+      if(standalone && !land && t * (parseFloat(de.style.zoom)||1) < 30) de.style.setProperty('--safe-t', '59px');
       else de.style.removeProperty('--safe-t');
     }
   }
   fit();
   document.addEventListener('DOMContentLoaded', fit);
+  var lastW = innerWidth;
+  window.addEventListener('resize', function(){ if(innerWidth === lastW) return; lastW = innerWidth; clearTimeout(fit._t); fit._t = setTimeout(fit, 150); });
   window.addEventListener('orientationchange', function(){ setTimeout(fit, 300); });
 })();
 </script>
@@ -196,64 +203,66 @@ body.role-personel .money{display:none!important}
 body.nologin .tabbar,body.nologin .appbar .user{display:none}
 
 /* ============ iPhone arayüzü (telefon genişliği) ============ */
-@media(max-width:520px){
-  :root{--bg:#f2efea; --line:#e3ddd4}
-  html,body{overscroll-behavior-y:none}
-  body{font-size:16px;padding-bottom:calc(62px + var(--safe-b));-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
-  input,textarea,select,[contenteditable],.kv,td,.muted{-webkit-user-select:text;user-select:text}
-  /* gezinme çubuğu: ortada başlık, solda geri */
-  .appbar{background:rgba(91,70,54,.94);-webkit-backdrop-filter:saturate(170%) blur(18px);backdrop-filter:saturate(170%) blur(18px);
-    padding:calc(6px + var(--safe-t)) 10px 6px;min-height:calc(50px + var(--safe-t));gap:8px}
-  .appbar .logo{width:32px;height:32px;border-radius:8px;font-size:19px}
-  body:not(.at-home) .appbar .logo{display:none}
-  .appbar .back{background:none;width:auto;height:38px;padding:0 6px 0 0;font-size:34px;font-weight:300;line-height:1;display:flex;align-items:center}
-  body:not(.at-home) .appbar h1{position:absolute;left:64px;right:64px;text-align:center;bottom:6px;line-height:38px}
-  body:not(.at-home) #farm-name{display:none}
-  body:not(.at-home) .appbar small{display:inline;font-size:17px;font-weight:600;opacity:1}
-  .appbar .user{padding:6px 10px;font-size:13px}
-  main{padding:14px 16px 20px}
-  /* büyük başlık */
-  .hello{margin:4px 0 16px}
-  .hello h2{font-size:30px;font-weight:750;letter-spacing:-.02em;line-height:1.1}
-  .hello .muted{font-size:14px;margin-top:4px}
-  h2{font-size:24px;letter-spacing:-.01em}
-  /* kartlar: iOS gruplu liste görünümü */
-  .card{border:0;border-radius:14px;padding:14px 16px;box-shadow:0 1px 2px rgba(60,40,20,.05)}
-  /* ana sayfa menüsü: liste satırları */
-  .tiles{display:block;background:#fff;border-radius:14px;overflow:hidden;margin-bottom:18px;box-shadow:0 1px 2px rgba(60,40,20,.05)}
-  .tile{display:grid;grid-template-columns:34px 1fr auto 12px;grid-template-areas:"i b x c" "i m x c";column-gap:14px;row-gap:1px;align-items:center;
-    width:100%;min-height:62px;padding:10px 16px;border:0;border-radius:0;background:#fff;position:relative}
-  .tile + .tile::before{content:'';position:absolute;top:0;left:64px;right:0;height:1px;background:var(--line);transform:scaleY(.6)}
-  .tile:active{transform:none;background:#ece6de}
-  .tile .i{grid-area:i;width:34px;height:34px;border-radius:9px;font-size:19px;color:#fff;background:var(--brand)}
-  .tile b{grid-area:b;font-size:16px;font-weight:600;align-self:end}
-  .tile .muted{grid-area:m;font-size:13px;align-self:start}
-  .tile .cnt,.tile .lk{grid-area:x;position:static;align-self:center}
-  .tile::after{content:'';grid-area:c;width:8px;height:8px;border-top:2px solid #c3b9ad;border-right:2px solid #c3b9ad;transform:rotate(45deg);justify-self:start}
-  .tile:nth-child(8n+1) .i{background:#b0752f} .tile:nth-child(8n+2) .i{background:#c0563b}
-  .tile:nth-child(8n+3) .i{background:#5b4636} .tile:nth-child(8n+4) .i{background:#4f7a46}
-  .tile:nth-child(8n+5) .i{background:#8a5a3c} .tile:nth-child(8n+6) .i{background:#3f6f8f}
-  .tile:nth-child(8n+7) .i{background:#7a5f9a} .tile:nth-child(8n+8) .i{background:#6b6b5e}
-  /* alt sekme çubuğu */
-  .tabbar{background:rgba(255,255,255,.9);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);
-    border-top:.5px solid rgba(60,40,20,.18);box-shadow:0 80px 0 0 rgba(255,255,255,.95);padding:5px 2px calc(4px + var(--safe-b))}
-  .tabbar button{font-size:10.5px;font-weight:500;gap:3px;padding:2px 0}
-  .tabbar button .i{font-size:25px;height:28px;align-items:center}
-  .tabbar button.active{font-weight:600}
-  .tabbar button.add .i{width:30px;height:30px;margin:0;font-size:19px;box-shadow:none;border-radius:50%}
-  /* düğme ve alanlar: parmak boyu */
-  button.btn,label.btn{min-height:46px;border-radius:12px;font-size:16px}
-  button.sm{min-height:36px;font-size:14px}
-  input,select,textarea{min-height:46px;border-radius:12px}
-  main .row > input:not([type=checkbox]):not([type=radio]),main .row > select{max-width:none!important;flex:1 1 140px;width:auto}
-  /* pencereler: alttan açılan sayfa */
-  .modal-bg{padding:calc(var(--safe-t) + 10px) 0 0;align-items:stretch}
-  .modal,.modal.wide{border-radius:14px 14px 0 0;min-height:100%;padding:22px 16px calc(24px + var(--safe-b));position:relative;animation:sheetUp .28s cubic-bezier(.2,.8,.2,1)}
-  .modal::before{content:'';position:absolute;top:7px;left:50%;width:38px;height:5px;margin-left:-19px;border-radius:3px;background:#d6cfc5}
-  .modal .tiles{box-shadow:none;border:1px solid var(--line)}
-  .toast{bottom:calc(74px + var(--safe-b));border-radius:12px}
-  .login{margin:20px auto}
-}
+/* telefon görünümü: html.phone sınıfıyla açılır (iPhone veya dar ekran) */
+html.phone{--bg:#f2efea; --line:#e3ddd4}
+html.phone,html.phone body{overscroll-behavior-y:none}
+html.phone body{font-size:16px;padding-bottom:calc(62px + var(--safe-b));-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+html.phone input,html.phone textarea,html.phone select,html.phone [contenteditable],html.phone .kv,html.phone td,html.phone .muted{-webkit-user-select:text;user-select:text}
+html.phone .appbar{background:rgba(91,70,54,.94);-webkit-backdrop-filter:saturate(170%) blur(18px);backdrop-filter:saturate(170%) blur(18px); padding:calc(6px + var(--safe-t)) 10px 6px;min-height:calc(50px + var(--safe-t));gap:8px}
+html.phone .appbar .logo{width:32px;height:32px;border-radius:8px;font-size:19px}
+html.phone body:not(.at-home) .appbar .logo{display:none}
+html.phone .appbar .back{background:none;width:auto;height:38px;padding:0 6px 0 0;font-size:34px;font-weight:300;line-height:1;display:flex;align-items:center}
+html.phone body:not(.at-home) .appbar h1{position:absolute;left:64px;right:64px;text-align:center;bottom:6px;line-height:38px}
+html.phone body:not(.at-home) #farm-name{display:none}
+html.phone body:not(.at-home) .appbar small{display:inline;font-size:17px;font-weight:600;opacity:1}
+html.phone .appbar .user{padding:6px 10px;font-size:13px}
+html.phone main{padding:14px 16px 20px}
+html.phone .hello{margin:4px 0 16px}
+html.phone .hello h2{font-size:30px;font-weight:750;letter-spacing:-.02em;line-height:1.1}
+html.phone .hello .muted{font-size:14px;margin-top:4px}
+html.phone h2{font-size:24px;letter-spacing:-.01em}
+html.phone .card{border:0;border-radius:14px;padding:14px 16px;box-shadow:0 1px 2px rgba(60,40,20,.05)}
+html.phone .tiles{display:block;background:#fff;border-radius:14px;overflow:hidden;margin-bottom:18px;box-shadow:0 1px 2px rgba(60,40,20,.05)}
+html.phone .tile{display:grid;grid-template-columns:34px 1fr auto 12px;grid-template-areas:"i b x c" "i m x c";column-gap:14px;row-gap:1px;align-items:center; width:100%;min-height:62px;padding:10px 16px;border:0;border-radius:0;background:#fff;position:relative}
+html.phone .tile + .tile::before{content:'';position:absolute;top:0;left:64px;right:0;height:1px;background:var(--line);transform:scaleY(.6)}
+html.phone .tile:active{transform:none;background:#ece6de}
+html.phone .tile .i{grid-area:i;width:34px;height:34px;border-radius:9px;font-size:19px;color:#fff;background:var(--brand)}
+html.phone .tile b{grid-area:b;font-size:16px;font-weight:600;align-self:end}
+html.phone .tile .muted{grid-area:m;font-size:13px;align-self:start}
+html.phone .tile .cnt,html.phone .tile .lk{grid-area:x;position:static;align-self:center}
+html.phone .tile::after{content:'';grid-area:c;width:8px;height:8px;border-top:2px solid #c3b9ad;border-right:2px solid #c3b9ad;transform:rotate(45deg);justify-self:start}
+html.phone .tile:nth-child(8n+1) .i{background:#b0752f}
+html.phone .tile:nth-child(8n+2) .i{background:#c0563b}
+html.phone .tile:nth-child(8n+3) .i{background:#5b4636}
+html.phone .tile:nth-child(8n+4) .i{background:#4f7a46}
+html.phone .tile:nth-child(8n+5) .i{background:#8a5a3c}
+html.phone .tile:nth-child(8n+6) .i{background:#3f6f8f}
+html.phone .tile:nth-child(8n+7) .i{background:#7a5f9a}
+html.phone .tile:nth-child(8n+8) .i{background:#6b6b5e}
+html.phone .tabbar{background:rgba(255,255,255,.9);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px); border-top:.5px solid rgba(60,40,20,.18);box-shadow:0 80px 0 0 rgba(255,255,255,.95);padding:5px 2px calc(4px + var(--safe-b))}
+html.phone .tabbar button{font-size:10.5px;font-weight:500;gap:3px;padding:2px 0}
+html.phone .tabbar button .i{font-size:25px;height:28px;align-items:center}
+html.phone .tabbar button.active{font-weight:600}
+html.phone .tabbar button.add .i{width:30px;height:30px;margin:0;font-size:19px;box-shadow:none;border-radius:50%}
+html.phone button.btn,html.phone label.btn{min-height:46px;border-radius:12px;font-size:16px}
+html.phone button.sm{min-height:36px;font-size:14px}
+html.phone input,html.phone select,html.phone textarea{min-height:46px;border-radius:12px}
+html.phone main .row > input:not([type=checkbox]):not([type=radio]),html.phone main .row > select{max-width:none!important;flex:1 1 140px;width:auto}
+html.phone .modal-bg{padding:calc(var(--safe-t) + 10px) 0 0;align-items:stretch}
+html.phone .modal,html.phone .modal.wide{border-radius:14px 14px 0 0;min-height:100%;padding:22px 16px calc(24px + var(--safe-b));position:relative;animation:sheetUp .28s cubic-bezier(.2,.8,.2,1)}
+html.phone .modal::before{content:'';position:absolute;top:7px;left:50%;width:38px;height:5px;margin-left:-19px;border-radius:3px;background:#d6cfc5}
+html.phone .modal .tiles{box-shadow:none;border:1px solid var(--line)}
+html.phone .toast{bottom:calc(74px + var(--safe-b));border-radius:12px}
+html.phone .login{margin:20px auto}
+html.phone table.resp,html.phone table.resp tbody,html.phone table.resp tr,html.phone table.resp td{display:block;width:100%}
+html.phone table.resp tr:first-child:has(th){display:none}
+html.phone table.resp tr{border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:8px;background:#fff}
+html.phone table.resp td{border:0;padding:3px 0}
+html.phone table.resp td:empty{display:none}
+html.phone .week{grid-template-columns:1fr} html.phone .day{min-height:auto}
+html.phone .two,html.phone .three{grid-template-columns:1fr}
+html.phone .horses{grid-template-columns:1fr 1fr;gap:10px}
+html.phone .g4{grid-template-columns:1fr 1fr}
 @keyframes sheetUp{from{transform:translateY(40%);opacity:.4}to{transform:none;opacity:1}}
 </style>
 </head>
@@ -276,6 +285,7 @@ body.nologin .tabbar,body.nologin .appbar .user{display:none}
 
 <script>
 /* ================== VERİ ================== */
+const APP_VER = '3 · 25.11';
 const KEY = 'vadi-at-ciftligi-v1';
 const STATUS = {
   plan:    {t:'Planlandı', c:'b-info'},
@@ -455,7 +465,8 @@ function vHome(){
     ${isAdmin()?tile('wallet','Ücret & Ödemeler', alacak?`Bekleyen ${money(alacak)}`:'Tahsilat takibi',"go('odemeler')",{lock:true}):''}
     ${isAdmin()?tile('settings','Ayarlar','Kullanıcılar, logo, fiyatlar',"go('ayarlar')",{lock:true}):''}
   </div>
-  ${vTodayList()}`;
+  ${vTodayList()}
+  <div class="muted" style="text-align:center;font-size:11px;margin-top:8px">Sürüm ${APP_VER}</div>`;
 }
 function vTodayList(){
   const t = today();
@@ -1777,7 +1788,7 @@ function importData(file){ if(!file) return; const r=new FileReader(); r.onload=
 (function init(){
   const [hv, ha] = (location.hash||'').slice(1).split('/');
   if(VIEWS[hv]) { view = hv; viewArg = ha || null; }
-  if(location.protocol.startsWith('http') && 'serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+  if(location.protocol.startsWith('http') && 'serviceWorker' in navigator) navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(r=>r.update()).catch(()=>{});
   if(wakeWanted()) navigator.wakeLock?.request('screen').then(l=>wakeLock=l).catch(()=>{});
   render();
 })();
