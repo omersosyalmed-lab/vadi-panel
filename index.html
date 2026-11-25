@@ -270,6 +270,8 @@ html.phone .horses{grid-template-columns:1fr 1fr;gap:10px}
 html.phone .g4{grid-template-columns:1fr 1fr}
 @keyframes pageIn{from{transform:translateX(30%);opacity:.3}to{transform:none;opacity:1}}
 .mbar{display:none}
+.cl-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-left:6px;background:#bbb;vertical-align:middle}
+.cl-dot.ok{background:#5cc06a}.cl-dot.bekliyor{background:#f0b400}.cl-dot.hata{background:#e5533d}
 @keyframes sheetUp{from{transform:translateY(40%);opacity:.4}to{transform:none;opacity:1}}
 </style>
 </head>
@@ -292,7 +294,7 @@ html.phone .g4{grid-template-columns:1fr 1fr}
 
 <script>
 /* ================== VERİ ================== */
-const APP_VER = '10 · 25.11';
+const APP_VER = '11 · 25.11';
 const KEY = 'vadi-at-ciftligi-v1';
 const STATUS = {
   plan:    {t:'Planlandı', c:'b-info'},
@@ -340,7 +342,7 @@ if(!S.seededOwnHorses){
   S.seededOwnHorses = true;
   try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){}
 }
-function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); return true; }
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); if(window.CLOUD_ON && window.CL && CL.ready) schedulePush(); return true; }
   catch(e){ if(e && /quota/i.test(e.name+e.message)){ alert('Cihaz hafızası doldu (fotoğraflar çok yer kaplıyor olabilir). Değişiklik kaydedilemedi.'); }
     else toast('Kaydedilemedi!'); return false; } }
 const uid = () => Math.random().toString(36).slice(2,10) + Date.now().toString(36).slice(-4);
@@ -433,7 +435,7 @@ function render(){
   $('#page-title').textContent = VIEWS[view].t;
   $('#back').style.display = view==='home' ? 'none' : '';
   document.body.classList.toggle('at-home', view==='home');
-  $('#userchip').innerHTML = ic(isAdmin()?'shield':'user') + ' ' + esc(u.name.split(' ')[0]);
+  $('#userchip').innerHTML = ic(isAdmin()?'shield':'user') + ' ' + esc(u.name.split(' ')[0]) + (CLOUD_ON ? `<span id="cl-dot" class="cl-dot ${CL.status}"></span>` : '');
   document.querySelectorAll('#tabbar button').forEach(b=>b.classList.toggle('active', b.dataset.v===view || (view==='at' && b.dataset.v==='atlar')));
   $('#app').innerHTML = VIEWS[view].f();
 }
@@ -473,6 +475,7 @@ function vHome(){
   return `
   <div class="hello"><div><h2>${greet}, ${esc(u.name.split(' ')[0])}</h2>
     <div class="muted">${GUN[new Date().getDay()]}, ${fmt(t)} · Bugün ${nLessons} ders, ${nVisits} tur</div></div></div>
+  ${cloudHomeCard()}
   ${isAdmin() && window._veriVar && !S.students.length && !S.seededStudents ? `<div class="card" style="border-left:4px solid var(--warn)"><b>Kayıtlı veriler bu telefonda yok</b>
     <div class="muted" style="margin:4px 0 10px">Kursiyerleri ve pansiyon atlarını şifreyle yükleyin.</div>
     <button class="btn" onclick="openRealDataForm()">${ic('lock')} Gerçek verileri yükle</button></div>` : ''}
@@ -663,13 +666,13 @@ function vAyarlar(){
   return `
   <h2>Ayarlar <span class="badge b-mut" style="vertical-align:middle">${ic('lock')} Sadece yönetici</span></h2>
   <div class="grid g2">
-    <div class="card"><h3>${ic('users')} Kullanıcılar (${S.users.length}/${MAX_USERS})</h3>
+    ${CLOUD_ON ? cloudUsersCard() : `    <div class="card"><h3>${ic('users')} Kullanıcılar (${S.users.length}/${MAX_USERS})</h3>
       <table>${S.users.map(u=>`<tr><td>${ic(u.role==='yonetici'?'shield':'user')} <b>${esc(u.name)}</b>${u.id===me()?.id?' <span class="muted">(siz)</span>':''}</td>
         <td><span class="badge ${u.role==='yonetici'?'b-warn':'b-mut'}">${ROLES[u.role]}</span></td>
         <td style="text-align:right"><button class="btn ghost sm" onclick="openUserForm('${u.id}')">Düzenle</button></td></tr>`).join('')}</table>
       ${S.users.length<MAX_USERS?`<button class="btn sm" style="margin-top:10px" onclick="openUserForm()">+ Kullanıcı ekle</button>`:''}
       <p class="muted"><b>Yönetici</b> her şeyi görür. <b>Personel</b> ders, tur, takvim ve at künyelerini kullanır; ücret ve ödemeleri göremez.</p>
-    </div>
+    </div>`}
     <div class="card"><h3>${ic('tag')} Çiftlik adı &amp; logo</h3>
       <label>Çiftlik adı<input value="${esc(S.settings.farmName)}" onchange="S.settings.farmName=this.value.trim()||'Vadi At Çiftliği';save();render()"></label>
       <div class="row"><div class="logo-big" style="width:72px;height:72px;border-radius:16px;background:#fff;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;overflow:hidden;font-size:36px">${brandLogoHtml()}</div>
@@ -1670,12 +1673,14 @@ function hashPin(pin){ let h1=0xdeadbeef, h2=0x41c6ce57; const str = 'vadi:'+pin
   for(let i=0;i<str.length;i++){ const ch=str.charCodeAt(i); h1=Math.imul(h1^ch,2654435761); h2=Math.imul(h2^ch,1597334677); }
   h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909); h2=Math.imul(h2^(h2>>>16),2246822507)^Math.imul(h1^(h1>>>13),3266489909);
   return (4294967296*(2097151&h2)+(h1>>>0)).toString(36); }
-function me(){ let id; try{ id = localStorage.getItem(SESSION_KEY); }catch(e){ id = window._sess; } return S.users.find(u=>u.id===id) || null; }
+function me(){ if(window.CLOUD_ON){ const r = CL.row; return r && r.rol!=='bekliyor' && CL.phase!=='giris' && CL.phase!=='onay' ? {id:r.email, name:r.ad||r.email, role:r.rol} : null; }
+  let id; try{ id = localStorage.getItem(SESSION_KEY); }catch(e){ id = window._sess; } return S.users.find(u=>u.id===id) || null; }
 function setSession(id){ try{ id ? localStorage.setItem(SESSION_KEY,id) : localStorage.removeItem(SESSION_KEY); }catch(e){ window._sess = id; } }
 const isAdmin = () => me()?.role==='yonetici';
 let login = {sel:null, pin:''};
 
 function vLogin(){
+  if(CLOUD_ON) return vCloudLogin();
   const logo = brandLogoHtml();
   if(!S.users.length) return `<div class="login card">
     <div class="logo-big">${logo}</div><h2>${esc(S.settings.farmName||'Vadi At Çiftliği')}</h2>
@@ -1709,6 +1714,7 @@ document.addEventListener('submit', ev => { if(ev.target.id!=='setup') return; e
   S.users.push(u); save(); setSession(u.id); view='home'; render(); toast('Yönetici hesabı oluşturuldu'); });
 
 function openMe(){
+  if(CLOUD_ON) return openCloudMe();
   const u = me();
   modal(`<div class="row"><h3 style="margin:0">${ic(u.role==='yonetici'?'shield':'user')} ${esc(u.name)}</h3><span class="badge b-mut">${ROLES[u.role]}</span><span class="spacer"></span>
     <button class="btn ghost sm" onclick="closeModal()">Kapat</button></div>
@@ -1851,6 +1857,283 @@ function importData(file){ if(!file) return; const r=new FileReader(); r.onload=
     S = Object.assign(defaults(), d); save(); render(); toast('Yedek yüklendi');
   }catch(e){ alert('Geçersiz yedek dosyası.'); } }; r.readAsText(file); }
 
+/* ================== ORTAK VERİTABANI (Supabase) ==================
+   Her kayıt (kursiyer, ders, at, ...) ayrı satır olarak "kayit" tablosunda tutulur.
+   Bir cihazda kaydedilen değişiklik saniyeler içinde diğer cihazlara gelir.
+   İnternet yoksa uygulama cihazdaki kopyayla çalışır, bağlantı gelince bekleyenleri gönderir. */
+var BULUT = { url:'https://gytluaagnluaetqwjdnb.supabase.co', key:'sb_publishable_Lc9A7l2HvMhPaBhMlPSJ4Q_7OSf6KaJ' };
+var CLOUD_ON = (()=>{ try{
+  if(/[?&]bulut=0/.test(location.search)) localStorage.setItem('vadi-bulut','0');
+  if(/[?&]bulut=1/.test(location.search)) localStorage.setItem('vadi-bulut','1');
+  const f = localStorage.getItem('vadi-bulut'); if(f==='0') return false; if(f==='1') return true;
+}catch(e){}
+  return /github\.io$/.test(location.hostname); })();
+var COLLS = ['packages','students','enrollments','bookings','owners','boarders','charges','services','visits','cafeRes'];
+var NO_SYNC = ['users'];
+var CL = { sb:null, email:'', row:null, phase:'yukleniyor', ready:false, empty:false, snap:new Map(), lastTs:null,
+  pending:[], status:'', pushTimer:null, busy:false, orphans:null, chan:null, msg:'' };
+try{ CL.row = JSON.parse(localStorage.getItem('vadi-bulut-ben')||'null'); }catch(e){}
+
+function stableStr(v){ if(v===null || typeof v!=='object') return JSON.stringify(v);
+  if(Array.isArray(v)) return '['+v.map(stableStr).join(',')+']';
+  return '{'+Object.keys(v).filter(k=>v[k]!==undefined).sort().map(k=>JSON.stringify(k)+':'+stableStr(v[k])).join(',')+'}'; }
+function h53(str){ let h1=0xdeadbeef, h2=0x41c6ce57;
+  for(let i=0;i<str.length;i++){ const ch=str.charCodeAt(i); h1=Math.imul(h1^ch,2654435761); h2=Math.imul(h2^ch,1597334677); }
+  h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909); h2=Math.imul(h2^(h2>>>16),2246822507)^Math.imul(h1^(h1>>>13),3266489909);
+  return (4294967296*(2097151&h2)+(h1>>>0)).toString(36); }
+const ayarKeys = () => Object.keys(S).filter(k=>!COLLS.includes(k) && !NO_SYNC.includes(k) && !k.startsWith('_'));
+function snapshot(){ const m = new Map();
+  COLLS.forEach(c=>(S[c]||[]).forEach(r=>{ if(r && r.id!=null) m.set(c+'|'+r.id, h53(stableStr(r))); }));
+  ayarKeys().forEach(k=>m.set('ayar|'+k, h53(stableStr(S[k]))));
+  return m; }
+function snapSave(){ try{ localStorage.setItem('vadi-bulut-snap', JSON.stringify({email:CL.email, lastTs:CL.lastTs, m:[...CL.snap]})); }catch(e){} }
+function snapLoad(){ try{ const d = JSON.parse(localStorage.getItem('vadi-bulut-snap')||'null');
+  if(d && d.email===CL.email){ CL.snap = new Map(d.m); CL.lastTs = d.lastTs; return true; } }catch(e){} return false; }
+function localSave(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+function cloudStatus(s){ CL.status = s; const el = $('#cl-dot'); if(el){ el.className = 'cl-dot '+s; el.title = {ok:'Ortak sisteme kaydedildi', bekliyor:'Gönderilmeyi bekleyen değişiklik var', hata:'Bağlantı yok: değişiklikler bu cihazda, internet gelince gönderilecek'}[s]||''; } }
+
+function loadSupabase(){ return new Promise((res,rej)=>{ if(window.supabase) return res();
+  const s = document.createElement('script'); s.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.110.0/dist/umd/supabase.js';
+  s.onload = ()=>res(); s.onerror = rej; document.head.appendChild(s); }); }
+
+async function cloudInit(){
+  if(!CLOUD_ON) return;
+  try{ await loadSupabase(); }
+  catch(e){ CL.phase = CL.row ? 'cevrimdisi' : 'baglanti'; render(); return; }
+  CL.sb = window.supabase.createClient(BULUT.url, BULUT.key, {auth:{persistSession:true, autoRefreshToken:true, detectSessionInUrl:true}});
+  CL.sb.auth.onAuthStateChange((ev, sess)=>{ if(ev==='SIGNED_OUT'){ CL.phase='giris'; CL.row=null; CL.ready=false; render(); } });
+  const { data:{ session } } = await CL.sb.auth.getSession();
+  if(!session){ CL.phase = 'giris'; CL.row = null; render(); return; }
+  await afterAuth(session);
+}
+async function afterAuth(session){
+  CL.email = (session.user.email||'').toLowerCase();
+  CL.phase = 'yukleniyor'; render();
+  let { data:row, error } = await CL.sb.from('izinli').select('*').eq('email', CL.email).maybeSingle();
+  if(error){ CL.phase = CL.row ? 'cevrimdisi' : 'baglanti'; render(); return; }
+  if(!row){
+    const ad = (session.user.user_metadata?.ad || CL.email.split('@')[0]).trim();
+    let r = await CL.sb.from('izinli').insert({email:CL.email, ad, rol:'yonetici'}).select().single();
+    if(r.error) r = await CL.sb.from('izinli').insert({email:CL.email, ad, rol:'bekliyor'}).select().single();
+    row = r.data;
+  }
+  CL.row = row; try{ localStorage.setItem('vadi-bulut-ben', JSON.stringify(row)); }catch(e){}
+  if(!row || row.rol==='bekliyor'){ CL.phase = 'onay'; render(); return; }
+  await startSync();
+}
+async function fetchRows(since){
+  const out = []; let from = 0;
+  for(;;){ let q = CL.sb.from('kayit').select('tur,id,veri,silindi,guncel').order('sira').range(from, from+999);
+    if(since) q = q.gt('guncel', since);
+    const { data, error } = await q; if(error) throw error; out.push(...data); if(data.length<1000) break; from += 1000; }
+  return out; }
+function buildState(rows){
+  const N = defaults(); COLLS.forEach(c=>N[c]=[]);
+  rows.forEach(r=>{ if(r.silindi || r.veri==null) return; if(r.tur==='ayar') N[r.id] = r.veri; else if(COLLS.includes(r.tur)) N[r.tur].push(r.veri); });
+  N.settings = Object.assign(defaults().settings, N.settings); N.cafe = Object.assign(defaults().cafe, N.cafe);
+  N.users = S.users || [];
+  return N; }
+async function startSync(){
+  CL.phase = 'yukleniyor'; render();
+  const synced = snapLoad();
+  try{
+    if(synced) await pushPending(true);
+    const rows = await fetchRows();
+    CL.lastTs = rows.reduce((a,r)=>!a||r.guncel>a?r.guncel:a, CL.lastTs);
+    if(!rows.filter(r=>!r.silindi).length){
+      CL.empty = true; CL.snap = new Map(); CL.ready = false; CL.phase = 'hazir'; render(); return; }
+    CL.empty = false;
+    if(!synced) CL.orphans = findOrphans(rows);
+    S = buildState(rows); CL.snap = snapshot(); snapSave(); localSave();
+    CL.ready = true; CL.phase = 'hazir'; cloudStatus('ok'); subscribe(); render();
+    if(isAdmin()) loadUsers();
+  }catch(e){ console.warn(e); CL.phase = 'cevrimdisi'; cloudStatus('hata'); render(); }
+}
+/* Bu cihazda daha önce (ortak sisteme geçmeden) girilmiş ama bulutta olmayan kayıtlar */
+function findOrphans(rows){
+  const live = rows.filter(r=>!r.silindi && r.veri);
+  const has = new Set(live.map(r=>r.tur+'|'+r.id));
+  const byName = (tur, pred) => live.filter(r=>r.tur===tur).map(r=>r.veri).find(pred);
+  const map = {}; const out = [];
+  const nm = s => (s||'').toLocaleLowerCase('tr').trim();
+  (S.students||[]).forEach(s=>{ if(has.has('students|'+s.id)) return; const d = byName('students', x=>nm(x.name)===nm(s.name)); if(d) map[s.id]=d.id; else out.push(['students',s]); });
+  (S.owners||[]).forEach(o=>{ if(has.has('owners|'+o.id)) return; const d = byName('owners', x=>nm(x.name)===nm(o.name)); if(d) map[o.id]=d.id; else out.push(['owners',o]); });
+  (S.boarders||[]).forEach(h=>{ if(has.has('boarders|'+h.id)) return; const d = byName('boarders', x=>nm(x.name)===nm(h.name) && !!x.own===!!h.own); if(d) map[h.id]=d.id; else out.push(['boarders',h]); });
+  ['enrollments','bookings','visits','charges','cafeRes'].forEach(c=>(S[c]||[]).forEach(r=>{ if(!has.has(c+'|'+r.id)) out.push([c,r]); }));
+  if(!out.length) return null;
+  const fix = r => { const x = {...r}; ['studentId','ownerId','horseId','enrollmentId'].forEach(k=>{ if(x[k] && map[x[k]]) x[k]=map[x[k]]; }); return x; };
+  const recs = out.map(([c,r])=>[c, fix(r)]);
+  try{ localStorage.setItem('vadi-yerel-yedek', JSON.stringify(recs)); }catch(e){}
+  return recs; }
+async function uploadOrphans(){
+  const recs = CL.orphans || []; if(!recs.length) return;
+  recs.forEach(([c,r])=>{ (S[c] = S[c]||[]).push(r); });
+  CL.orphans = null; save(); render(); toast(recs.length+' kayıt ortak sisteme eklendi'); }
+
+function subscribe(){
+  if(CL.chan) return;
+  CL.chan = CL.sb.channel('kayit-degisiklik').on('postgres_changes', {event:'*', schema:'public', table:'kayit'}, p=>applyRow(p.new)).subscribe();
+  setInterval(pollChanges, 60000);
+  document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState==='visible'){ pollChanges(); pushPending(); } });
+  window.addEventListener('online', ()=>{ pushPending(); pollChanges(); });
+}
+async function pollChanges(){ if(!CL.ready) return;
+  try{ const rows = await fetchRows(CL.lastTs); rows.forEach(applyRow); }catch(e){} }
+let _rr = null;
+function applyRow(r){ if(!r || !r.tur) return;
+  if(r.guncel && (!CL.lastTs || r.guncel>CL.lastTs)) CL.lastTs = r.guncel;
+  const key = r.tur+'|'+r.id;
+  if(r.silindi || r.veri==null){
+    if(!CL.snap.has(key)) return;
+    if(r.tur==='ayar') delete S[r.id]; else if(COLLS.includes(r.tur)) S[r.tur] = (S[r.tur]||[]).filter(x=>String(x.id)!==String(r.id));
+    CL.snap.delete(key);
+  } else {
+    const hv = h53(stableStr(r.veri)); if(CL.snap.get(key)===hv) return;
+    if(r.tur==='ayar') S[r.id] = r.tur==='ayar' && r.id==='settings' ? Object.assign(defaults().settings, r.veri) : r.veri;
+    else if(COLLS.includes(r.tur)){ const arr = S[r.tur] = S[r.tur]||[]; const i = arr.findIndex(x=>String(x.id)===String(r.id)); if(i>=0) arr[i] = r.veri; else arr.push(r.veri); }
+    else return;
+    CL.snap.set(key, hv);
+  }
+  snapSave(); localSave();
+  clearTimeout(_rr); _rr = setTimeout(()=>{ const a = document.activeElement; if(a && /INPUT|TEXTAREA|SELECT/.test(a.tagName) && !$('#modal-root').contains(a)) return; render(); }, 250);
+}
+function schedulePush(){ cloudStatus('bekliyor'); clearTimeout(CL.pushTimer); CL.pushTimer = setTimeout(pushPending, 300); }
+async function pushPending(force){
+  if(!CL.sb || (!CL.ready && !force) || CL.busy) return;
+  CL.busy = true;
+  try{
+    const cur = snapshot(); const ups = [];
+    const rec = key => { const [tur, ...rest] = key.split('|'); const id = rest.join('|');
+      return { tur, id, veri: tur==='ayar' ? S[id] : (S[tur]||[]).find(x=>String(x.id)===id), silindi:false }; };
+    cur.forEach((h,k)=>{ if(CL.snap.get(k)!==h) ups.push(rec(k)); });
+    CL.snap.forEach((h,k)=>{ if(!cur.has(k)){ const [tur, ...rest] = k.split('|'); ups.push({tur, id:rest.join('|'), veri:null, silindi:true}); } });
+    for(let i=0;i<ups.length;i+=200){
+      const part = ups.slice(i,i+200);
+      const { error } = await CL.sb.from('kayit').upsert(part, {onConflict:'tur,id'});
+      if(error) throw error;
+      part.forEach(u=>{ const k = u.tur+'|'+u.id; if(u.silindi) CL.snap.delete(k); else CL.snap.set(k, cur.get(k)); });
+      snapSave();
+    }
+    cloudStatus('ok');
+  }catch(e){ console.warn('gönderilemedi', e); cloudStatus('hata'); setTimeout(pushPending, 30000); }
+  finally{ CL.busy = false; }
+}
+/* İlk kurulum: bulut boşken bu cihazdaki verileri ortak sisteme yükle (yönetici) */
+async function uploadThisDevice(){
+  if(!confirm(`Bu cihazdaki veriler ortak sisteme yüklenecek:\n${S.students.length} kursiyer, ${S.boarders.length} at, ${S.owners.length} at sahibi, ${S.bookings.length} ders.\nDevam edilsin mi?`)) return;
+  CL.snap = new Map(); CL.ready = true; CL.empty = false; render();
+  await pushPending(true);
+  if(CL.status==='ok'){ snapSave(); subscribe(); toast('Veriler ortak sisteme yüklendi'); } else toast('Yükleme tamamlanamadı, internet bağlantısını kontrol edin');
+  render(); }
+
+/* ---- giriş ekranları ---- */
+let clTab = 'giris';
+function vCloudLogin(){
+  const logo = brandLogoHtml(), farm = esc(S.settings.farmName||'Vadi At Çiftliği');
+  if(CL.phase==='yukleniyor') return `<div class="login card"><div class="logo-big">${logo}</div><h2>${farm}</h2><p class="muted">Bağlanılıyor…</p></div>`;
+  if(CL.phase==='baglanti') return `<div class="login card"><div class="logo-big">${logo}</div><h2>${farm}</h2>
+    <p class="muted">İnternete bağlanılamadı. İlk giriş için internet gerekiyor.</p><button class="btn" style="width:100%" onclick="location.reload()">Tekrar dene</button></div>`;
+  if(CL.phase==='onay') return `<div class="login card"><div class="logo-big">${logo}</div><h2>${farm}</h2>
+    <p><b>${esc(CL.row?.ad||CL.email)}</b>, hesabınız oluşturuldu.</p>
+    <p class="muted">Yönetici onayladıktan sonra uygulamayı kullanabilirsiniz. Onaylandığında aşağıdaki düğmeye basın.</p>
+    <button class="btn" style="width:100%" onclick="cloudInit()">Onaylandı mı? Kontrol et</button>
+    <button class="btn ghost" style="width:100%;margin-top:8px" onclick="cloudLogout()">Çıkış</button></div>`;
+  const up = clTab==='kayit';
+  return `<div class="login card"><div class="logo-big">${logo}</div><h2>${farm}</h2>
+    <div class="row" style="justify-content:center;margin:6px 0 14px">
+      <button class="btn ${up?'ghost':''} sm" onclick="clTab='giris';render()">Giriş yap</button>
+      <button class="btn ${up?'':'ghost'} sm" onclick="clTab='kayit';render()">Hesap oluştur</button></div>
+    <form id="clf" style="text-align:left">
+      ${up?`<label>Adınız Soyadınız<input name="ad" required autocomplete="name"></label>`:''}
+      <label>E-posta<input name="email" type="email" required autocomplete="email" autocapitalize="none"></label>
+      <label>Şifre ${up?'(en az 8 karakter)':''}<input name="pw" type="password" required minlength="${up?8:1}" autocomplete="${up?'new-password':'current-password'}"></label>
+      <div id="cl-msg" class="muted" style="margin-bottom:10px">${CL.msg||''}</div>
+      <button class="btn" style="width:100%" id="cl-btn">${up?'Hesap oluştur':'Giriş yap'}</button>
+    </form>
+    ${up?`<p class="muted" style="margin-top:12px">Hesap oluşturduktan sonra e-postanıza bir onay bağlantısı gelir. Bağlantıya dokunun, sonra buraya dönüp giriş yapın. İlk hesap yönetici olur; sonrakiler yönetici onayıyla açılır.</p>`
+      :`<p class="muted" style="margin-top:12px"><a href="#" onclick="forgotPw();return false">Şifremi unuttum</a></p>`}
+  </div>`;
+}
+document.addEventListener('submit', async ev => { if(ev.target.id!=='clf') return; ev.preventDefault();
+  const f = Object.fromEntries(new FormData(ev.target)); const btn = $('#cl-btn'), msg = $('#cl-msg');
+  const email = f.email.trim().toLowerCase(); btn.disabled = true; msg.textContent = 'Bekleyin…';
+  if(!CL.sb){ try{ await loadSupabase(); CL.sb = window.supabase.createClient(BULUT.url, BULUT.key); }catch(e){ msg.textContent='İnternet bağlantısı yok.'; btn.disabled=false; return; } }
+  if(clTab==='kayit'){
+    const { data, error } = await CL.sb.auth.signUp({ email, password:f.pw, options:{ data:{ ad:f.ad.trim() }, emailRedirectTo: location.origin + location.pathname } });
+    btn.disabled = false;
+    if(error){ msg.innerHTML = `<span style="color:var(--bad)">${esc(trErr(error.message))}</span>`; return; }
+    if(data.session) return afterAuth(data.session);
+    clTab = 'giris'; CL.msg = `<span style="color:var(--ok)"><b>${esc(email)}</b> adresine onay e-postası gönderildi. E-postadaki bağlantıya dokunun, sonra buradan giriş yapın.</span>`; render(); CL.msg = '';
+  } else {
+    const { data, error } = await CL.sb.auth.signInWithPassword({ email, password:f.pw });
+    btn.disabled = false;
+    if(error){ msg.innerHTML = `<span style="color:var(--bad)">${esc(trErr(error.message))}</span>`; return; }
+    await afterAuth(data.session);
+  }
+});
+function trErr(m){ return /Invalid login/i.test(m) ? 'E-posta veya şifre hatalı.' : /not confirmed/i.test(m) ? 'E-posta adresi henüz onaylanmadı. E-postanızdaki bağlantıya dokunun.'
+  : /already registered/i.test(m) ? 'Bu e-posta ile zaten hesap var. "Giriş yap"ı kullanın.' : /rate limit|too many/i.test(m) ? 'Çok fazla deneme yapıldı. Biraz sonra tekrar deneyin.'
+  : /Password should/i.test(m) ? 'Şifre en az 8 karakter olmalı.' : m; }
+async function forgotPw(){ const email = ($('#clf [name=email]')?.value||'').trim(); if(!email) return toast('Önce e-posta adresinizi yazın');
+  if(!CL.sb) return; const { error } = await CL.sb.auth.resetPasswordForEmail(email, {redirectTo: location.origin + location.pathname});
+  toast(error ? 'Gönderilemedi: '+trErr(error.message) : 'Şifre sıfırlama e-postası gönderildi'); }
+async function cloudLogout(){ if(!confirm('Çıkış yapılsın mı?')) return; try{ await CL.sb?.auth.signOut(); }catch(e){}
+  try{ localStorage.removeItem('vadi-bulut-ben'); localStorage.removeItem('vadi-bulut-snap'); }catch(e){}
+  CL.row = null; CL.ready = false; CL.phase = 'giris'; closeModal(); render(); }
+/* Şifre sıfırlama bağlantısından gelindiyse yeni şifre iste */
+function checkRecovery(){ if(!/type=recovery/.test(location.hash)) return;
+  setTimeout(()=>{ const p = prompt('Yeni şifrenizi yazın (en az 8 karakter):'); if(!p || p.length<8) return;
+    CL.sb?.auth.updateUser({password:p}).then(({error})=>toast(error?'Şifre değiştirilemedi':'Şifre güncellendi')); }, 1200); }
+
+function openCloudMe(){
+  const r = CL.row||{};
+  modal(`<h3>${ic(r.rol==='yonetici'?'shield':'user')} ${esc(r.ad||CL.email)}</h3>
+  <div class="card"><div class="kv"><div><span>E-posta</span><b>${esc(r.email||CL.email)}</b></div><div><span>Yetki</span><b>${ROLES[r.rol]||'-'}</b></div>
+    <div><span>Ortak sistem</span><b>${CL.status==='ok'?'Bağlı, tüm kayıtlar gönderildi':CL.status==='bekliyor'?'Gönderiliyor…':'Bağlantı yok; değişiklikler internet gelince gönderilecek'}</b></div></div></div>
+  <div class="card"><h3>Bu cihaz</h3>
+    <label style="display:flex;gap:10px;align-items:center;color:var(--ink)"><input type="checkbox" style="width:auto" ${wakeWanted()?'checked':''} onchange="setWake(this.checked)">
+      Ekranı açık tut (tablet / ahır ekranı için)</label></div>
+  <button class="btn danger" style="width:100%" onclick="cloudLogout()">Çıkış yap</button>`);
+}
+/* ---- yönetici: kullanıcı onayı ---- */
+async function loadUsers(){ if(!CL.sb) return; const { data } = await CL.sb.from('izinli').select('*').order('olusturma');
+  CL.users = data||[]; if(view==='home' || view==='ayarlar') render(); }
+function cloudUsersCard(){
+  if(!CL.users && !CL._lu){ CL._lu = 1; setTimeout(loadUsers, 0); }
+  const us = CL.users||[];
+  return `<div class="card"><h3>${ic('users')} Kullanıcılar (${us.filter(u=>u.rol!=='bekliyor').length})</h3>
+    ${us.length?`<table>${us.map(u=>`<tr><td>${ic(u.rol==='yonetici'?'shield':'user')} <b>${esc(u.ad||'')}</b><div class="muted">${esc(u.email)}</div></td>
+      <td style="text-align:right;white-space:nowrap">${u.email===CL.email?'<span class="badge b-warn">Yönetici (siz)</span>':`
+        <select style="width:auto;min-height:36px;padding:4px 8px" onchange="setUserRole('${esc(u.email)}',this.value)">
+          ${[['bekliyor','Onay bekliyor'],['personel','Personel'],['yonetici','Yönetici']].map(([k,v])=>`<option value="${k}" ${u.rol===k?'selected':''}>${v}</option>`).join('')}</select>
+        <button class="btn ghost sm" onclick="delCloudUser('${esc(u.email)}')">Sil</button>`}</td></tr>`).join('')}</table>`:'<div class="muted">Yükleniyor…</div>'}
+    <p class="muted">Yeni kişi uygulamayı açıp <b>Hesap oluştur</b> ile kaydolur; burada <b>Onay bekliyor</b> olarak görünür. <b>Personel</b> veya <b>Yönetici</b> seçerek onaylayın.<br>
+    <b>Yönetici</b> her şeyi görür. <b>Personel</b> ders, tur, takvim ve at künyelerini kullanır; ücret ve ödemeleri göremez.</p></div>`;
+}
+async function setUserRole(email, rol){ const { error } = await CL.sb.from('izinli').update({rol}).eq('email', email);
+  toast(error ? 'Kaydedilemedi' : 'Yetki güncellendi'); loadUsers(); }
+async function delCloudUser(email){ if(!confirm(email+' erişimi kaldırılsın mı?')) return;
+  const { error } = await CL.sb.from('izinli').delete().eq('email', email); toast(error ? 'Silinemedi' : 'Kaldırıldı'); loadUsers(); }
+
+/* ---- ana sayfa kartları (bulut durumu, ilk yükleme, onay bekleyenler) ---- */
+function cloudHomeCard(){
+  if(!CLOUD_ON) return '';
+  if(CL.phase==='cevrimdisi') return `<div class="card" style="border-left:4px solid var(--warn)"><b>İnternet bağlantısı yok</b><div class="muted">Bu cihazdaki kopya gösteriliyor. Girdiğiniz kayıtlar internet gelince ortak sisteme gönderilecek.</div></div>`;
+  if(CL.empty) return isAdmin() ? `<div class="card" style="border-left:4px solid var(--warn)"><b>Ortak sistem henüz boş</b>
+    <div class="muted" style="margin:4px 0 10px">Bu cihazdaki verileri (${S.students.length} kursiyer, ${S.boarders.length} at, ${S.owners.length} at sahibi) ortak sisteme yükleyin. Diğer telefonlar bu verileri görecek.
+    ${!S.students.length && window._veriVar?' Önce aşağıdaki "Gerçek verileri yükle" ile kursiyerleri ekleyebilirsiniz.':''}</div>
+    <button class="btn" onclick="uploadThisDevice()">Bu cihazdaki verileri yükle</button></div>`
+    : `<div class="card" style="border-left:4px solid var(--warn)"><b>Ortak sistem henüz boş</b><div class="muted">Yönetici verileri yükleyince burada görünecek.</div></div>`;
+  let h = '';
+  if(CL.orphans?.length) h += `<div class="card" style="border-left:4px solid var(--info)"><b>Bu cihazda gönderilmemiş ${CL.orphans.length} kayıt var</b>
+    <div class="muted" style="margin:4px 0 10px">Ortak sisteme geçmeden önce bu telefona girilmiş kayıtlar. Eklemek ister misiniz?</div>
+    <div class="row"><button class="btn" onclick="uploadOrphans()">Ortak sisteme ekle</button><button class="btn ghost" onclick="CL.orphans=null;render()">Ekleme</button></div></div>`;
+  const wait = (CL.users||[]).filter(u=>u.rol==='bekliyor');
+  if(isAdmin() && wait.length) h += `<div class="card" style="border-left:4px solid var(--warn)"><b>${wait.length} kişi onay bekliyor</b>
+    <div class="muted" style="margin:4px 0 10px">${wait.map(u=>esc(u.ad||u.email)).join(', ')}</div><button class="btn" onclick="go('ayarlar')">Onayla</button></div>`;
+  return h;
+}
+
 /* Gerçek veriler: yayındaki şifreli dosyadan (veri.enc.json) yüklenir */
 if(location.protocol.startsWith('http')) fetch('veri.enc.json',{method:'HEAD',cache:'no-store'}).then(r=>{ if(r.ok){ window._veriVar=true; if(view==='home') render(); } }).catch(()=>{});
 function openRealDataForm(){
@@ -1907,6 +2190,7 @@ async function applyUpdate(){
   location.replace(location.pathname + '?v=' + Date.now() + location.hash);
 }
 document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState==='visible') checkUpdate(); });
+if(CLOUD_ON){ cloudInit().then(checkRecovery); }
 setTimeout(checkUpdate, 1500);
   if(wakeWanted()) navigator.wakeLock?.request('screen').then(l=>wakeLock=l).catch(()=>{});
   render();
