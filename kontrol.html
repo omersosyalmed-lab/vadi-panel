@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ekran kontrolü</title>
+<style>
+  body{margin:0;font-family:-apple-system,sans-serif;background:#f2efea;color:#2b2620;padding:calc(env(safe-area-inset-top) + 16px) 16px 30px}
+  h1{font-size:22px;margin:0 0 12px}
+  .box{background:#fff;border-radius:14px;padding:14px 16px;margin-bottom:12px;font-size:17px;line-height:1.5}
+  .big{font-size:22px;font-weight:700}
+  .ok{color:#2f7d4f} .bad{color:#b33a3a}
+  table{width:100%;font-size:15px;border-collapse:collapse} td{padding:4px 0;border-bottom:1px solid #eee} td:last-child{text-align:right;font-weight:600}
+  button{width:100%;min-height:50px;border:0;border-radius:12px;background:#5b4636;color:#fff;font-size:17px;font-weight:600;margin-top:8px}
+</style>
+</head>
+<body>
+<h1>Vadi At · Ekran kontrolü</h1>
+<div class="box" id="sonuc"></div>
+<div class="box"><table id="tablo"></table></div>
+<div class="box" id="surum">Uygulama sürümü kontrol ediliyor…</div>
+<button onclick="location.href='./?yeni='+Date.now()">Uygulamayı aç</button>
+<script>
+var iw = window.innerWidth, sw = screen.width, sh = screen.height, dpr = window.devicePixelRatio;
+var vv = window.visualViewport ? Math.round(visualViewport.width) : '-';
+var oran = iw / Math.min(sw, sh);
+var standalone = navigator.standalone || matchMedia('(display-mode: standalone)').matches;
+var s = document.getElementById('sonuc');
+if (oran > 1.08) {
+  s.innerHTML = '<div class="big bad">Sayfa küçültülmüş açılıyor (yaklaşık %' + Math.round(100 / oran) + ')</div>' +
+    'Safari bu site için yakınlaştırmayı düşürmüş. Düzeltmek için: adres çubuğundaki <b>aA</b> (veya ☰) simgesine basın, ' +
+    '<b>büyük A</b>\'ya basarak <b>%100</b> yapın. Ya da iPhone <b>Ayarlar → Safari → Sayfa Yakınlaştırma</b>\'dan github.io\'yu silin.';
+} else {
+  s.innerHTML = '<div class="big ok">Ekran boyutu doğru (%100)</div>Safari sayfayı küçültmüyor.';
+}
+var rows = [
+  ['Sayfa genişliği', iw], ['Görünen genişlik', vv], ['Ekran (telefon)', sw + ' × ' + sh],
+  ['Piksel oranı', dpr], ['Ana ekrandan mı açıldı', standalone ? 'Evet' : 'Hayır (Safari)'],
+  ['Cihaz', /iPhone/.test(navigator.userAgent) ? 'iPhone' : (/iPad|Macintosh/.test(navigator.userAgent) ? 'iPad / Mac (masaüstü modu?)' : 'Diğer')],
+];
+document.getElementById('tablo').innerHTML = rows.map(function(r){ return '<tr><td>' + r[0] + '</td><td>' + r[1] + '</td></tr>'; }).join('');
+fetch('./?v=' + Date.now(), {cache: 'no-store'}).then(function(r){ return r.text(); }).then(function(t){
+  var m = t.match(/APP_VER = '([^']+)'/);
+  document.getElementById('surum').innerHTML = 'İnternetteki uygulama sürümü: <b>' + (m ? m[1] : 'bulunamadı') + '</b>';
+}).catch(function(){ document.getElementById('surum').textContent = 'Sürüm alınamadı (internet?)'; });
+</script>
+</body>
+</html>

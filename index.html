@@ -18,7 +18,9 @@
    gerçek genişliğine ölçeklenir; durum çubuğu payı gelmezse elle verilir. */
 (function(){
   var de = document.documentElement;
-  var iphone = /iPhone|iPod/.test(navigator.userAgent);
+  var ua = navigator.userAgent, small = Math.min(screen.width, screen.height) <= 440;
+  /* Safari "masaüstü sitesi" modunda iPhone kendini Mac diye tanıtır: dokunmatik + küçük ekran ise yine iPhone say */
+  var iphone = /iPhone|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1 && small);
   function fit(){
     de.style.zoom = '';
     var land = Math.abs(window.orientation||0) === 90 || innerWidth > innerHeight;
@@ -285,7 +287,7 @@ html.phone .g4{grid-template-columns:1fr 1fr}
 
 <script>
 /* ================== VERİ ================== */
-const APP_VER = '3 · 25.11';
+const APP_VER = '4 · 25.11';
 const KEY = 'vadi-at-ciftligi-v1';
 const STATUS = {
   plan:    {t:'Planlandı', c:'b-info'},
