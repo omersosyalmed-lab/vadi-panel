@@ -294,7 +294,7 @@ html.phone .g4{grid-template-columns:1fr 1fr}
 
 <script>
 /* ================== VERİ ================== */
-const APP_VER = '11 · 25.11';
+const APP_VER = '12 · 25.11';
 const KEY = 'vadi-at-ciftligi-v1';
 const STATUS = {
   plan:    {t:'Planlandı', c:'b-info'},
@@ -1959,7 +1959,17 @@ function findOrphans(rows){
   (S.students||[]).forEach(s=>{ if(has.has('students|'+s.id)) return; const d = byName('students', x=>nm(x.name)===nm(s.name)); if(d) map[s.id]=d.id; else out.push(['students',s]); });
   (S.owners||[]).forEach(o=>{ if(has.has('owners|'+o.id)) return; const d = byName('owners', x=>nm(x.name)===nm(o.name)); if(d) map[o.id]=d.id; else out.push(['owners',o]); });
   (S.boarders||[]).forEach(h=>{ if(has.has('boarders|'+h.id)) return; const d = byName('boarders', x=>nm(x.name)===nm(h.name) && !!x.own===!!h.own); if(d) map[h.id]=d.id; else out.push(['boarders',h]); });
-  ['enrollments','bookings','visits','charges','cafeRes'].forEach(c=>(S[c]||[]).forEach(r=>{ if(!has.has(c+'|'+r.id)) out.push([c,r]); }));
+  /* İsimden eşleşen (zaten bulutta olan) kursiyer/atın bağlı kayıtları aynı başlangıç verisinin kopyasıdır: eklenmez.
+     Ayrıca aynı içerikli kayıt bulutta varsa (kimlik hariç) eklenmez. */
+  const mapped = new Set(Object.keys(map));
+  const sig = r => stableStr(Object.fromEntries(Object.entries(r).filter(([k])=>k!=='id' && k!=='created')));
+  ['enrollments','bookings','visits','charges','cafeRes'].forEach(c=>{
+    const cloudSigs = new Set(live.filter(r=>r.tur===c).map(r=>sig(Object.assign({}, r.veri, ...['studentId','ownerId','horseId','enrollmentId'].filter(k=>r.veri[k]).map(k=>({[k]:r.veri[k]}))))));
+    (S[c]||[]).forEach(r=>{ if(has.has(c+'|'+r.id)) return;
+      if(['studentId','ownerId','horseId'].some(k=>r[k] && mapped.has(r[k]))) return;
+      const fixed = {...r}; ['studentId','ownerId','horseId','enrollmentId'].forEach(k=>{ if(fixed[k] && map[fixed[k]]) fixed[k]=map[fixed[k]]; });
+      if(cloudSigs.has(sig(fixed))) return;
+      out.push([c,r]); }); });
   if(!out.length) return null;
   const fix = r => { const x = {...r}; ['studentId','ownerId','horseId','enrollmentId'].forEach(k=>{ if(x[k] && map[x[k]]) x[k]=map[x[k]]; }); return x; };
   const recs = out.map(([c,r])=>[c, fix(r)]);
