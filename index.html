@@ -250,9 +250,12 @@ html.phone button.btn,html.phone label.btn{min-height:46px;border-radius:12px;fo
 html.phone button.sm{min-height:36px;font-size:14px}
 html.phone input,html.phone select,html.phone textarea{min-height:46px;border-radius:12px}
 html.phone main .row > input:not([type=checkbox]):not([type=radio]),html.phone main .row > select{max-width:none!important;flex:1 1 140px;width:auto}
-html.phone .modal-bg{padding:calc(var(--safe-t) + 10px) 0 0;align-items:stretch}
-html.phone .modal,html.phone .modal.wide{border-radius:14px 14px 0 0;min-height:100%;padding:22px 16px calc(24px + var(--safe-b));position:relative;animation:sheetUp .28s cubic-bezier(.2,.8,.2,1)}
-html.phone .modal::before{content:'';position:absolute;top:7px;left:50%;width:38px;height:5px;margin-left:-19px;border-radius:3px;background:#d6cfc5}
+html.phone .modal-bg{padding:0;align-items:stretch;background:#fff}
+html.phone .modal,html.phone .modal.wide{border-radius:0;min-height:100%;max-width:none;padding:0 16px calc(24px + var(--safe-b));position:relative;animation:pageIn .25s cubic-bezier(.2,.8,.2,1)}
+html.phone .mbar{display:flex;align-items:center;position:sticky;top:0;z-index:3;margin:0 -16px 16px;background:rgba(91,70,54,.96);color:#fff;padding:calc(6px + var(--safe-t)) 10px 6px;min-height:calc(50px + var(--safe-t))}
+html.phone .mbar .back{background:none;border:0;color:#fff;font-size:34px;font-weight:300;line-height:1;height:38px;padding:0 10px 0 0;cursor:pointer}
+html.phone .mbar .t{position:absolute;left:60px;right:60px;bottom:6px;line-height:38px;text-align:center;font-size:17px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+html.phone .modal h3.mh{display:none}
 html.phone .modal .tiles{box-shadow:none;border:1px solid var(--line)}
 html.phone .toast{bottom:calc(74px + var(--safe-b));border-radius:12px}
 html.phone .login{margin:20px auto}
@@ -265,6 +268,8 @@ html.phone .week{grid-template-columns:1fr} html.phone .day{min-height:auto}
 html.phone .two,html.phone .three{grid-template-columns:1fr}
 html.phone .horses{grid-template-columns:1fr 1fr;gap:10px}
 html.phone .g4{grid-template-columns:1fr 1fr}
+@keyframes pageIn{from{transform:translateX(30%);opacity:.3}to{transform:none;opacity:1}}
+.mbar{display:none}
 @keyframes sheetUp{from{transform:translateY(40%);opacity:.4}to{transform:none;opacity:1}}
 </style>
 </head>
@@ -287,7 +292,7 @@ html.phone .g4{grid-template-columns:1fr 1fr}
 
 <script>
 /* ================== VERİ ================== */
-const APP_VER = '6 · 25.11';
+const APP_VER = '7 · 25.11';
 const KEY = 'vadi-at-ciftligi-v1';
 const STATUS = {
   plan:    {t:'Planlandı', c:'b-info'},
@@ -728,7 +733,10 @@ function delPackage(i){ if(S.packages.length<=1) return toast('En az bir paket o
   if(confirm(`"${S.packages[i].name}" paketi silinsin mi? (Mevcut kayıtlar etkilenmez)`)){ S.packages.splice(i,1); save(); render(); } }
 
 /* ================== MODALLAR ================== */
-function modal(html, wide){ $('#modal-root').innerHTML = `<div class="modal-bg" onclick="if(event.target===this)closeModal()"><div class="modal ${wide?'wide':''}">${html}</div></div>`; }
+function modal(html, wide){ $('#modal-root').innerHTML = `<div class="modal-bg" onclick="if(event.target===this)closeModal()"><div class="modal ${wide?'wide':''}">
+    <div class="mbar"><button type="button" class="back" onclick="closeModal()" aria-label="Geri">‹</button><span class="t"></span></div>${html}</div></div>`;
+  const h = $('#modal-root .modal h3'); if(h){ $('#modal-root .mbar .t').textContent = h.textContent.trim(); h.classList.add('mh'); }
+  $('#modal-root .modal-bg').scrollTop = 0; }
 function closeModal(){ $('#modal-root').innerHTML=''; }
 document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeModal(); });
 
