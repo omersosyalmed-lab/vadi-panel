@@ -292,7 +292,7 @@ html.phone .g4{grid-template-columns:1fr 1fr}
 
 <script>
 /* ================== VERİ ================== */
-const APP_VER = '9 · 25.11';
+const APP_VER = '10 · 25.11';
 const KEY = 'vadi-at-ciftligi-v1';
 const STATUS = {
   plan:    {t:'Planlandı', c:'b-info'},
@@ -737,7 +737,7 @@ function modal(html, wide){ $('#modal-root').innerHTML = `<div class="modal-bg" 
     <div class="mbar"><button type="button" class="back" onclick="closeModal()" aria-label="Geri">‹</button><span class="t"></span></div>${html}</div></div>`;
   const h = $('#modal-root .modal h3'); if(h){ $('#modal-root .mbar .t').textContent = h.textContent.trim(); h.classList.add('mh'); }
   $('#modal-root .modal-bg').scrollTop = 0; }
-function closeModal(){ $('#modal-root').innerHTML=''; }
+function closeModal(){ $('#modal-root').innerHTML=''; if(window._pendingUpdate){ window._pendingUpdate=null; setTimeout(applyUpdate, 300); } }
 document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeModal(); });
 
 function openStudentForm(id, pre){
@@ -1888,6 +1888,26 @@ async function loadRealData(pw){
   const [hv, ha] = (location.hash||'').slice(1).split('/');
   if(VIEWS[hv]) { view = hv; viewArg = ha || null; }
   if(location.protocol.startsWith('http') && 'serviceWorker' in navigator) navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(r=>r.update()).catch(()=>{});
+/* Otomatik güncelleme: açılışta ve uygulamaya her dönüşte internetteki sürümü kontrol eder,
+   yeni sürüm varsa eski kopyayı silip kendini yeniler (form açıkken beklemeye alır). */
+async function checkUpdate(){
+  if(!location.protocol.startsWith('http')) return;
+  try{
+    const t = await (await fetch('./index.html?v='+Date.now(), {cache:'no-store'})).text();
+    const m = t.match(/const APP_VER = '([^']+)'/); if(!m || m[1]===APP_VER) return;
+    if($('#modal-root').innerHTML){ window._pendingUpdate = m[1]; return; }
+    applyUpdate();
+  }catch(e){}
+}
+async function applyUpdate(){
+  let n = 0; try{ n = +sessionStorage.getItem('vadi-upd')||0; if(n >= 2) return; sessionStorage.setItem('vadi-upd', n+1); }catch(e){}
+  toast('Yeni sürüm yükleniyor…');
+  try{ for(const k of await caches.keys()) await caches.delete(k); }catch(e){}
+  try{ for(const r of await navigator.serviceWorker.getRegistrations()) await r.update(); }catch(e){}
+  location.replace(location.pathname + '?v=' + Date.now() + location.hash);
+}
+document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState==='visible') checkUpdate(); });
+setTimeout(checkUpdate, 1500);
   if(wakeWanted()) navigator.wakeLock?.request('screen').then(l=>wakeLock=l).catch(()=>{});
   render();
 })();
