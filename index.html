@@ -1,0 +1,1695 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#5b4636">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Vadi At">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<title>Vadi At Çiftliği</title>
+<style>
+:root{
+  --bg:#f6f3ee; --card:#fff; --ink:#2b2620; --muted:#7a7066; --line:#e4ddd2;
+  --brand:#5b4636; --brand2:#8a6a4f; --ok:#2f7d4f; --warn:#b7791f; --bad:#b33a3a; --info:#2f5d8a;
+  --okbg:#e6f3eb; --warnbg:#fbf1df; --badbg:#f8e5e5; --infobg:#e3edf7; --tur:#7a4fa0; --turbg:#efe7f6;
+  --safe-b:env(safe-area-inset-bottom,0px); --safe-t:env(safe-area-inset-top,0px);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);font-size:15px;
+  padding-bottom:calc(74px + var(--safe-b))}
+/* üst çubuk */
+.appbar{position:sticky;top:0;z-index:5;background:var(--brand);color:#fff;padding:calc(10px + var(--safe-t)) 14px 10px;display:flex;align-items:center;gap:10px}
+.appbar .logo{width:38px;height:38px;border-radius:10px;background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden;flex:none;font-size:22px}
+.appbar .logo img{width:100%;height:100%;object-fit:contain}
+.appbar h1{font-size:17px;margin:0;font-weight:650;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.appbar small{display:block;font-size:12px;font-weight:400;opacity:.8}
+.appbar .back{background:rgba(255,255,255,.15);border:0;color:#fff;width:38px;height:38px;border-radius:10px;font-size:20px;cursor:pointer;flex:none}
+.appbar .user{margin-left:auto;background:rgba(255,255,255,.15);border:0;color:#fff;border-radius:999px;padding:6px 12px;font-size:13px;cursor:pointer;white-space:nowrap;flex:none}
+/* alt sekme çubuğu */
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:6;background:#fff;border-top:1px solid var(--line);display:flex;justify-content:space-around;
+  padding:6px 4px calc(6px + var(--safe-b));box-shadow:0 -4px 14px rgba(60,40,20,.06)}
+.tabbar button{flex:1;max-width:120px;background:none;border:0;color:var(--muted);font-size:11px;display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 0;cursor:pointer}
+.tabbar button .i{font-size:23px;line-height:1;display:flex}
+.tabbar button.active{color:var(--brand);font-weight:700}
+.tabbar button.add .i{background:var(--brand);color:#fff;width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;margin-top:-18px;box-shadow:0 4px 12px rgba(91,70,54,.35)}
+main{max-width:1100px;margin:0 auto;padding:16px 14px}
+h2{font-size:21px;margin:0 0 14px}
+h3{font-size:16px;margin:0 0 10px}
+.ico{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.14em;flex:none}
+h3 > .ico:first-child,h2 .badge .ico{color:var(--brand2);margin-right:4px}
+.btn .ico{font-size:1.1em}
+.ph .ico{stroke-width:1.3}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px}
+.grid{display:grid;gap:12px}
+.g4{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.g2{grid-template-columns:repeat(auto-fit,minmax(min(100%,330px),1fr))}
+.stat{font-size:26px;font-weight:700;color:var(--brand)}
+.muted{color:var(--muted);font-size:13px}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.spacer{flex:1}
+button.btn,label.btn{background:var(--brand);color:#fff;border:0;padding:10px 16px;border-radius:10px;cursor:pointer;font-size:15px;min-height:42px;font-weight:550}
+button.btn:active{transform:scale(.98)}
+button.ghost{background:#fff;color:var(--brand);border:1px solid var(--line)}
+button.sm{padding:6px 11px;font-size:13px;min-height:34px;border-radius:8px}
+button.danger{background:var(--bad)}
+input,select,textarea{font:inherit;font-size:16px;padding:10px 11px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);width:100%}
+textarea{min-height:70px}
+label{display:block;font-size:13px;color:var(--muted);margin-bottom:12px}
+label>input,label>select,label>textarea{margin-top:5px}
+table{width:100%;border-collapse:collapse}
+th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
+th{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.03em;font-weight:600}
+tr.click{cursor:pointer}
+tr.click:active{background:#faf7f2}
+.tablewrap{overflow-x:auto}
+/* telefonda tablolar kart olur */
+@media(max-width:700px){
+  table.resp,table.resp tbody,table.resp tr,table.resp td{display:block;width:100%}
+  table.resp tr:first-child:has(th){display:none}
+  table.resp tr{border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:8px;background:#fff}
+  table.resp td{border:0;padding:3px 0}
+  table.resp td:empty{display:none}
+}
+.badge{display:inline-block;padding:3px 9px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap}
+.b-ok{background:var(--okbg);color:var(--ok)} .b-warn{background:var(--warnbg);color:var(--warn)}
+.b-bad{background:var(--badbg);color:var(--bad)} .b-info{background:var(--infobg);color:var(--info)}
+.b-mut{background:#eee;color:#666} .b-tur{background:var(--turbg);color:var(--tur)}
+.bar{height:8px;background:#eee;border-radius:4px;overflow:hidden;display:flex;min-width:120px}
+.bar span{display:block;height:100%}
+.bar .u{background:var(--ok)} .bar .p{background:#9cc3e6}
+/* ana sayfa kutucukları */
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-bottom:16px}
+@media(max-width:420px){.tiles{grid-template-columns:1fr 1fr;gap:10px}}
+.tile{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px 14px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:6px;min-height:112px;font:inherit;color:var(--ink);position:relative}
+.tile:active{transform:scale(.98)}
+.tile .i{width:44px;height:44px;border-radius:12px;background:#f3ece4;color:var(--brand);display:flex;align-items:center;justify-content:center;font-size:23px}
+.tile b{font-size:15px}
+.tile .muted{font-size:12px}
+.tile .cnt{position:absolute;top:12px;right:12px;background:var(--brand);color:#fff;border-radius:999px;font-size:12px;font-weight:700;padding:2px 8px}
+.tile .lk{position:absolute;bottom:12px;right:12px;color:var(--muted);font-size:14px;display:flex}
+.hello{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.hello h2{margin:0}
+/* calendar */
+.week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px}
+.day{background:#fff;border:1px solid var(--line);border-radius:12px;min-height:160px;padding:8px;display:flex;flex-direction:column;gap:6px}
+.day.today{border-color:var(--brand2);box-shadow:0 0 0 2px #e8d9c8}
+.dayhead{display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:600;gap:4px;flex-wrap:wrap}
+.chip{border-radius:8px;padding:6px 8px;font-size:12px;cursor:pointer;border-left:3px solid}
+.chip.plan{background:var(--infobg);border-color:var(--info)}
+.chip.tamam{background:var(--okbg);border-color:var(--ok)}
+.chip.gelmedi{background:var(--warnbg);border-color:var(--warn)}
+.chip.iptal{background:#f0f0f0;border-color:#999;text-decoration:line-through;color:#777}
+.chip.tur{background:var(--turbg);border-color:var(--tur)}
+.chip.tur.iptal{background:#f0f0f0;border-color:#999}
+.chip b{display:block}
+@media(max-width:900px){.week{grid-template-columns:1fr}.day{min-height:auto}}
+/* modal: telefonda tam ekran */
+.modal-bg{position:fixed;inset:0;background:rgba(30,20,10,.45);display:flex;align-items:flex-start;justify-content:center;padding:40px 12px;overflow:auto;z-index:10}
+.modal{background:#fff;border-radius:16px;max-width:640px;width:100%;padding:20px}
+.modal.wide{max-width:880px}
+@media(max-width:600px){
+  .modal-bg{padding:0;align-items:stretch}
+  .modal,.modal.wide{border-radius:0;min-height:100%;padding:calc(16px + var(--safe-t)) 16px calc(24px + var(--safe-b))}
+}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+.three{display:grid;grid-template-columns:repeat(3,1fr);gap:0 12px}
+@media(max-width:560px){.two,.three{grid-template-columns:1fr}}
+fieldset{border:1px solid var(--line);border-radius:12px;padding:12px 14px 2px;margin:0 0 14px}
+legend{font-weight:700;font-size:14px;padding:0 6px;color:var(--brand)}
+.toast{position:fixed;bottom:calc(90px + var(--safe-b));left:50%;transform:translateX(-50%);background:#2b2620;color:#fff;padding:10px 16px;border-radius:10px;z-index:20;font-size:14px}
+.cafe-res{margin-top:12px;padding:12px 14px;border-radius:12px;font-size:14px;line-height:1.7}
+.cafe-res:empty{display:none}
+.cafe-res.ok{background:var(--okbg);color:var(--ok)} .cafe-res.no{background:#f8e5e3;color:var(--bad)}
+.occ{display:grid;grid-template-columns:48px 1fr auto;gap:10px;align-items:center;font-size:13px;margin:6px 0}
+.occ .bar{height:10px;background:#efe8de;border-radius:999px;overflow:hidden} .occ .bar i{display:block;height:100%;border-radius:999px}
+.empty{color:var(--muted);text-align:center;padding:20px;font-size:14px}
+.lessons{display:flex;flex-wrap:wrap;gap:4px;margin:6px 0}
+.lessons i{width:24px;height:24px;border-radius:5px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-style:normal;background:#eee;color:#888}
+.lessons i.u{background:var(--ok);color:#fff} .lessons i.n{background:var(--warn);color:#fff} .lessons i.p{background:#9cc3e6;color:#fff}
+/* at künyesi */
+.horses{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+@media(max-width:420px){.horses{grid-template-columns:1fr 1fr;gap:10px}}
+.hcard{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;cursor:pointer}
+.hcard .ph{aspect-ratio:4/3;background:#efe8de center/cover no-repeat;display:flex;align-items:center;justify-content:center;font-size:42px;color:#c9b8a4}
+.hcard .tx{padding:10px 12px}
+.hcard b{display:block;font-size:15px}
+.hero{position:relative;border-radius:18px;overflow:hidden;background:#efe8de center/cover no-repeat;aspect-ratio:16/9;max-height:380px;width:100%;display:flex;align-items:flex-end;margin-bottom:14px}
+.hero.noimg{aspect-ratio:auto;min-height:140px;background:linear-gradient(135deg,var(--brand),var(--brand2))}
+.hero .cap{width:100%;padding:40px 16px 14px;background:linear-gradient(transparent,rgba(0,0,0,.65));color:#fff}
+.hero h2{margin:0;font-size:26px}
+.kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:2px 16px}
+.kv div{padding:7px 0;border-bottom:1px dashed var(--line)}
+.kv span{display:block;font-size:12px;color:var(--muted)}
+.kv b{font-weight:600}
+.photo-in{display:flex;gap:12px;align-items:center;margin-bottom:14px}
+.photo-in .ph{width:110px;height:84px;border-radius:12px;background:#efe8de center/cover no-repeat;display:flex;align-items:center;justify-content:center;font-size:30px;color:#c9b8a4;flex:none}
+/* giriş ekranı */
+.login{max-width:420px;margin:30px auto;text-align:center}
+.login .logo-big{width:96px;height:96px;border-radius:24px;background:#fff;border:1px solid var(--line);margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-size:52px;overflow:hidden}
+.login .logo-big img{width:100%;height:100%;object-fit:contain}
+.users{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0}
+.users button{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 8px;font:inherit;cursor:pointer}
+.users button.sel{border-color:var(--brand);box-shadow:0 0 0 2px #e8d9c8}
+.pin{display:flex;gap:10px;justify-content:center;margin:14px 0}
+.pin i{width:16px;height:16px;border-radius:50%;border:2px solid var(--brand)}
+.pin i.f{background:var(--brand)}
+.keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:280px;margin:0 auto}
+.keypad button{height:58px;border-radius:14px;border:1px solid var(--line);background:#fff;font-size:22px;cursor:pointer}
+.keypad button:active{background:#f3ede5}
+/* yetki: personel ücretleri göremez */
+body.role-personel .money{display:none!important}
+body.nologin .tabbar,body.nologin .appbar .user{display:none}
+</style>
+</head>
+<body class="nologin">
+<header class="appbar">
+  <button class="back" id="back" style="display:none" onclick="go('home')" aria-label="Ana sayfa">‹</button>
+  <div class="logo" id="logo" style="color:var(--brand)"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 3.5 13.2 5.6C9.6 5.6 6.3 8 4.8 11.4l-1 2.4c-.4 1 .3 2.1 1.4 2.1h1.4c.9 0 1.6-.5 2-1.3l.8-1.6c1.3.5 2 1.7 2 3.2V21h8.6c.6-4.2.4-8.3-1.2-11.6-.7-1.5-1.6-2.7-2.8-3.6z"/><path d="M13.2 5.6c2.3 1.4 3.6 3.8 3.8 6.9"/><circle cx="9.3" cy="9.6" r=".7" fill="currentColor" stroke="none"/></svg></div>
+  <h1><span id="farm-name">Vadi At Çiftliği</span><small id="page-title">Yönetim</small></h1>
+  <button class="user" id="userchip" onclick="openMe()"></button>
+</header>
+<main id="app"></main>
+<nav class="tabbar" id="tabbar">
+  <button data-v="home"><span class="i"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M10 21v-6h4v6"/></svg></span>Ana Sayfa</button>
+  <button data-v="takvim"><span class="i"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4.5" width="18" height="16.5" rx="2"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/></svg></span>Takvim</button>
+  <button data-v="_add" class="add"><span class="i"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span>Ekle</button>
+  <button data-v="atlar"><span class="i"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 3.5 13.2 5.6C9.6 5.6 6.3 8 4.8 11.4l-1 2.4c-.4 1 .3 2.1 1.4 2.1h1.4c.9 0 1.6-.5 2-1.3l.8-1.6c1.3.5 2 1.7 2 3.2V21h8.6c.6-4.2.4-8.3-1.2-11.6-.7-1.5-1.6-2.7-2.8-3.6z"/><path d="M13.2 5.6c2.3 1.4 3.6 3.8 3.8 6.9"/><circle cx="9.3" cy="9.6" r=".7" fill="currentColor" stroke="none"/></svg></span>Atlar</button>
+  <button data-v="kursiyer"><span class="i"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.9 1.9 6.5 5.5"/><path d="M16 4.8a3.3 3.3 0 0 1 0 6.4M18 14.8c2 .7 3.2 2.4 3.5 5.2"/></svg></span>Kursiyerler</button>
+</nav>
+<div id="modal-root"></div>
+
+<script>
+/* ================== VERİ ================== */
+const KEY = 'vadi-at-ciftligi-v1';
+const STATUS = {
+  plan:    {t:'Planlandı', c:'b-info'},
+  tamam:   {t:'Tamamlandı', c:'b-ok'},
+  gelmedi: {t:'Gelmedi', c:'b-warn'},
+  iptal:   {t:'İptal', c:'b-mut'},
+};
+function defaults(){
+  return {
+    settings:{ noShowCounts:true, defaultDuration:60, farmName:'Vadi At Çiftliği', logo:'' },
+    users:[],
+    packages:[
+      {id:'p10', name:'3 Ay · 10 Ders', lessons:10, months:3, price:0},
+      {id:'p20', name:'3 Ay · 20 Ders', lessons:20, months:3, price:0},
+    ],
+    students:[], enrollments:[], bookings:[],
+    horses:[], trainers:[],
+    owners:[], boarders:[], charges:[],
+    services:[
+      {id:'tur',   name:'Doğa Turu',        duration:60, price:0},
+      {id:'manej', name:'Manej (tek ders)', duration:30, price:0},
+    ],
+    visits:[],
+    cafe:{ tables:[...[4,4,4,4,4,4,2,2].map((n,i)=>({id:'ci'+(i+1), name:'İ'+(i+1), area:'ic', seats:n})),
+                   ...[4,4,4,4,4,4,4,4,4,4,6,6].map((n,i)=>({id:'cd'+(i+1), name:'D'+(i+1), area:'dis', seats:n}))],
+           summer:[5,6,7,8,9,10], sOpen:'09:00', sClose:'23:00', wOpen:'09:00', wClose:'21:00', stay:120, configured:false, outClosed:[] },
+    cafeRes:[],
+  };
+}
+let S;
+try { S = Object.assign(defaults(), JSON.parse(localStorage.getItem(KEY)) || {}); } catch(e){ S = defaults(); }
+S.settings = Object.assign(defaults().settings, S.settings);
+S.cafe = Object.assign(defaults().cafe, S.cafe);
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); return true; }
+  catch(e){ if(e && /quota/i.test(e.name+e.message)){ alert('Cihaz hafızası doldu (fotoğraflar çok yer kaplıyor olabilir). Değişiklik kaydedilemedi.'); }
+    else toast('Kaydedilemedi!'); return false; } }
+const uid = () => Math.random().toString(36).slice(2,10) + Date.now().toString(36).slice(-4);
+
+/* ================== YARDIMCILAR ================== */
+const pad = n => String(n).padStart(2,'0');
+const ymd = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const parse = s => { const [y,m,d] = s.split('-').map(Number); return new Date(y,m-1,d); };
+const today = () => ymd(new Date());
+function addMonths(s, n){ const d = parse(s); const day = d.getDate(); d.setDate(1); d.setMonth(d.getMonth()+n);
+  const last = new Date(d.getFullYear(), d.getMonth()+1, 0).getDate(); d.setDate(Math.min(day,last)-1); return ymd(d); }
+function addDays(s,n){ const d=parse(s); d.setDate(d.getDate()+n); return ymd(d); }
+const GUN = ['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi'];
+const AY = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
+const fmt = s => { if(!s) return '-'; const d=parse(s); return `${d.getDate()} ${AY[d.getMonth()]} ${d.getFullYear()}`; };
+const fmtShort = s => { const d=parse(s); return `${d.getDate()} ${AY[d.getMonth()]}`; };
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const money = n => (Number(n)||0).toLocaleString('tr-TR') + ' ₺';
+const $ = s => document.querySelector(s);
+function toast(msg){ const t=document.createElement('div'); t.className='toast'; t.textContent=msg; document.body.appendChild(t); setTimeout(()=>t.remove(),2200); }
+function mondayOf(s){ const d=parse(s); const w=(d.getDay()+6)%7; d.setDate(d.getDate()-w); return ymd(d); }
+
+const student = id => S.students.find(x=>x.id===id);
+const enrollment = id => S.enrollments.find(x=>x.id===id);
+const pkg = id => S.packages.find(x=>x.id===id);
+
+function counts(e, excludeBookingId){
+  const bs = S.bookings.filter(b=>b.enrollmentId===e.id && b.id!==excludeBookingId);
+  const done = bs.filter(b=>b.status==='tamam').length;
+  const noshow = bs.filter(b=>b.status==='gelmedi').length;
+  const prior = +e.priorUsed || 0; // panel öncesi (defterden) yapılan dersler
+  const used = prior + done + (S.settings.noShowCounts ? noshow : 0);
+  const planned = bs.filter(b=>b.status==='plan').length;
+  const remaining = e.lessons - used - planned;
+  return {prior, done, noshow, used, planned, remaining};
+}
+function enrollState(e){
+  const c = counts(e);
+  if (e.frozen) return {k:'dondu', t:'Donduruldu', c:'b-mut'};
+  if (c.used >= e.lessons) return {k:'bitti', t:'Tamamlandı', c:'b-ok'};
+  if (today() > e.endDate) return {k:'sure', t:'Süresi doldu', c:'b-bad'};
+  const daysLeft = (parse(e.endDate) - parse(today()))/864e5;
+  if (daysLeft <= 14) return {k:'yakin', t:`${Math.round(daysLeft)} gün kaldı`, c:'b-warn'};
+  return {k:'aktif', t:'Aktif', c:'b-info'};
+}
+function bar(e){
+  const c = counts(e);
+  return `<div class="bar" title="${c.used} kullanıldı, ${c.planned} planlı, ${Math.max(0,c.remaining)} boş">
+    <span class="u" style="width:${c.used/e.lessons*100}%"></span>
+    <span class="p" style="width:${c.planned/e.lessons*100}%"></span></div>`;
+}
+function lessonNo(b){ // ders numarası (kaçıncı ders)
+  const list = S.bookings.filter(x=>x.enrollmentId===b.enrollmentId && x.status!=='iptal')
+    .sort((a,c)=> (a.date+a.time).localeCompare(c.date+c.time));
+  return (+(enrollment(b.enrollmentId)?.priorUsed)||0) + list.findIndex(x=>x.id===b.id)+1;
+}
+function bookingLabel(b){
+  const e = enrollment(b.enrollmentId); const s = e && student(e.studentId);
+  return {name: s ? s.name : '(silinmiş)', e};
+}
+
+/* ================== GÖRÜNÜMLER / GEZİNME ================== */
+let view = 'home', viewArg = null;
+let weekStart = mondayOf(today());
+let filter = {q:'', status:'all', from:'', to:''};
+let kFilter = {q:'', state:'all'};
+const VIEWS = {
+  home:{t:'Ana Sayfa', f:()=>vHome()},
+  panel:{t:'Bugün', f:()=>vPanel()},
+  takvim:{t:'Takvim', f:()=>vTakvim()},
+  kursiyer:{t:'Kursiyerler', f:()=>vKursiyer()},
+  rezervasyon:{t:'Rezervasyonlar', f:()=>vRezervasyon()},
+  tur:{t:'Tur & Tek Ders', f:()=>vTur()},
+  cafe:{t:'Cafe & Restoran', f:()=>vCafe()},
+  atlar:{t:'At Künyeleri', f:()=>vAtlar()},
+  at:{t:'At Künyesi', f:()=>vAt(viewArg)},
+  pansiyon:{t:'Pansiyon & Sahipler', f:()=>vPansiyon()},
+  odemeler:{t:'Ücret & Ödemeler', f:()=>vOdemeler(), admin:true},
+  ayarlar:{t:'Ayarlar', f:()=>vAyarlar(), admin:true},
+};
+function go(v, arg){ view = v; viewArg = arg ?? null; closeModal(); render(); window.scrollTo(0,0);
+  try{ history.replaceState(null,'','#'+v+(arg?'/'+arg:'')); }catch(e){} }
+function render(){
+  applyBrand();
+  const u = me();
+  document.body.classList.toggle('nologin', !u);
+  if(!u){ $('#app').innerHTML = vLogin(); $('#page-title').textContent = 'Giriş'; $('#back').style.display='none'; return; }
+  document.body.classList.toggle('role-personel', !isAdmin());
+  if(!VIEWS[view] || (VIEWS[view].admin && !isAdmin())) view = 'home';
+  $('#page-title').textContent = VIEWS[view].t;
+  $('#back').style.display = view==='home' ? 'none' : '';
+  $('#userchip').innerHTML = ic(isAdmin()?'shield':'user') + ' ' + esc(u.name.split(' ')[0]);
+  document.querySelectorAll('#tabbar button').forEach(b=>b.classList.toggle('active', b.dataset.v===view || (view==='at' && b.dataset.v==='atlar')));
+  $('#app').innerHTML = VIEWS[view].f();
+}
+document.getElementById('tabbar').addEventListener('click', e=>{ const b=e.target.closest('button'); if(!b) return;
+  b.dataset.v==='_add' ? openQuickAdd() : go(b.dataset.v); });
+document.getElementById('back').onclick = () => go(view==='at' ? 'atlar' : 'home');
+
+function openQuickAdd(){
+  modal(`<h3>Ne eklemek istersiniz?</h3>
+  <div class="tiles" style="margin:0">
+    ${tile('book','Paketli ders','Kursiyere rezervasyon',"openBooking({date:today()})")}
+    ${S.services.map(sv=>tile(sv.id==='manej'?'target':'tree', sv.name, 'Tek seferlik', `openVisit({serviceId:'${sv.id}'})`)).join('')}
+    ${tile('cup','Cafe rezervasyonu','Masa ve yer kontrolü',"openCafeRes({})")}
+    ${tile('user','Yeni kursiyer','Paketle birlikte',"openStudentForm()")}
+    ${tile('horse','Yeni at künyesi','Vadi veya pansiyon atı',"openBoarderForm(null,null,true)")}
+    ${tile('owner','At sahibi','Pansiyon müşterisi',"openOwnerForm()")}
+  </div>
+  <div class="row" style="margin-top:14px"><span class="spacer"></span><button class="btn ghost" onclick="closeModal()">Kapat</button></div>`);
+}
+const ICONS = {"home": "<path d=\"M3 10.5 12 3l9 7.5\"/><path d=\"M5 9.5V21h14V9.5\"/><path d=\"M10 21v-6h4v6\"/>", "calendar": "<rect x=\"3\" y=\"4.5\" width=\"18\" height=\"16.5\" rx=\"2\"/><path d=\"M3 9.5h18M8 2.5v4M16 2.5v4\"/>", "plus": "<path d=\"M12 5v14M5 12h14\"/>", "horse": "<path d=\"M15 3.5 13.2 5.6C9.6 5.6 6.3 8 4.8 11.4l-1 2.4c-.4 1 .3 2.1 1.4 2.1h1.4c.9 0 1.6-.5 2-1.3l.8-1.6c1.3.5 2 1.7 2 3.2V21h8.6c.6-4.2.4-8.3-1.2-11.6-.7-1.5-1.6-2.7-2.8-3.6z\"/><path d=\"M13.2 5.6c2.3 1.4 3.6 3.8 3.8 6.9\"/><circle cx=\"9.3\" cy=\"9.6\" r=\".7\" fill=\"currentColor\" stroke=\"none\"/>", "users": "<circle cx=\"9\" cy=\"8\" r=\"3.5\"/><path d=\"M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.9 1.9 6.5 5.5\"/><path d=\"M16 4.8a3.3 3.3 0 0 1 0 6.4M18 14.8c2 .7 3.2 2.4 3.5 5.2\"/>", "user": "<circle cx=\"12\" cy=\"8\" r=\"4\"/><path d=\"M4 21c.8-4.2 3.9-6.5 8-6.5s7.2 2.3 8 6.5\"/>", "sun": "<circle cx=\"12\" cy=\"12\" r=\"4\"/><path d=\"M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4\"/>", "book": "<path d=\"M4 4.5A1.5 1.5 0 0 1 5.5 3H20v15H5.5A1.5 1.5 0 0 0 4 19.5z\"/><path d=\"M4 19.5A1.5 1.5 0 0 0 5.5 21H20v-3M8 7.5h8\"/>", "tree": "<path d=\"M12 2.5 6 10h3l-4 5.5h14L15 10h3z\"/><path d=\"M12 15.5V21\"/>", "target": "<circle cx=\"12\" cy=\"12\" r=\"9\"/><circle cx=\"12\" cy=\"12\" r=\"5\"/><circle cx=\"12\" cy=\"12\" r=\"1.2\" fill=\"currentColor\"/>", "clipboard": "<rect x=\"5\" y=\"4\" width=\"14\" height=\"17.5\" rx=\"2\"/><path d=\"M9 4V2.8h6V4M9 10h6M9 14h6M9 18h3\"/>", "barn": "<path d=\"M3 10 12 4l9 6v11H3z\"/><path d=\"M9 21v-7h6v7M9 14l6 7M15 14l-6 7\"/>", "wallet": "<rect x=\"3\" y=\"6\" width=\"18\" height=\"14\" rx=\"2\"/><path d=\"M3 10.5h18M16 15h2M6 6l9-3 1 3\"/>", "settings": "<path d=\"M4 6h10M4 12h4M12 12h8M4 18h12\"/><circle cx=\"16\" cy=\"6\" r=\"2\"/><circle cx=\"10\" cy=\"12\" r=\"2\"/><circle cx=\"18\" cy=\"18\" r=\"2\"/><path d=\"M18 6h2\"/>", "lock": "<rect x=\"5\" y=\"11\" width=\"14\" height=\"10\" rx=\"2\"/><path d=\"M8 11V8a4 4 0 0 1 8 0v3\"/>", "health": "<path d=\"M20.5 8.5c0 5.5-8.5 11-8.5 11S3.5 14 3.5 8.5A4.5 4.5 0 0 1 12 6.4a4.5 4.5 0 0 1 8.5 2.1z\"/><path d=\"M4 12h4l1.5-2.5 2.5 5 1.5-2.5H20\"/>", "shield": "<path d=\"M12 3 4.5 6v5.5c0 4.7 3.2 8.2 7.5 9.5 4.3-1.3 7.5-4.8 7.5-9.5V6z\"/><path d=\"m9 12 2 2 4-4\"/>", "phone": "<path d=\"M5 3.5h3.5l1.5 4.5-2.2 1.4a11 11 0 0 0 4.8 4.8L14 12l4.5 1.5V17a2 2 0 0 1-2 2A13.5 13.5 0 0 1 3 5.5a2 2 0 0 1 2-2z\"/>", "mail": "<rect x=\"3\" y=\"5\" width=\"18\" height=\"14\" rx=\"2\"/><path d=\"m3.5 6.5 8.5 6.5 8.5-6.5\"/>", "gift": "<rect x=\"3.5\" y=\"8\" width=\"17\" height=\"4\" rx=\"1\"/><path d=\"M5 12v9h14v-9M12 8v13M12 8C10.5 4 7 4 7 6s3 2 5 2zm0 0c1.5-4 5-4 5-2s-3 2-5 2z\"/>", "award": "<circle cx=\"12\" cy=\"9\" r=\"6\"/><path d=\"m8.5 13.8-1.5 7.2 5-2.5 5 2.5-1.5-7.2\"/>", "edit": "<path d=\"M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16z\"/><path d=\"m13.5 6.5 4 4\"/>", "camera": "<path d=\"M4 7.5h3.5L9 5h6l1.5 2.5H20a1 1 0 0 1 1 1V19a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8.5a1 1 0 0 1 1-1z\"/><circle cx=\"12\" cy=\"13.5\" r=\"3.5\"/>", "idcard": "<rect x=\"2.5\" y=\"5\" width=\"19\" height=\"14\" rx=\"2\"/><circle cx=\"8.5\" cy=\"11\" r=\"2\"/><path d=\"M5.5 16c.5-1.5 1.6-2.3 3-2.3s2.5.8 3 2.3M14.5 10h4M14.5 14h3\"/>", "pedigree": "<circle cx=\"6\" cy=\"5\" r=\"2\"/><circle cx=\"18\" cy=\"5\" r=\"2\"/><circle cx=\"12\" cy=\"19\" r=\"2\"/><path d=\"M6 7v2a3 3 0 0 0 3 3h6a3 3 0 0 0 3-3V7M12 12v5\"/>", "trophy": "<path d=\"M8 3.5h8v6a4 4 0 0 1-8 0z\"/><path d=\"M8 5.5H4.5c0 3 1.5 4.5 3.7 4.8M16 5.5h3.5c0 3-1.5 4.5-3.7 4.8M12 13.5V17M9.5 17h5v3.5h-5z\"/>", "wheat": "<path d=\"M12 21V8\"/><path d=\"M12 8c-2.5 0-3.5-2-3.5-4.5C11 3.5 12 5.5 12 8zm0 0c2.5 0 3.5-2 3.5-4.5C13 3.5 12 5.5 12 8zM12 13c-2.5 0-4-1.5-4.5-4 2.5 0 4 1.5 4.5 4zm0 0c2.5 0 4-1.5 4.5-4-2.5 0-4 1.5-4.5 4zM12 18c-2.5 0-4-1.5-4.5-4 2.5 0 4 1.5 4.5 4zm0 0c2.5 0 4-1.5 4.5-4-2.5 0-4 1.5-4.5 4z\"/>", "note": "<path d=\"M6 2.5h8.5L19 7v14.5H6z\"/><path d=\"M14 2.5V7h5M9 12h7M9 16h5\"/>", "history": "<path d=\"M2.5 5c3-1 6.5-1 9.5 1.5V20c-3-2.5-6.5-2.5-9.5-1.5zM21.5 5c-3-1-6.5-1-9.5 1.5V20c3-2.5 6.5-2.5 9.5-1.5z\"/>", "smartphone": "<rect x=\"6.5\" y=\"2.5\" width=\"11\" height=\"19\" rx=\"2\"/><path d=\"M11 18.5h2\"/>", "tag": "<path d=\"M3 12V4.5A1.5 1.5 0 0 1 4.5 3H12l9 9-9 9z\"/><circle cx=\"8\" cy=\"8\" r=\"1.5\"/>", "down": "<path d=\"m3 7 6.5 6.5 4-4L21 17\"/><path d=\"M15 17h6v-6\"/>", "check": "<path d=\"m4.5 12.5 5 5 10-11\"/>", "valley": "<path d=\"m2.5 19.5 6.5-11 4 6.5 2.5-3.5 6 8z\"/><circle cx=\"17\" cy=\"6\" r=\"2\"/>", "owner": "<circle cx=\"12\" cy=\"7.5\" r=\"3.5\"/><path d=\"M5 21c.6-4 3.3-6.5 7-6.5s6.4 2.5 7 6.5\"/><path d=\"M8.5 3.5h7\"/>"};
+const ic = (n, cls='ico') => `<svg class="${cls}" viewBox="0 0 24 24" aria-hidden="true">${ICONS[n]||''}</svg>`;
+function tile(icon, title, sub, action, opts={}){
+  return `<button class="tile ${opts.lock?'lock':''} ${opts.cls||''}" onclick="${action}">${opts.cnt?`<span class="cnt">${opts.cnt}</span>`:''}
+    <span class="i">${ic(icon)}</span><b>${title}</b><span class="muted">${sub||''}</span>${opts.lock?`<span class="lk">${ic('lock')}</span>`:''}</button>`;
+}
+
+function vHome(){
+  const t = today(), u = me();
+  const nLessons = S.bookings.filter(b=>b.date===t && b.status!=='iptal').length;
+  const nVisits = S.visits.filter(v=>v.date===t && v.status!=='iptal').length;
+  const care = careDue(14).length;
+  const activeStu = S.enrollments.filter(e=>['aktif','yakin'].includes(enrollState(e).k)).length;
+  const horses = S.boarders.filter(h=>boarderActive(h)).length;
+  const hr = new Date().getHours();
+  const greet = hr<12 ? 'Günaydın' : hr<18 ? 'İyi günler' : 'İyi akşamlar';
+  const alacak = isAdmin() ? totalReceivable() : 0;
+  return `
+  <div class="hello"><div><h2>${greet}, ${esc(u.name.split(' ')[0])}</h2>
+    <div class="muted">${GUN[new Date().getDay()]}, ${fmt(t)} · Bugün ${nLessons} ders, ${nVisits} tur</div></div></div>
+  <div class="tiles">
+    ${tile('sun','Bugün', `${nLessons} ders · ${nVisits} tur`, "go('panel')", {cnt:(nLessons+nVisits)||''})}
+    ${tile('calendar','Takvim','Haftalık program',"go('takvim')")}
+    ${tile('book','Ders rezervasyonu','Paketli kursiyer',"openBooking({date:today()})")}
+    ${tile('tree','Tur & Tek Ders','Doğa turu · manej',"go('tur')")}
+    ${tile('cup','Cafe & Restoran', `${S.cafeRes.filter(r=>r.date===t && CAFE_ACTIVE.includes(r.status)).length} rezervasyon bugün`,"go('cafe')", {cnt:S.cafeRes.filter(r=>r.status==='bekliyor' && r.date>=t).length?S.cafeRes.filter(r=>r.status==='bekliyor' && r.date>=t).length+' onay':''})}
+    ${tile('users','Kursiyerler', `${activeStu} aktif paket`,"go('kursiyer')")}
+    ${tile('clipboard','Rezervasyonlar','Tüm dersler',"go('rezervasyon')")}
+    ${tile('horse','At Künyeleri', `${horses} at · fotoğraf, pedigri`,"go('atlar')", {cnt:care?(care+' bakım'):''})}
+    ${tile('barn','Pansiyon','Sahipler ve atlar',"go('pansiyon')")}
+    ${isAdmin()?tile('wallet','Ücret & Ödemeler', alacak?`Bekleyen ${money(alacak)}`:'Tahsilat takibi',"go('odemeler')",{lock:true}):''}
+    ${isAdmin()?tile('settings','Ayarlar','Kullanıcılar, logo, fiyatlar',"go('ayarlar')",{lock:true}):''}
+  </div>
+  ${vTodayList()}`;
+}
+function vTodayList(){
+  const t = today();
+  const items = [
+    ...S.bookings.filter(b=>b.date===t && b.status!=='iptal').map(b=>({k:'b',time:b.time,x:b})),
+    ...S.visits.filter(v=>v.date===t && v.status!=='iptal').map(v=>({k:'v',time:v.time,x:v})),
+  ].sort((a,b)=>a.time.localeCompare(b.time));
+  return `<div class="card"><div class="row"><h3 style="margin:0">Bugünün programı</h3><span class="spacer"></span>
+    <button class="btn ghost sm" onclick="go('panel')">Tümü ›</button></div>
+    ${items.length?`<table style="margin-top:6px">${items.map(({k,x})=>{
+      if(k==='b'){ const {name,e}=bookingLabel(x); return `<tr><td style="width:56px"><b>${x.time}</b></td><td>${esc(name)}<div class="muted">${lessonNo(x)}. ders / ${e?.lessons??'-'}${x.horse?' · '+ic('horse')+' '+esc(x.horse):''}</div></td>
+        <td style="text-align:right;white-space:nowrap">${x.status==='plan'?`<button class="btn sm" onclick="setStatus('${x.id}','tamam')">${ic('check')} Geldi</button>`:`<span class="badge ${STATUS[x.status].c}">${STATUS[x.status].t}</span>`}</td></tr>`; }
+      return `<tr><td><b>${x.time}</b></td><td>${esc(x.name)} <span class="badge b-tur">${esc(x.serviceName)}</span><div class="muted">${x.people||1} kişi${x.horse?' · '+ic('horse')+' '+esc(x.horse):''}</div></td>
+        <td style="text-align:right;white-space:nowrap">${x.status==='plan'?`<button class="btn sm" onclick="setVisit('${x.id}','tamam')">${ic('check')} Geldi</button>`:`<span class="badge ${STATUS[x.status].c}">${STATUS[x.status].t}</span>`}</td></tr>`;
+    }).join('')}</table>`:`<div class="empty">Bugün için program yok.</div>`}</div>`;
+}
+
+function vPanel(){
+  const t = today();
+  const todays = S.bookings.filter(b=>b.date===t && b.status!=='iptal').sort((a,b)=>a.time.localeCompare(b.time));
+  const todayVisits = S.visits.filter(v=>v.date===t && v.status!=='iptal').sort((a,b)=>a.time.localeCompare(b.time));
+  const active = S.enrollments.filter(e=>['aktif','yakin'].includes(enrollState(e).k));
+  const expiring = S.enrollments.filter(e=>enrollState(e).k==='yakin');
+  const low = active.filter(e=>{const c=counts(e); return e.lessons-c.used<=2;});
+  const unplanned = active.filter(e=>counts(e).planned===0 && counts(e).remaining>0);
+  const wk = mondayOf(t), wkEnd = addDays(wk,6);
+  const weekCount = [...S.bookings, ...S.visits].filter(b=>b.date>=wk && b.date<=wkEnd && b.status!=='iptal').length;
+  const debt = S.enrollments.reduce((a,e)=>a+Math.max(0,(+e.price||0)-(+e.paid||0)),0);
+  const bDebt = S.charges.filter(c=>!c.paid).reduce((a,c)=>a+(+c.amount||0),0);
+  const care = careDue(14);
+
+  const row = e => { const s=student(e.studentId), c=counts(e), st=enrollState(e);
+    return `<tr class="click" onclick="openStudent('${e.studentId}')"><td>${esc(s?.name)}</td><td>${esc(e.packageName)}</td>
+      <td>${c.used}/${e.lessons}</td><td>${fmtShort(e.endDate)}</td><td><span class="badge ${st.c}">${st.t}</span></td></tr>`; };
+
+  return `
+  <div class="row" style="margin-bottom:14px"><h2 style="margin:0">Bugün</h2><span class="spacer"></span>
+    <button class="btn ghost" onclick="openStudentForm()">+ Kursiyer</button>
+    <button class="btn" onclick="openBooking({date:'${t}'})">+ Rezervasyon</button></div>
+  <div class="grid g4">
+    <div class="card"><div class="muted">Bugünkü dersler</div><div class="stat">${todays.length}</div>${todayVisits.length?`<div class="muted">+ ${todayVisits.length} tur / tek ders</div>`:''}</div>
+    <div class="card"><div class="muted">Bu hafta rezervasyon</div><div class="stat">${weekCount}</div></div>
+    <div class="card"><div class="muted">Aktif paket</div><div class="stat">${active.length}</div></div>
+    <div class="card money"><div class="muted">Ders tahsilatı bekleyen</div><div class="stat" style="color:${debt?'var(--bad)':'var(--brand)'}">${money(debt)}</div></div>
+    <div class="card"><div class="muted">Pansiyondaki at</div><div class="stat">${pensionHorses().filter(h=>boarderActive(h)).length}</div></div>
+    <div class="card money"><div class="muted">Pansiyon tahsilatı bekleyen</div><div class="stat" style="color:${bDebt?'var(--bad)':'var(--brand)'}">${money(bDebt)}</div></div>
+  </div>
+  ${care.length?`<div class="card"><h3>${ic('health')} Yaklaşan bakım (14 gün)</h3><table>${care.map(x=>`<tr class="click" onclick="go('at','${x.h.id}')">
+    <td><b>${esc(x.h.name)}</b><div class="muted">${x.h.own?'Vadi atı':esc(owner(x.h.ownerId)?.name)}</div></td><td>${x.t}</td><td>${fmt(x.d)}</td>
+    <td>${x.d<today()?'<span class="badge b-bad">Gecikti</span>':'<span class="badge b-warn">Yaklaşıyor</span>'}</td></tr>`).join('')}</table></div>`:''}
+  <div class="grid g2">
+    <div class="card"><h3>Bugün · ${fmt(t)}</h3>
+      ${todays.length ? `<table>${todays.map(b=>{const {name,e}=bookingLabel(b);
+        return `<tr><td><b>${b.time}</b></td><td>${esc(name)}<div class="muted">${lessonNo(b)}. ders / ${e?.lessons??'-'} ${b.horse?'· '+ic('horse')+' '+esc(b.horse):''} ${b.trainer?'· '+esc(b.trainer):''}</div></td>
+        <td style="text-align:right;white-space:nowrap">${b.status==='plan'
+          ? `<button class="btn sm" onclick="setStatus('${b.id}','tamam')">${ic('check')} Geldi</button> <button class="btn ghost sm" onclick="setStatus('${b.id}','gelmedi')">Gelmedi</button>`
+          : `<span class="badge ${STATUS[b.status].c}">${STATUS[b.status].t}</span>`}
+          <button class="btn ghost sm" onclick="openBooking({id:'${b.id}'})">${ic('edit')}</button></td></tr>`}).join('')}</table>`
+        : `<div class="empty">Bugün paketli ders yok.</div>`}
+      ${todayVisits.length?`<h3 style="margin-top:14px">Tur &amp; tek ders</h3><table>${todayVisits.map(v=>`<tr>
+        <td><b>${v.time}</b></td><td>${esc(v.name)} <span class="badge b-tur">${esc(v.serviceName)}</span>
+          <div class="muted">${v.people||1} kişi${v.horse?' · '+ic('horse')+' '+esc(v.horse):''}${v.trainer?' · '+esc(v.trainer):''}<span class="money"> · ${money(v.price)} ${v.paid?'✓':'(ödenmedi)'}</span></div></td>
+        <td style="text-align:right;white-space:nowrap">${v.status==='plan'
+          ? `<button class="btn sm" onclick="setVisit('${v.id}','tamam')">${ic('check')} Geldi</button> <button class="btn ghost sm" onclick="setVisit('${v.id}','gelmedi')">Gelmedi</button>`
+          : `<span class="badge ${STATUS[v.status].c}">${STATUS[v.status].t}</span>`}
+          <button class="btn ghost sm" onclick="openVisit({id:'${v.id}'})">${ic('edit')}</button></td></tr>`).join('')}</table>`:''}
+    </div>
+    <div class="card"><h3>⏳ Süresi yaklaşan paketler (14 gün)</h3>
+      ${expiring.length ? `<table>${expiring.map(row).join('')}</table>` : `<div class="empty">Yok.</div>`}</div>
+    <div class="card"><h3>${ic('down')} Az dersi kalanlar (≤2)</h3>
+      ${low.length ? `<table>${low.map(row).join('')}</table>` : `<div class="empty">Yok.</div>`}</div>
+    <div class="card"><h3>${ic('calendar')} Planlı dersi olmayan aktif kursiyerler</h3>
+      ${unplanned.length ? `<table>${unplanned.map(row).join('')}</table>` : `<div class="empty">Herkesin planlı dersi var.</div>`}</div>
+  </div>`;
+}
+
+function vTakvim(){
+  const days = [...Array(7)].map((_,i)=>addDays(weekStart,i));
+  const t = today();
+  return `
+  <div class="row" style="margin-bottom:14px">
+    <h2 style="margin:0">Takvim</h2><span class="spacer"></span>
+    <button class="btn ghost sm" onclick="weekStart=addDays(weekStart,-7);render()">‹ Önceki</button>
+    <button class="btn ghost sm" onclick="weekStart=mondayOf(today());render()">Bu hafta</button>
+    <button class="btn ghost sm" onclick="weekStart=addDays(weekStart,7);render()">Sonraki ›</button>
+    <span class="muted">${fmt(days[0])} – ${fmt(days[6])}</span>
+  </div>
+  <div class="week">${days.map(d=>{
+    const items = [
+      ...S.bookings.filter(b=>b.date===d).map(b=>({k:'b', time:b.time, x:b})),
+      ...S.visits.filter(v=>v.date===d).map(v=>({k:'v', time:v.time, x:v})),
+    ].sort((a,b)=>a.time.localeCompare(b.time));
+    return `<div class="day ${d===t?'today':''}">
+      <div class="dayhead"><span>${GUN[parse(d).getDay()]} ${fmtShort(d)}</span>
+        <span><button class="btn ghost sm" title="Paketli ders ekle" onclick="openBooking({date:'${d}'})">+ Ders</button>
+        <button class="btn ghost sm" title="Tur / tek ders ekle" onclick="openVisit({date:'${d}'})">+ Tur</button></span></div>
+      ${items.map(({k,x:b})=>{
+        if(k==='v') return `<div class="chip tur ${b.status==='iptal'?'iptal':''}" onclick="openVisit({id:'${b.id}'})"><b>${b.time} · ${esc(b.name)}</b>
+          ${esc(b.serviceName)} · ${b.people||1} kişi${b.horse?' · '+esc(b.horse):''}${b.status!=='plan'?' · '+STATUS[b.status].t:''}</div>`;
+        const {name,e}=bookingLabel(b);
+        return `<div class="chip ${b.status}" onclick="openBooking({id:'${b.id}'})"><b>${b.time} · ${esc(name)}</b>
+          ${b.status!=='iptal'?`${lessonNo(b)}/${e?.lessons??'-'}`:'iptal'}${b.horse?' · '+esc(b.horse):''}${b.trainer?' · '+esc(b.trainer):''}</div>`}).join('')}
+    </div>`}).join('')}</div>
+  <p class="muted">Renkler: <span class="badge b-info">Planlandı</span> <span class="badge b-ok">Tamamlandı</span> <span class="badge b-warn">Gelmedi</span> <span class="badge b-mut">İptal</span> <span class="badge b-tur">Tur / tek ders</span></p>`;
+}
+
+function vKursiyer(){
+  const q = kFilter.q.toLocaleLowerCase('tr');
+  const list = S.students.filter(s=> !q || (s.name+' '+(s.phone||'')).toLocaleLowerCase('tr').includes(q))
+    .map(s=>{ const es = S.enrollments.filter(e=>e.studentId===s.id).sort((a,b)=>b.startDate.localeCompare(a.startDate));
+      return {s, e:es[0]}; })
+    .filter(({e})=> kFilter.state==='all' || (kFilter.state==='none' ? !e : e && enrollState(e).k===kFilter.state))
+    .sort((a,b)=>a.s.name.localeCompare(b.s.name,'tr'));
+  return `
+  <div class="row" style="margin-bottom:14px"><h2 style="margin:0">Kursiyerler (${S.students.length})</h2><span class="spacer"></span>
+    <button class="btn" onclick="openStudentForm()">+ Yeni kursiyer</button></div>
+  <div class="card">
+    <div class="row" style="margin-bottom:10px">
+      <input style="max-width:280px" placeholder="İsim / telefon ara…" value="${esc(kFilter.q)}" oninput="kFilter.q=this.value;rerenderKeepFocus(this)">
+      <select style="max-width:200px" onchange="kFilter.state=this.value;render()">
+        ${[['all','Tümü'],['aktif','Aktif'],['yakin','Süresi yaklaşan'],['sure','Süresi dolmuş'],['bitti','Paketi bitmiş'],['dondu','Dondurulmuş'],['none','Paketi yok']]
+          .map(([v,t])=>`<option value="${v}" ${kFilter.state===v?'selected':''}>${t}</option>`).join('')}
+      </select>
+    </div>
+    ${list.length ? `<div class="tablewrap"><table class="resp"><tr><th>Ad Soyad</th><th>Telefon</th><th>Güncel paket</th><th>İlerleme</th><th>Kalan</th><th>Bitiş</th><th>Durum</th><th></th></tr>
+    ${list.map(({s,e})=>{ if(!e) return `<tr class="click" onclick="openStudent('${s.id}')"><td><b>${esc(s.name)}</b></td><td>${esc(s.phone)}</td><td colspan="5" class="muted">Paket yok</td></tr>`;
+      const c=counts(e), st=enrollState(e);
+      return `<tr class="click" onclick="openStudent('${s.id}')"><td><b>${esc(s.name)}</b></td><td>${esc(s.phone)}</td><td>${esc(e.packageName)}</td>
+        <td>${bar(e)}<div class="muted">${c.used}/${e.lessons} kullanıldı · ${c.planned} planlı</div></td>
+        <td><b>${e.lessons-c.used}</b> <span class="muted">ders kaldı</span></td><td>${fmtShort(e.endDate)}</td><td><span class="badge ${st.c}">${st.t}</span></td>
+        <td style="text-align:right">${e.lessons-c.used>0?`<button class="btn sm" onclick="event.stopPropagation();quickLesson('${e.id}')">${ic('check')} Ders yaptı</button>`:''}</td></tr>`}).join('')}
+    </table></div>` : `<div class="empty">Kursiyer bulunamadı.</div>`}
+  </div>`;
+}
+function rerenderKeepFocus(el){ const pos = el.selectionStart; const ph = el.placeholder; render();
+  const n=[...document.querySelectorAll('input')].find(i=>i.placeholder===ph); if(n){n.focus(); n.setSelectionRange(pos,pos);} }
+
+function vRezervasyon(){
+  const q = filter.q.toLocaleLowerCase('tr');
+  const list = S.bookings.filter(b=>{
+    const {name} = bookingLabel(b);
+    if (q && !(name+' '+(b.horse||'')+' '+(b.trainer||'')).toLocaleLowerCase('tr').includes(q)) return false;
+    if (filter.status!=='all' && b.status!==filter.status) return false;
+    if (filter.from && b.date<filter.from) return false;
+    if (filter.to && b.date>filter.to) return false;
+    return true;
+  }).sort((a,b)=>(b.date+b.time).localeCompare(a.date+a.time));
+  return `
+  <div class="row" style="margin-bottom:14px"><h2 style="margin:0">Rezervasyonlar</h2><span class="spacer"></span>
+    <button class="btn" onclick="openBooking({date:today()})">+ Rezervasyon</button></div>
+  <div class="card">
+    <div class="row" style="margin-bottom:10px">
+      <input style="max-width:220px" placeholder="Kursiyer / at / eğitmen…" value="${esc(filter.q)}" oninput="filter.q=this.value;rerenderKeepFocus(this)">
+      <select style="max-width:160px" onchange="filter.status=this.value;render()">
+        <option value="all">Tüm durumlar</option>${Object.entries(STATUS).map(([k,v])=>`<option value="${k}" ${filter.status===k?'selected':''}>${v.t}</option>`).join('')}</select>
+      <input type="date" style="max-width:160px" value="${filter.from}" onchange="filter.from=this.value;render()">
+      <span class="muted">–</span>
+      <input type="date" style="max-width:160px" value="${filter.to}" onchange="filter.to=this.value;render()">
+    </div>
+    ${list.length ? `<div class="tablewrap"><table class="resp"><tr><th>Tarih</th><th>Saat</th><th>Kursiyer</th><th>Ders</th><th>At</th><th>Eğitmen</th><th>Durum</th><th></th></tr>
+    ${list.map(b=>{const {name,e}=bookingLabel(b);
+      return `<tr><td>${fmt(b.date)}</td><td>${b.time}</td><td>${esc(name)}</td><td>${b.status==='iptal'?'-':lessonNo(b)+'/'+(e?.lessons??'-')}</td>
+      <td>${esc(b.horse)}</td><td>${esc(b.trainer)}</td><td><span class="badge ${STATUS[b.status].c}">${STATUS[b.status].t}</span></td>
+      <td style="text-align:right"><button class="btn ghost sm" onclick="openBooking({id:'${b.id}'})">Düzenle</button></td></tr>`}).join('')}
+    </table></div>` : `<div class="empty">Rezervasyon yok.</div>`}
+  </div>`;
+}
+
+function vAyarlar(){
+  return `
+  <h2>Ayarlar <span class="badge b-mut" style="vertical-align:middle">${ic('lock')} Sadece yönetici</span></h2>
+  <div class="grid g2">
+    <div class="card"><h3>${ic('users')} Kullanıcılar (${S.users.length}/${MAX_USERS})</h3>
+      <table>${S.users.map(u=>`<tr><td>${ic(u.role==='yonetici'?'shield':'user')} <b>${esc(u.name)}</b>${u.id===me()?.id?' <span class="muted">(siz)</span>':''}</td>
+        <td><span class="badge ${u.role==='yonetici'?'b-warn':'b-mut'}">${ROLES[u.role]}</span></td>
+        <td style="text-align:right"><button class="btn ghost sm" onclick="openUserForm('${u.id}')">Düzenle</button></td></tr>`).join('')}</table>
+      ${S.users.length<MAX_USERS?`<button class="btn sm" style="margin-top:10px" onclick="openUserForm()">+ Kullanıcı ekle</button>`:''}
+      <p class="muted"><b>Yönetici</b> her şeyi görür. <b>Personel</b> ders, tur, takvim ve at künyelerini kullanır; ücret ve ödemeleri göremez.</p>
+    </div>
+    <div class="card"><h3>${ic('tag')} Çiftlik adı &amp; logo</h3>
+      <label>Çiftlik adı<input value="${esc(S.settings.farmName)}" onchange="S.settings.farmName=this.value.trim()||'Vadi At Çiftliği';save();render()"></label>
+      <div class="row"><div class="logo-big" style="width:72px;height:72px;border-radius:16px;background:#fff;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;overflow:hidden;font-size:36px">${brandLogoHtml()}</div>
+        <label class="btn" style="margin:0;display:inline-flex;align-items:center">Logo yükle<input type="file" accept="image/*" style="display:none" onchange="setLogo(this.files[0])"></label>
+        ${S.settings.logo?`<button class="btn ghost sm" onclick="S.settings.logo='';save();render()">Kaldır</button>`:''}</div>
+      <p class="muted">Şeffaf arka planlı PNG en iyi sonucu verir. Logo; üst çubukta, giriş ekranında ve uygulama simgesinde kullanılır.</p>
+    </div>
+    <div class="card"><h3>Paketler</h3>
+      <table><tr><th>Ad</th><th>Ders</th><th>Süre (ay)</th><th>Fiyat (₺)</th><th></th></tr>
+      ${S.packages.map((p,i)=>`<tr>
+        <td><input value="${esc(p.name)}" onchange="S.packages[${i}].name=this.value;save()"></td>
+        <td><input type="number" min="1" style="width:70px" value="${p.lessons}" onchange="S.packages[${i}].lessons=+this.value||1;save()"></td>
+        <td><input type="number" min="1" style="width:70px" value="${p.months}" onchange="S.packages[${i}].months=+this.value||1;save()"></td>
+        <td><input type="number" min="0" style="width:100px" value="${p.price}" onchange="S.packages[${i}].price=+this.value||0;save()"></td>
+        <td><button class="btn ghost sm" onclick="delPackage(${i})">Sil</button></td></tr>`).join('')}
+      </table>
+      <button class="btn ghost sm" style="margin-top:8px" onclick="S.packages.push({id:uid(),name:'Yeni paket',lessons:10,months:3,price:0});save();render()">+ Paket ekle</button>
+      <p class="muted">Paket değişiklikleri sadece yeni kayıtları etkiler; mevcut kayıtlar kendi ders sayısını korur.</p>
+    </div>
+    <div class="card"><h3>Tur &amp; tek ders hizmetleri</h3>
+      <table><tr><th>Ad</th><th>Süre (dk)</th><th>Kişi başı fiyat (₺)</th><th></th></tr>
+      ${S.services.map((s,i)=>`<tr>
+        <td><input value="${esc(s.name)}" onchange="S.services[${i}].name=this.value;save()"></td>
+        <td><input type="number" min="15" step="15" style="width:80px" value="${s.duration}" onchange="S.services[${i}].duration=+this.value||60;save()"></td>
+        <td><input type="number" min="0" style="width:110px" value="${s.price}" onchange="S.services[${i}].price=+this.value||0;save()"></td>
+        <td><button class="btn ghost sm" onclick="if(S.services.length>1&&confirm('Silinsin mi?')){S.services.splice(${i},1);save();render()}">Sil</button></td></tr>`).join('')}
+      </table>
+      <button class="btn ghost sm" style="margin-top:8px" onclick="S.services.push({id:uid(),name:'Yeni hizmet',duration:60,price:0});save();render()">+ Hizmet ekle</button>
+      <p class="muted">Örn. gün batımı turu, çocuk pony binişi, fotoğraf çekimi. Tutar, kişi sayısıyla çarpılarak önerilir.</p>
+    </div>
+    ${cafeSettingsCard()}
+    <div class="card"><h3>Kurallar</h3>
+      <label style="display:flex;gap:8px;align-items:center;color:var(--ink)"><input type="checkbox" style="width:auto" ${S.settings.noShowCounts?'checked':''}
+        onchange="S.settings.noShowCounts=this.checked;save()"> Habersiz gelmeyen ("Gelmedi") ders, paketten düşülsün</label>
+      <label>Varsayılan ders süresi (dk)<input type="number" min="15" step="15" value="${S.settings.defaultDuration}" onchange="S.settings.defaultDuration=+this.value||60;save()"></label>
+      <p class="muted">"İptal" edilen ders hiçbir zaman paketten düşmez.</p>
+    </div>
+    <div class="card"><h3>Atlar</h3>${listEditor('horses','At adı')}</div>
+    <div class="card"><h3>Eğitmenler</h3>${listEditor('trainers','Eğitmen adı')}</div>
+    <div class="card"><h3>Yedekleme</h3>
+      <p class="muted">Veriler bu tarayıcıda saklanır. Düzenli olarak yedek alın; başka bilgisayara taşımak için de yedek dosyasını kullanın.</p>
+      <div class="row">
+        <button class="btn" onclick="exportData()">⬇ Yedek indir (JSON)</button>
+        <button class="btn ghost" onclick="exportCSV()">⬇ Dersleri Excel'e aktar (CSV)</button>
+        <label class="btn ghost" style="margin:0;color:var(--brand);border:1px solid var(--line);padding:8px 14px;border-radius:6px;cursor:pointer">⬆ Yedek yükle
+          <input type="file" accept=".json" style="display:none" onchange="importData(this.files[0])"></label>
+      </div>
+    </div>
+  </div>`;
+}
+function listEditor(key, ph){
+  return `<div class="row" style="margin-bottom:8px">${S[key].map((n,i)=>`<span class="badge b-mut" style="font-size:13px">${esc(n)}
+    <a href="#" style="color:#999;text-decoration:none;margin-left:4px" onclick="S['${key}'].splice(${i},1);save();render();return false">×</a></span>`).join('') || '<span class="muted">Henüz yok</span>'}</div>
+    <div class="row"><input id="add-${key}" placeholder="${ph}" style="max-width:220px" onkeydown="if(event.key==='Enter')addItem('${key}')">
+    <button class="btn ghost sm" onclick="addItem('${key}')">Ekle</button></div>`;
+}
+function addItem(key){ const i=$('#add-'+key); const v=i.value.trim(); if(!v) return; if(!S[key].includes(v)) S[key].push(v); save(); render(); }
+function delPackage(i){ if(S.packages.length<=1) return toast('En az bir paket olmalı');
+  if(confirm(`"${S.packages[i].name}" paketi silinsin mi? (Mevcut kayıtlar etkilenmez)`)){ S.packages.splice(i,1); save(); render(); } }
+
+/* ================== MODALLAR ================== */
+function modal(html, wide){ $('#modal-root').innerHTML = `<div class="modal-bg" onclick="if(event.target===this)closeModal()"><div class="modal ${wide?'wide':''}">${html}</div></div>`; }
+function closeModal(){ $('#modal-root').innerHTML=''; }
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeModal(); });
+
+function openStudentForm(id, pre){
+  const s = id ? student(id) : {name:'',phone:'',email:'',birth:'',level:'Başlangıç',note:'', ...(pre||{})};
+  modal(`<h3>${id?'Kursiyeri düzenle':'Yeni kursiyer'}</h3>
+  <form id="sf">
+    <div class="two">
+      <label>Ad Soyad *<input name="name" required value="${esc(s.name)}"></label>
+      <label>Telefon<input name="phone" value="${esc(s.phone)}"></label>
+      <label>E-posta<input name="email" type="email" value="${esc(s.email)}"></label>
+      <label>Doğum tarihi<input name="birth" type="date" value="${esc(s.birth)}"></label>
+      <label>Seviye<select name="level">${['Başlangıç','Orta','İleri'].map(l=>`<option ${s.level===l?'selected':''}>${l}</option>`).join('')}</select></label>
+      <label>Veli / acil durum kişisi<input name="emergency" value="${esc(s.emergency)}"></label>
+    </div>
+    <label>Not (sağlık, alerji vb.)<textarea name="note">${esc(s.note)}</textarea></label>
+    ${!id ? `<label>Paket kaydı da oluştur<select name="pkg"><option value="">— Şimdi değil —</option>${S.packages.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join('')}</select></label>
+      <label>Başlangıç tarihi<input type="date" name="start" value="${today()}"></label>`:''}
+    <div class="row"><span class="spacer"></span><button type="button" class="btn ghost" onclick="${id?`openStudent('${id}')`:'closeModal()'}">Vazgeç</button><button class="btn">Kaydet</button></div>
+  </form>`);
+  $('#sf').onsubmit = ev => { ev.preventDefault(); const f = Object.fromEntries(new FormData(ev.target));
+    if(!f.name.trim()) return;
+    const data = {name:f.name.trim(), phone:f.phone, email:f.email, birth:f.birth, level:f.level, emergency:f.emergency, note:f.note};
+    let sid = id;
+    if(id) Object.assign(s, data); else { sid = uid(); S.students.push({id:sid, created:today(), ...data}); }
+    if(!id && f.pkg) createEnrollment(sid, f.pkg, f.start||today());
+    save(); render(); openStudent(sid); toast('Kaydedildi');
+  };
+}
+function createEnrollment(studentId, packageId, start, price){
+  const p = pkg(packageId);
+  const e = {id:uid(), studentId, packageId, packageName:p.name, lessons:p.lessons, months:p.months,
+    startDate:start, endDate:addDays(addMonths(start,p.months),0), price: price ?? p.price, paid:0, note:''};
+  // bitiş: başlangıç + N ay (bir gün öncesi)
+  e.endDate = addDays(addMonths(start,p.months),-1);
+  S.enrollments.push(e); return e;
+}
+
+function openStudent(id){
+  const s = student(id); if(!s) return closeModal();
+  const es = S.enrollments.filter(e=>e.studentId===id).sort((a,b)=>b.startDate.localeCompare(a.startDate));
+  modal(`
+  <div class="row"><h3 style="margin:0">${esc(s.name)}</h3><span class="badge b-mut">${esc(s.level||'')}</span><span class="spacer"></span>
+    <button class="btn ghost sm" onclick="openStudentForm('${id}')">Düzenle</button>
+    <button class="btn ghost sm" onclick="closeModal()">Kapat</button></div>
+  <p class="muted">${[s.phone && ic('phone')+' '+esc(s.phone), s.email && ic('mail')+' '+esc(s.email), s.birth && ic('gift')+' '+fmt(s.birth), s.emergency && 'Acil: '+esc(s.emergency)].filter(Boolean).join(' · ')}</p>
+  ${s.note?`<div class="card" style="background:var(--warnbg);border-color:#f0dcb6;padding:10px">${esc(s.note)}</div>`:''}
+  <div class="row" style="margin:10px 0"><h3 style="margin:0">Paketler</h3><span class="spacer"></span>
+    <button class="btn sm" onclick="openEnrollForm('${id}')">+ Yeni paket</button></div>
+  ${es.length ? es.map(e=>enrollCard(e)).join('') : `<div class="empty">Henüz paket kaydı yok.</div>`}
+  <div style="border-top:1px solid var(--line);padding-top:10px;margin-top:10px">
+    ${isAdmin()?`<button class="btn danger sm" onclick="delStudent('${id}')">Kursiyeri sil</button>`:''}</div>
+  `, true);
+}
+function enrollCard(e){
+  const c = counts(e), st = enrollState(e);
+  const bs = S.bookings.filter(b=>b.enrollmentId===e.id).sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
+  const active = bs.filter(b=>b.status!=='iptal');
+  const boxes = [...Array(e.lessons)].map((_,i)=>{
+    if(i < c.prior) return `<i class="u" title="Panel öncesi yapılan ders">${i+1}</i>`;
+    const b=active[i-c.prior];
+    const cls = !b ? '' : b.status==='tamam' ? 'u' : b.status==='gelmedi' ? 'n' : 'p';
+    return `<i class="${cls}" title="${b?fmt(b.date)+' '+b.time+' – '+STATUS[b.status].t:'Boş'}">${i+1}</i>`; }).join('');
+  const kalanBorc = (+e.price||0)-(+e.paid||0);
+  const canBook = c.remaining>0 && !['sure','dondu'].includes(st.k);
+  return `<div class="card" style="padding:12px">
+    <div class="row"><b>${esc(e.packageName)}</b><span class="badge ${st.c}">${st.t}</span><span class="spacer"></span>
+      ${e.lessons-c.used>0?`<button class="btn sm" onclick="quickLesson('${e.id}', true)">${ic('check')} Bugün ders yaptı</button>`:''}
+      ${canBook?`<button class="btn ghost sm" onclick="openBooking({enrollmentId:'${e.id}'})">+ Ders planla</button>`:''}
+      <button class="btn ghost sm" onclick="openEnrollForm('${e.studentId}','${e.id}')">Düzenle</button></div>
+    <div class="muted" style="margin:4px 0">${fmt(e.startDate)} → ${fmt(e.endDate)} · ${c.prior?c.prior+' panel öncesi · ':''}${c.done} tamamlandı · ${c.noshow} gelmedi · ${c.planned} planlı · <b>${e.lessons-c.used}</b> ders hakkı kaldı (${Math.max(0,c.remaining)} planlanmamış)</div>
+    <div class="lessons">${boxes}</div>
+    <div class="muted money">Ücret: ${money(e.price)} · Ödenen: ${money(e.paid)} ${kalanBorc>0?`· <b style="color:var(--bad)">Kalan: ${money(kalanBorc)}</b>`:kalanBorc<=0&&e.price?'· <span style="color:var(--ok)">Ödendi</span>':''}</div>
+    ${bs.length?`<details style="margin-top:8px"><summary class="muted" style="cursor:pointer">Ders geçmişi (${bs.length})</summary>
+      <table style="margin-top:6px">${bs.map(b=>`<tr><td>${b.status==='iptal'?'–':lessonNo(b)+'.'}</td><td>${fmt(b.date)} ${b.time}</td><td>${esc(b.horse)}</td><td>${esc(b.trainer)}</td>
+        <td><span class="badge ${STATUS[b.status].c}">${STATUS[b.status].t}</span></td><td class="muted">${esc(b.note)}</td>
+        <td><button class="btn ghost sm" onclick="openBooking({id:'${b.id}',back:'${e.studentId}'})">${ic('edit')}</button></td></tr>`).join('')}</table></details>`:''}
+  </div>`;
+}
+
+function openEnrollForm(studentId, eid){
+  const e = eid ? enrollment(eid) : null;
+  const p0 = S.packages[0];
+  modal(`<h3>${e?'Paket kaydını düzenle':'Yeni paket kaydı'} · ${esc(student(studentId).name)}</h3>
+  <form id="ef">
+    ${e ? `<p class="muted">Paket: <b>${esc(e.packageName)}</b></p>` :
+      `<label>Paket<select name="pkg" id="ef-pkg">${S.packages.map(p=>`<option value="${p.id}">${esc(p.name)} (${p.lessons} ders / ${p.months} ay)</option>`).join('')}</select></label>`}
+    <div class="two">
+      <label>Başlangıç<input type="date" name="start" required value="${e?e.startDate:today()}"></label>
+      <label>Bitiş (son geçerlilik)<input type="date" name="end" value="${e?e.endDate:''}" placeholder="otomatik"></label>
+      ${e?`<label>Ders sayısı<input type="number" min="1" name="lessons" value="${e.lessons}"></label>`:''}
+      <label>Panel öncesi yapılan ders<input type="number" min="0" name="priorUsed" value="${e?.priorUsed||0}"></label>
+      <label class="money">Ücret (₺)<input type="number" min="0" name="price" id="ef-price" value="${e?e.price:p0.price}"></label>
+      <label class="money">Ödenen (₺)<input type="number" min="0" name="paid" value="${e?e.paid:0}"></label>
+    </div>
+    ${e?`<label style="display:flex;gap:8px;align-items:center;color:var(--ink)"><input type="checkbox" name="frozen" style="width:auto" ${e.frozen?'checked':''}> Paketi dondur (sakatlık, tatil vb.)</label>`:''}
+    <label>Not<textarea name="note">${esc(e?.note)}</textarea></label>
+    <p class="muted">${e?'':'Bitiş boş bırakılırsa paket süresine göre otomatik hesaplanır.'} Süre uzatmak için bitiş tarihini değiştirebilirsiniz.</p>
+    <div class="row">${e && isAdmin()?`<button type="button" class="btn danger sm" onclick="delEnroll('${e.id}')">Kaydı sil</button>`:''}<span class="spacer"></span>
+      <button type="button" class="btn ghost" onclick="openStudent('${studentId}')">Vazgeç</button><button class="btn">Kaydet</button></div>
+  </form>`);
+  if(!e) $('#ef-pkg').onchange = ev => { $('#ef-price').value = pkg(ev.target.value).price; };
+  $('#ef').onsubmit = ev => { ev.preventDefault(); const f = Object.fromEntries(new FormData(ev.target));
+    if(e){
+      const n = Math.max(1, +f.lessons||e.lessons); const prior = Math.max(0, +f.priorUsed||0);
+      const c = counts(Object.assign({}, e, {priorUsed:prior}));
+      if(n < c.used + c.planned) return toast(`Ders sayısı ${c.used + c.planned}'den az olamaz (kullanılan + planlı)`);
+      Object.assign(e, {priorUsed:prior, startDate:f.start, endDate:f.end||e.endDate, lessons:n, price:+f.price||0, paid:+f.paid||0, note:f.note, frozen:!!f.frozen});
+    } else {
+      const ne = createEnrollment(studentId, f.pkg, f.start, +f.price||0);
+      if(f.end) ne.endDate = f.end; ne.paid = +f.paid||0; ne.note = f.note;
+      ne.priorUsed = Math.min(ne.lessons, Math.max(0, +f.priorUsed||0));
+    }
+    save(); render(); openStudent(studentId); toast('Kaydedildi');
+  };
+}
+function delEnroll(id){ if(!isAdmin()) return toast('Silme yetkisi sadece yöneticide'); const e=enrollment(id); const n=S.bookings.filter(b=>b.enrollmentId===id).length;
+  if(!confirm(`Bu paket kaydı ve ${n} rezervasyonu silinsin mi? Geri alınamaz.`)) return;
+  S.bookings = S.bookings.filter(b=>b.enrollmentId!==id); S.enrollments = S.enrollments.filter(x=>x.id!==id);
+  save(); render(); openStudent(e.studentId); }
+function delStudent(id){ if(!isAdmin()) return toast('Silme yetkisi sadece yöneticide'); const es = S.enrollments.filter(e=>e.studentId===id).map(e=>e.id);
+  if(!confirm(`${student(id).name} ve tüm paket/ders kayıtları silinsin mi? Geri alınamaz.`)) return;
+  S.bookings = S.bookings.filter(b=>!es.includes(b.enrollmentId)); S.enrollments = S.enrollments.filter(e=>e.studentId!==id);
+  S.students = S.students.filter(s=>s.id!==id); save(); closeModal(); render(); }
+
+/* ---------- Rezervasyon ---------- */
+function bookableEnrollments(includeId){
+  return S.enrollments.filter(e=> e.id===includeId || (!['sure','dondu','bitti'].includes(enrollState(e).k) && counts(e).remaining>0))
+    .map(e=>({e, s:student(e.studentId)})).filter(x=>x.s).sort((a,b)=>a.s.name.localeCompare(b.s.name,'tr'));
+}
+function openBooking(o){
+  const b = o.id ? S.bookings.find(x=>x.id===o.id) : null;
+  const d = b || {date:o.date||today(), time:'10:00', duration:S.settings.defaultDuration, enrollmentId:o.enrollmentId||'', horse:'', trainer:'', status:'plan', note:''};
+  const opts = bookableEnrollments(d.enrollmentId);
+  const back = o.back || (o.enrollmentId && enrollment(o.enrollmentId)?.studentId) || '';
+  if(!b && !opts.length){ modal(`<h3>Rezervasyon</h3><p>Ders planlanabilecek aktif paket yok. Önce bir kursiyer ekleyip paket tanımlayın.</p>
+    <div class="row"><span class="spacer"></span><button class="btn ghost" onclick="closeModal()">Kapat</button><button class="btn" onclick="openStudentForm()">+ Kursiyer</button></div>`); return; }
+  modal(`<h3>${b?'Rezervasyonu düzenle':'Yeni rezervasyon'}</h3>
+  <form id="bf">
+    <label>Kursiyer / paket *<select name="enrollmentId" required ${b?'disabled':''}>
+      <option value="">Seçin…</option>
+      ${opts.map(({e,s})=>{const c=counts(e,b?.id); return `<option value="${e.id}" ${d.enrollmentId===e.id?'selected':''}>${esc(s.name)} — ${esc(e.packageName)} (${c.remaining} planlanabilir, bitiş ${fmtShort(e.endDate)})</option>`}).join('')}
+    </select></label>
+    <div class="two">
+      <label>Tarih *<input type="date" name="date" required value="${d.date}"></label>
+      <label>Saat *<input type="time" name="time" required step="900" value="${d.time}"></label>
+      <label>Süre (dk)<input type="number" name="duration" min="15" step="15" value="${d.duration||60}"></label>
+      <label>Durum<select name="status">${Object.entries(STATUS).map(([k,v])=>`<option value="${k}" ${d.status===k?'selected':''}>${v.t}</option>`).join('')}</select></label>
+      <label>At<input name="horse" list="dl-h" value="${esc(d.horse)}"></label>
+      <label>Eğitmen<input name="trainer" list="dl-t" value="${esc(d.trainer)}"></label>
+    </div>
+    <datalist id="dl-h">${lessonHorses().map(h=>`<option value="${esc(h)}">`).join('')}</datalist>
+    <datalist id="dl-t">${S.trainers.map(h=>`<option value="${esc(h)}">`).join('')}</datalist>
+    ${!b?`<label>Tekrarla (haftalık)<select name="repeat">${[1,2,3,4,5,6,8,10,12].map(n=>`<option value="${n}">${n===1?'Tekrar yok':n+' hafta boyunca'}</option>`).join('')}</select></label>`:''}
+    <label>Not (dersin içeriği, gelişim vb.)<textarea name="note">${esc(d.note)}</textarea></label>
+    <div id="bf-warn" class="muted" style="color:var(--bad)"></div>
+    <div class="row">${b?`<button type="button" class="btn danger sm" onclick="delBooking('${b.id}','${back}')">Sil</button>`:''}<span class="spacer"></span>
+      <button type="button" class="btn ghost" onclick="${back?`openStudent('${back}')`:'closeModal()'}">Vazgeç</button><button class="btn">Kaydet</button></div>
+  </form>`);
+  $('#bf').onsubmit = ev => { ev.preventDefault();
+    const f = Object.fromEntries(new FormData(ev.target)); if(b) f.enrollmentId = b.enrollmentId;
+    const e = enrollment(f.enrollmentId); const warn = $('#bf-warn');
+    if(!e) return warn.textContent='Kursiyer seçin.';
+    const repeat = +(f.repeat||1);
+    const dates = [...Array(repeat)].map((_,i)=>addDays(f.date,i*7));
+    const c = counts(e, b?.id);
+    // hak kontrolü (iptal hariç)
+    const need = f.status==='iptal' ? 0 : (f.status==='gelmedi' && !S.settings.noShowCounts ? 0 : dates.length);
+    const avail = e.lessons - c.used - c.planned;
+    if(need > avail) return warn.textContent = `Bu pakette yalnızca ${avail} ders hakkı planlanabilir.`;
+    const late = dates.filter(x=>x>e.endDate || x<e.startDate);
+    if(late.length && f.status!=='iptal' && !confirm(`${late.map(fmt).join(', ')} paket geçerlilik tarihleri (${fmt(e.startDate)} – ${fmt(e.endDate)}) dışında. Yine de kaydedilsin mi?`)) return;
+    const conflicts = f.status==='iptal' ? [] :
+      findConflicts({dates, time:f.time, duration:f.duration, horse:f.horse, trainer:f.trainer, excludeId:b?.id, studentId:e.studentId});
+    if(conflicts.length && !confirm('Çakışma var:\n\n'+conflicts.join('\n')+'\n\nYine de kaydedilsin mi?')) return;
+    const data = {time:f.time, duration:+f.duration||60, status:f.status, horse:f.horse.trim(), trainer:f.trainer.trim(), note:f.note};
+    if(b) Object.assign(b, data, {date:f.date});
+    else dates.forEach(dt=>S.bookings.push({id:uid(), enrollmentId:e.id, date:dt, created:today(), ...data}));
+    if(data.horse && !S.horses.includes(data.horse)) S.horses.push(data.horse);
+    if(data.trainer && !S.trainers.includes(data.trainer)) S.trainers.push(data.trainer);
+    save(); render(); back ? openStudent(back) : closeModal(); toast(dates.length>1&&!b?`${dates.length} rezervasyon oluşturuldu`:'Kaydedildi');
+  };
+}
+/* Paketli dersler + tur/tek dersler için ortak çakışma kontrolü (aynı at, eğitmen veya kişi; örtüşen saat) */
+const splitList = s => String(s||'').split(',').map(x=>x.trim()).filter(Boolean);
+function findConflicts({dates, time, duration, horse, trainer, excludeId, studentId}){
+  const toMin = t => { const [h,m]=String(t).split(':').map(Number); return h*60+m; };
+  const s1 = toMin(time), e1 = s1 + (+duration||60), myHorses = splitList(horse), out = [];
+  dates.forEach(dt=>{
+    const slots = [
+      ...S.bookings.filter(x=>x.date===dt && x.id!==excludeId && x.status!=='iptal')
+        .map(x=>({...x, who:bookingLabel(x).name, sid:enrollment(x.enrollmentId)?.studentId})),
+      ...S.visits.filter(x=>x.date===dt && x.id!==excludeId && x.status!=='iptal')
+        .map(x=>({...x, who:`${x.name} (${x.serviceName})`})),
+    ];
+    slots.forEach(x=>{
+      const s2 = toMin(x.time), e2 = s2 + (+x.duration||60);
+      if(!(s1<e2 && s2<e1)) return;
+      splitList(x.horse).filter(h=>myHorses.includes(h)).forEach(h=>out.push(`${fmt(dt)} ${x.time}: ${h} atı ${x.who} ile dolu`));
+      if(trainer && x.trainer===trainer) out.push(`${fmt(dt)} ${x.time}: ${trainer} eğitmeni ${x.who} ile dolu`);
+      if(studentId && x.sid===studentId) out.push(`${fmt(dt)} ${x.time}: kursiyerin zaten dersi var`);
+    });
+  });
+  return out;
+}
+
+/* Tek dokunuşla "ders yaptı": bugün planlı dersi varsa onu tamamlar, yoksa bugüne tamamlanmış ders ekler */
+function quickLesson(eid, fromCard){
+  const e = enrollment(eid), s = student(e.studentId), c = counts(e), t = today();
+  if(e.lessons - c.used <= 0) return toast('Paket bitmiş, yeni paket açın');
+  const planned = S.bookings.filter(b=>b.enrollmentId===eid && b.date===t && b.status==='plan').sort((a,b)=>a.time.localeCompare(b.time))[0];
+  const no = c.used + 1;
+  let warn = '';
+  if(t > e.endDate) warn = `\n\n⚠️ Paketin süresi ${fmt(e.endDate)} tarihinde dolmuş.`;
+  if(!planned && c.remaining <= 0) warn += `\n\n⚠️ Kalan tüm haklar ileri tarihlere planlanmış; bu ders eklenirse planlı derslerden birini iptal etmeniz gerekir.`;
+  if(!confirm(`${s.name}\n${no}. ders (${e.lessons} dersten) olarak işlensin mi?${warn}`)) return;
+  if(planned) planned.status = 'tamam';
+  else { const d = new Date(); const m = Math.floor(d.getMinutes()/15)*15;
+    S.bookings.push({id:uid(), enrollmentId:eid, date:t, time:`${pad(d.getHours())}:${pad(m)}`, duration:S.settings.defaultDuration,
+      status:'tamam', horse:'', trainer:'', note:'', created:t, by:me()?.name||''}); }
+  save(); render(); if(fromCard) openStudent(s.id);
+  const left = e.lessons - counts(e).used;
+  toast(`✓ ${s.name.split(' ')[0]}: ${no}. ders işlendi · ${left} ders kaldı`);
+}
+function setStatus(id, st){ const b=S.bookings.find(x=>x.id===id); b.status=st; save(); render(); toast(STATUS[st].t); }
+function delBooking(id, back){ if(!confirm('Rezervasyon silinsin mi? (Ders hakkı geri iade edilir)')) return;
+  S.bookings = S.bookings.filter(x=>x.id!==id); save(); render(); back ? openStudent(back) : closeModal(); }
+
+/* ================== TUR & TEK DERS (paketsiz müşteriler) ================== */
+const service = id => S.services.find(x=>x.id===id);
+let tFilter = {q:'', range:'gelecek', svc:'all'};
+
+function vTur(){
+  const t = today(), m = ym(t), q = tFilter.q.toLocaleLowerCase('tr');
+  const inRange = v => ({gelecek: v.date>=t, bugun: v.date===t, buay: ym(v.date)===m, gecmis: v.date<t, tumu: true})[tFilter.range];
+  const list = S.visits.filter(v=> inRange(v) && (tFilter.svc==='all' || v.serviceId===tFilter.svc)
+      && (!q || (v.name+' '+(v.phone||'')+' '+(v.horse||'')).toLocaleLowerCase('tr').includes(q)))
+    .sort((a,b)=> tFilter.range==='gecmis' ? (b.date+b.time).localeCompare(a.date+a.time) : (a.date+a.time).localeCompare(b.date+b.time));
+  const mv = S.visits.filter(v=>ym(v.date)===m && v.status!=='iptal');
+  const people = mv.reduce((a,v)=>a+(+v.people||1),0);
+  const income = mv.filter(v=>v.paid).reduce((a,v)=>a+(+v.price||0),0);
+  const unpaid = S.visits.filter(v=>v.status==='tamam' && !v.paid).reduce((a,v)=>a+(+v.price||0),0);
+  return `
+  <div class="row" style="margin-bottom:14px"><h2 style="margin:0">Tur &amp; Tek Ders</h2><span class="spacer"></span>
+    ${S.services.map(s=>`<button class="btn ${s.id==='tur'?'':'ghost'}" onclick="openVisit({serviceId:'${s.id}'})">+ ${esc(s.name)}</button>`).join('')}</div>
+  <p class="muted" style="margin-top:-6px">Paket almadan tek seferlik doğa turu veya manej dersi alan müşteriler. Paketli kursiyerler "Kursiyerler" bölümündedir.</p>
+  <div class="grid g4">
+    <div class="card"><div class="muted">Bu ay rezervasyon</div><div class="stat">${mv.length}</div></div>
+    <div class="card"><div class="muted">Bu ay kişi</div><div class="stat">${people}</div></div>
+    <div class="card money"><div class="muted">Bu ay tahsil edilen</div><div class="stat" style="color:var(--ok)">${money(income)}</div></div>
+    <div class="card money"><div class="muted">Ödemesi alınmamış (yapılmış)</div><div class="stat" style="color:${unpaid?'var(--bad)':'var(--brand)'}">${money(unpaid)}</div></div>
+  </div>
+  <div class="card">
+    <div class="row" style="margin-bottom:10px">
+      <input style="max-width:220px" placeholder="Müşteri / telefon / at…" value="${esc(tFilter.q)}" oninput="tFilter.q=this.value;rerenderKeepFocus(this)">
+      <select style="max-width:170px" onchange="tFilter.range=this.value;render()">
+        ${[['gelecek','Bugün ve sonrası'],['bugun','Bugün'],['buay','Bu ay'],['gecmis','Geçmiş'],['tumu','Tümü']].map(([v,l])=>`<option value="${v}" ${tFilter.range===v?'selected':''}>${l}</option>`).join('')}</select>
+      <select style="max-width:180px" onchange="tFilter.svc=this.value;render()"><option value="all">Tüm hizmetler</option>
+        ${S.services.map(s=>`<option value="${s.id}" ${tFilter.svc===s.id?'selected':''}>${esc(s.name)}</option>`).join('')}</select>
+    </div>
+    ${list.length?`<div class="tablewrap"><table class="resp"><tr><th>Tarih</th><th>Saat</th><th>Hizmet</th><th>Müşteri</th><th>Kişi</th><th>At / Rehber</th><th class="money">Tutar</th><th>Durum</th><th></th></tr>
+    ${list.map(v=>`<tr><td>${fmt(v.date)}</td><td>${v.time}</td><td><span class="badge b-tur">${esc(v.serviceName)}</span></td>
+      <td><b>${esc(v.name)}</b><div class="muted">${esc(v.phone)}</div></td><td>${v.people||1}</td>
+      <td>${esc(v.horse)}<div class="muted">${esc(v.trainer)}</div></td>
+      <td class="money">${money(v.price)}<div>${v.paid?'<span class="badge b-ok">Ödendi</span>':'<span class="badge b-bad">Ödenmedi</span>'}</div></td>
+      <td>${v.status==='plan' && v.date<=t
+          ? `<button class="btn sm" onclick="setVisit('${v.id}','tamam')">${ic('check')} Geldi</button> <button class="btn ghost sm" onclick="setVisit('${v.id}','gelmedi')">Gelmedi</button>`
+          : `<span class="badge ${STATUS[v.status].c}">${STATUS[v.status].t}</span>`}</td>
+      <td style="text-align:right;white-space:nowrap">${!v.paid && v.status!=='iptal'?`<button class="btn ghost sm money" onclick="payVisit('${v.id}')">Tahsil et</button> `:''}<button class="btn ghost sm" onclick="openVisit({id:'${v.id}'})">${ic('edit')}</button></td></tr>`).join('')}
+    </table></div>`:`<div class="empty">Kayıt yok.</div>`}
+  </div>`;
+}
+function setVisit(id, st){ const v=S.visits.find(x=>x.id===id); v.status=st; save(); render(); toast(STATUS[st].t); }
+function payVisit(id){ const v=S.visits.find(x=>x.id===id); v.paid=true; v.paidDate=today(); save(); render(); toast('Tahsil edildi'); }
+
+function openVisit(o){
+  const v = o.id ? S.visits.find(x=>x.id===o.id) : null;
+  const sv0 = service(o.serviceId) || S.services[0];
+  const d = v || {serviceId:sv0.id, date:o.date||today(), time:'10:00', duration:sv0.duration, name:'', phone:'', people:1,
+    horse:'', trainer:'', price:sv0.price, paid:false, payMethod:'Nakit', source:'Telefon', status:'plan', note:''};
+  const pastNames = [...new Map(S.visits.map(x=>[x.name, x.phone])).entries()];
+  modal(`<h3>${v?'Tur / tek ders kaydını düzenle':'Yeni tur / tek ders'}</h3>
+  <form id="vf"><div class="two">
+    <label>Hizmet<select name="serviceId" id="vf-svc">${S.services.map(s=>`<option value="${s.id}" ${d.serviceId===s.id?'selected':''}>${esc(s.name)}</option>`).join('')}</select></label>
+    <label>Durum<select name="status">${Object.entries(STATUS).map(([k,x])=>`<option value="${k}" ${d.status===k?'selected':''}>${x.t}</option>`).join('')}</select></label>
+    <label>Müşteri adı *<input name="name" required list="dl-vn" id="vf-name" value="${esc(d.name)}"></label>
+    <label>Telefon<input name="phone" id="vf-phone" value="${esc(d.phone)}"></label>
+    <label>Tarih *<input type="date" name="date" required value="${d.date}"></label>
+    <label>Saat *<input type="time" name="time" required step="900" value="${d.time}"></label>
+    <label>Süre (dk)<input type="number" name="duration" min="15" step="15" id="vf-dur" value="${d.duration}"></label>
+    <label>Kişi sayısı<input type="number" name="people" min="1" id="vf-people" value="${d.people||1}"></label>
+    <label>At(lar) <span class="muted">— birden fazlaysa virgülle</span><input name="horse" list="dl-h" value="${esc(d.horse)}"></label>
+    <label>Eğitmen / rehber<input name="trainer" list="dl-t" value="${esc(d.trainer)}"></label>
+    <label class="money">Toplam tutar (₺)<input type="number" name="price" min="0" id="vf-price" value="${d.price}"></label>
+    <label class="money">Ödeme şekli<select name="payMethod">${['Nakit','Kart','Havale / EFT'].map(x=>`<option ${d.payMethod===x?'selected':''}>${x}</option>`).join('')}</select></label>
+    <label>Nereden geldi<select name="source">${['Telefon','Instagram','WhatsApp','Yüz yüze','Tavsiye','Diğer'].map(x=>`<option ${d.source===x?'selected':''}>${x}</option>`).join('')}</select></label>
+    <label class="money" style="display:flex;gap:8px;align-items:center;color:var(--ink);margin-top:22px"><input type="checkbox" name="paid" style="width:auto" ${d.paid?'checked':''}> Ödeme alındı</label>
+  </div>
+  <datalist id="dl-vn">${pastNames.map(([n])=>`<option value="${esc(n)}">`).join('')}</datalist>
+  <datalist id="dl-h">${lessonHorses().map(h=>`<option value="${esc(h)}">`).join('')}</datalist>
+  <datalist id="dl-t">${S.trainers.map(h=>`<option value="${esc(h)}">`).join('')}</datalist>
+  <label>Not<textarea name="note">${esc(d.note)}</textarea></label>
+  <div class="row">${v?`<button type="button" class="btn danger sm" onclick="delVisit('${v.id}')">Sil</button>
+      <button type="button" class="btn ghost sm" onclick="visitToStudent('${v.id}')" title="Bu müşteri için kursiyer kaydı aç">→ Paketli kursiyer yap</button>`:''}
+    <span class="spacer"></span><button type="button" class="btn ghost" onclick="closeModal()">Vazgeç</button><button class="btn">Kaydet</button></div>
+  </form>`);
+  // hizmet veya kişi sayısı değişince tutarı ve süreyi öner
+  const recalc = () => { const s = service($('#vf-svc').value); if(s && s.price) $('#vf-price').value = s.price * (+$('#vf-people').value||1); };
+  $('#vf-svc').onchange = () => { const s = service($('#vf-svc').value); $('#vf-dur').value = s.duration; recalc(); };
+  $('#vf-people').oninput = recalc;
+  $('#vf-name').onchange = ev => { const p = pastNames.find(([n])=>n===ev.target.value); if(p && !$('#vf-phone').value) $('#vf-phone').value = p[1]||''; };
+  $('#vf').onsubmit = ev => { ev.preventDefault(); const f = Object.fromEntries(new FormData(ev.target));
+    const s = service(f.serviceId);
+    const data = {serviceId:f.serviceId, serviceName:s?.name||'', name:f.name.trim(), phone:f.phone.trim(), date:f.date, time:f.time,
+      duration:+f.duration||60, people:Math.max(1,+f.people||1), horse:f.horse.trim(), trainer:f.trainer.trim(), price:+f.price||0,
+      paid:!!f.paid, payMethod:f.payMethod, source:f.source, status:f.status, note:f.note};
+    if(!data.name) return;
+    data.paidDate = data.paid ? (v?.paidDate || today()) : '';
+    if(data.status!=='iptal'){
+      const c = findConflicts({dates:[data.date], time:data.time, duration:data.duration, horse:data.horse, trainer:data.trainer, excludeId:v?.id});
+      if(c.length && !confirm('Çakışma var:\n\n'+c.join('\n')+'\n\nYine de kaydedilsin mi?')) return;
+    }
+    if(v) Object.assign(v, data); else S.visits.push({id:uid(), created:today(), ...data});
+    splitList(data.horse).forEach(h=>{ if(!S.horses.includes(h)) S.horses.push(h); });
+    if(data.trainer && !S.trainers.includes(data.trainer)) S.trainers.push(data.trainer);
+    save(); closeModal(); render(); toast('Kaydedildi');
+  };
+}
+function delVisit(id){ if(!confirm('Kayıt silinsin mi?')) return; S.visits=S.visits.filter(x=>x.id!==id); save(); closeModal(); render(); }
+function visitToStudent(id){ const v=S.visits.find(x=>x.id===id);
+  const ex = S.students.find(s=>s.name.toLocaleLowerCase('tr')===v.name.toLocaleLowerCase('tr'));
+  if(ex){ toast('Bu isimde kursiyer zaten var'); return openStudent(ex.id); }
+  openStudentForm(null, {name:v.name, phone:v.phone, note:`${v.serviceName} müşterisiydi (${fmt(v.date)}).`}); }
+
+/* ================== CAFE & RESTORAN ================== */
+ICONS.cup = '<path d="M4 8h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M17 9.5h1.5a2.5 2.5 0 0 1 0 5H17M7.5 5c0-1 1-1.2 1-2.5M11.5 5c0-1 1-1.2 1-2.5M4 21h13"/>';
+const CAFE_AREAS = {ic:'İç alan', dis:'Dış alan (bahçe)'};
+const CAFE_ST = {bekliyor:{t:'Onay bekliyor',c:'b-warn'}, onay:{t:'Onaylandı',c:'b-info'}, geldi:{t:'Geldi',c:'b-ok'}, gelmedi:{t:'Gelmedi',c:'b-mut'}, iptal:{t:'İptal',c:'b-mut'}};
+const CAFE_ACTIVE = ['bekliyor','onay','geldi'];
+const AY_TAM = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+const tmin = t => { const [h,m] = String(t||'0:0').split(':').map(Number); return h*60+(m||0); };
+const mtime = m => pad(Math.floor(m/60))+':'+pad(m%60);
+const cafeTable = id => S.cafe.tables.find(t=>t.id===id);
+function cafeSummer(date){ return (S.cafe.summer||[]).includes(parse(date).getMonth()+1); }
+function cafeHours(date){ return cafeSummer(date) ? [S.cafe.sOpen, S.cafe.sClose] : [S.cafe.wOpen, S.cafe.wClose]; }
+// Açık alanlar; yazın önce bahçe denenir
+function cafeAreasOpen(date){ const a = []; if(cafeSummer(date) && !(S.cafe.outClosed||[]).includes(date)) a.push('dis'); a.push('ic'); return a; }
+// Verilen saat aralığında dolu olan masalar
+function cafeBusy(date, time, excludeId, dur){ const a = tmin(time), b = a + (dur || +S.cafe.stay || 120), busy = new Set();
+  S.cafeRes.filter(r=>r.date===date && r.id!==excludeId && CAFE_ACTIVE.includes(r.status)).forEach(r=>{
+    const ra = tmin(r.time), rb = ra + (+S.cafe.stay || 120);
+    if(a < rb && ra < b) (r.tables||[]).forEach(t=>busy.add(t)); });
+  return busy; }
+// Önce tek masa (en küçük uygun), olmazsa büyükten küçüğe masa birleştir
+function pickTables(free, people){
+  const single = free.filter(t=>+t.seats>=people).sort((x,y)=>x.seats-y.seats)[0];
+  if(single) return [single];
+  const out = []; let sum = 0;
+  for(const t of free.slice().sort((x,y)=>y.seats-x.seats)){ out.push(t); sum += +t.seats; if(sum>=people) return out; }
+  return null; }
+function cafeTry(date, time, people, pref, excludeId){
+  const open = cafeAreasOpen(date), [o,c] = cafeHours(date);
+  if(!time || tmin(time) < tmin(o) || tmin(time) >= tmin(c)) return {ok:false, msg:`Bu saatte kapalıyız (açık: ${o}–${c})`};
+  if(pref && pref!=='farketmez' && !open.includes(pref))
+    return {ok:false, msg: cafeSummer(date) ? 'Bu gün dış alan kapalı' : 'Kış döneminde dış alan kullanılmıyor'};
+  const busy = cafeBusy(date, time, excludeId);
+  for(const area of (pref && pref!=='farketmez' ? [pref] : open)){
+    const pick = pickTables(S.cafe.tables.filter(t=>t.area===area && !busy.has(t.id)), people);
+    if(pick) return {ok:true, area, tables:pick.map(t=>t.id), names:pick.map(t=>t.name), seats:pick.reduce((a,t)=>a + +t.seats, 0)};
+  }
+  return {ok:false, msg:`${people} kişi için bu saatte yeterli boş masa yok`};
+}
+// Bot ve "Yer var mı?" kutusu bunu kullanır: yer yoksa aynı gün en yakın uygun saatleri önerir
+function cafeCheck(date, time, people, pref, excludeId){
+  const r = cafeTry(date, time, people, pref, excludeId);
+  if(!r.ok){ const [o,c] = cafeHours(date), alt = [];
+    for(let m = Math.ceil(tmin(o)/30)*30; m < tmin(c); m += 30){ const t = mtime(m); if(t!==time && cafeTry(date, t, people, pref, excludeId).ok) alt.push(t); }
+    r.alternatives = alt.sort((a,b)=>Math.abs(tmin(a)-tmin(time))-Math.abs(tmin(b)-tmin(time))).slice(0,6).sort();
+  }
+  return r;
+}
+function cafeLoad(date){ const [o,c] = cafeHours(date), open = cafeAreasOpen(date), rows = [];
+  const tabs = S.cafe.tables.filter(t=>open.includes(t.area));
+  for(let m = Math.floor(tmin(o)/60)*60; m < tmin(c); m += 60){ const t = mtime(m), busy = cafeBusy(date, t, null, 60);
+    const used = tabs.filter(x=>busy.has(x.id));
+    rows.push({t, used:used.length, total:tabs.length, ppl:S.cafeRes.filter(r=>r.date===date && CAFE_ACTIVE.includes(r.status) && tmin(r.time)<m+60 && m<tmin(r.time)+(+S.cafe.stay||120)).reduce((a,r)=>a+(+r.people||1),0)}); }
+  return rows; }
+const cafeResLabel = r => (r.tables||[]).length ? `${CAFE_AREAS[cafeTable(r.tables[0])?.area]||''} · ${(r.tables||[]).map(id=>esc(cafeTable(id)?.name||'?')).join(' + ')}` : '<span class="badge b-bad">Masa yok</span>';
+
+let cDate = null, cQ = {time:'13:00', people:2, area:'farketmez'};
+function vCafe(){
+  const d = cDate || today(), summer = cafeSummer(d), open = cafeAreasOpen(d), [o,c] = cafeHours(d);
+  const tabs = S.cafe.tables.filter(t=>open.includes(t.area)), seats = tabs.reduce((a,t)=>a + +t.seats, 0);
+  const list = S.cafeRes.filter(r=>r.date===d).sort((a,b)=>a.time.localeCompare(b.time));
+  const act = list.filter(r=>CAFE_ACTIVE.includes(r.status)), ppl = act.reduce((a,r)=>a+(+r.people||1),0);
+  const pend = S.cafeRes.filter(r=>r.status==='bekliyor' && r.date>=today()).length;
+  const chk = cafeCheck(d, cQ.time, Math.max(1,+cQ.people||1), cQ.area);
+  const load = cafeLoad(d);
+  return `
+  <div class="row" style="margin-bottom:12px"><h2 style="margin:0">Cafe &amp; Restoran</h2><span class="spacer"></span>
+    <button class="btn" onclick="openCafeRes({date:'${d}'})">+ Rezervasyon</button></div>
+  ${!S.cafe.configured?`<div class="card" style="border-color:var(--warn);background:var(--warnbg)"><b>Masa düzeni şu an örnek olarak girili.</b>
+    Hesaplamanın doğru olması için gerçek iç ve dış masa sayılarınız girilmeli: ${isAdmin()?`<a href="#" onclick="go('ayarlar');return false">Ayarlar → Cafe &amp; Restoran</a>`:'yönetici Ayarlar\'dan girebilir'}.</div>`:''}
+  ${pend?`<div class="card" style="border-color:var(--warn)"><b>${pend} rezervasyon onay bekliyor.</b> <span class="muted">Listede "Onayla" ile onaylayın.</span></div>`:''}
+  <div class="row" style="margin-bottom:12px">
+    <button class="btn ghost sm" onclick="cDate='${addDays(d,-1)}';render()">‹</button>
+    <input type="date" style="max-width:170px" value="${d}" onchange="cDate=this.value||null;render()">
+    <button class="btn ghost sm" onclick="cDate='${addDays(d,1)}';render()">›</button>
+    ${d!==today()?`<button class="btn ghost sm" onclick="cDate=null;render()">Bugün</button>`:''}
+    <b>${GUN[parse(d).getDay()]}</b>
+    <span class="badge ${summer?'b-ok':'b-info'}">${summer?'Yaz dönemi · iç + dış alan':'Kış dönemi · sadece iç alan'}</span>
+    ${summer?`<label style="display:flex;gap:6px;align-items:center;margin:0;color:var(--ink)"><input type="checkbox" style="width:auto" ${open.includes('dis')?'':'checked'} onchange="cafeToggleOut('${d}',this.checked)"> Bu gün dış alan kapalı (hava vb.)</label>`:''}
+  </div>
+  <div class="grid g4">
+    <div class="card"><div class="muted">Açık kapasite</div><div class="stat">${seats} kişi</div><div class="muted">${tabs.length} masa · ${open.map(a=>CAFE_AREAS[a].split(' ')[0]).join(' + ')}</div></div>
+    <div class="card"><div class="muted">Çalışma saati</div><div class="stat" style="font-size:20px">${o}–${c}</div></div>
+    <div class="card"><div class="muted">Rezervasyon</div><div class="stat">${act.length}</div></div>
+    <div class="card"><div class="muted">Beklenen kişi</div><div class="stat">${ppl}</div></div>
+  </div>
+  <div class="card"><h3>${ic('check')} Yer var mı?</h3>
+    <div class="row">
+      <label style="margin:0">Saat<input type="time" step="900" value="${cQ.time}" onchange="cQ.time=this.value;render()"></label>
+      <label style="margin:0">Kişi<input type="number" min="1" style="width:80px" value="${cQ.people}" onchange="cQ.people=Math.max(1,+this.value||1);render()"></label>
+      <label style="margin:0">Alan<select onchange="cQ.area=this.value;render()">${[['farketmez','Farketmez'],['ic','İç alan'],['dis','Dış alan']].map(([v,l])=>`<option value="${v}" ${cQ.area===v?'selected':''}>${l}</option>`).join('')}</select></label>
+    </div>
+    <div class="cafe-res ${chk.ok?'ok':'no'}">${chk.ok
+      ? `<b>Evet, yer var.</b> ${CAFE_AREAS[chk.area]} · ${chk.names.map(esc).join(' + ')} (${chk.seats} kişilik)
+         <button class="btn sm" style="margin-left:8px" onclick="openCafeRes({date:'${d}',time:'${cQ.time}',people:${+cQ.people||1},area:'${cQ.area}'})">Bu bilgilerle rezervasyon yap</button>`
+      : `<b>${esc(chk.msg)}.</b> ${chk.alternatives?.length?`Aynı gün uygun saatler: ${chk.alternatives.map(t=>`<button class="btn ghost sm" onclick="cQ.time='${t}';render()">${t}</button>`).join(' ')}`:'Bu gün için uygun saat bulunamadı.'}`}</div>
+  </div>
+  <div class="card"><h3>${ic('clipboard')} Rezervasyonlar · ${fmt(d)}</h3>
+    ${list.length?`<div class="tablewrap"><table class="resp"><tr><th>Saat</th><th>Müşteri</th><th>Kişi</th><th>Alan / masa</th><th>Durum</th><th></th></tr>
+    ${list.map(r=>`<tr><td><b>${r.time}</b></td><td><b>${esc(r.name)}</b><div class="muted">${esc(r.phone)}${r.source?' · '+esc(r.source):''}</div>${r.note?`<div class="muted">${esc(r.note)}</div>`:''}</td>
+      <td>${r.people}</td><td>${cafeResLabel(r)}</td><td><span class="badge ${CAFE_ST[r.status].c}">${CAFE_ST[r.status].t}</span></td>
+      <td style="text-align:right;white-space:nowrap">
+        ${r.status==='bekliyor'?`<button class="btn sm" onclick="setCafeSt('${r.id}','onay')">Onayla</button> `:''}
+        ${r.status==='onay' && r.date<=today()?`<button class="btn sm" onclick="setCafeSt('${r.id}','geldi')">${ic('check')} Geldi</button> `:''}
+        <button class="btn ghost sm" onclick="openCafeRes({id:'${r.id}'})">${ic('edit')}</button></td></tr>`).join('')}
+    </table></div>`:`<div class="empty">Bu gün için cafe rezervasyonu yok.</div>`}
+  </div>
+  <div class="card"><h3>${ic('down')} Saatlik doluluk</h3>
+    ${load.map(x=>{ const p = x.total ? Math.round(x.used/x.total*100) : 0;
+      return `<div class="occ"><span>${x.t}</span><div class="bar"><i style="width:${p}%;background:${p>=90?'var(--bad)':p>=60?'var(--warn)':'var(--ok)'}"></i></div><span>${x.used}/${x.total} masa · ${x.ppl} kişi</span></div>`}).join('')}
+    <p class="muted">Sadece rezervasyonlar hesaba katılır; rezervasyonsuz gelen misafirler için yer payı bırakmayı unutmayın. Ortalama oturma süresi ${S.cafe.stay} dk kabul edilir.</p>
+  </div>`;
+}
+function cafeToggleOut(d, closed){ const s = new Set(S.cafe.outClosed||[]); closed ? s.add(d) : s.delete(d); S.cafe.outClosed = [...s].filter(x=>x>=addDays(today(),-60)); save(); render(); }
+function setCafeSt(id, st){ const r = S.cafeRes.find(x=>x.id===id); if(!r) return;
+  if(st==='onay' && !(r.tables||[]).length){ const t = cafeTry(r.date, r.time, +r.people||1, r.area, r.id);
+    if(t.ok){ r.tables = t.tables; } else if(!confirm(`${t.msg}. Masa atanmadan onaylansın mı?`)) return; }
+  r.status = st; save(); render(); toast(CAFE_ST[st].t); }
+
+function openCafeRes(o){
+  const r = o.id ? S.cafeRes.find(x=>x.id===o.id) : null;
+  const d = r || {date:o.date||today(), time:o.time||cQ.time, people:o.people||2, area:o.area||'farketmez', name:'', phone:'', status:'onay', source:'Telefon', note:''};
+  modal(`<h3>${r?'Cafe rezervasyonunu düzenle':'Yeni cafe rezervasyonu'}</h3>
+  <form id="cf"><div class="two">
+    <label>Müşteri adı *<input name="name" required value="${esc(d.name)}"></label>
+    <label>Telefon<input name="phone" value="${esc(d.phone)}"></label>
+    <label>Tarih *<input type="date" name="date" required value="${d.date}"></label>
+    <label>Saat *<input type="time" name="time" required step="900" value="${d.time}"></label>
+    <label>Kişi sayısı *<input type="number" name="people" min="1" required value="${d.people}"></label>
+    <label>Alan tercihi<select name="area">${[['farketmez','Farketmez'],['ic','İç alan'],['dis','Dış alan (bahçe)']].map(([v,l])=>`<option value="${v}" ${d.area===v?'selected':''}>${l}</option>`).join('')}</select></label>
+    <label>Durum<select name="status">${Object.entries(CAFE_ST).map(([k,x])=>`<option value="${k}" ${d.status===k?'selected':''}>${x.t}</option>`).join('')}</select></label>
+    <label>Nereden geldi<select name="source">${['Telefon','Instagram','WhatsApp','Yüz yüze','Diğer'].map(x=>`<option ${d.source===x?'selected':''}>${x}</option>`).join('')}</select></label>
+  </div>
+  <div class="cafe-res" id="cf-av"></div>
+  <label>Not <span class="muted">— doğum günü, bebek sandalyesi, alerji vb.</span><textarea name="note">${esc(d.note)}</textarea></label>
+  <div class="row">${r?`<button type="button" class="btn danger sm" onclick="delCafeRes('${r.id}')">Sil</button>`:''}<span class="spacer"></span>
+    <button type="button" class="btn ghost" onclick="closeModal()">Vazgeç</button><button class="btn">Kaydet</button></div>
+  </form>`);
+  const F = $('#cf');
+  const upd = () => { const f = Object.fromEntries(new FormData(F)); const box = $('#cf-av');
+    if(!f.date || !f.time){ box.className='cafe-res'; box.innerHTML=''; return; }
+    const k = cafeCheck(f.date, f.time, Math.max(1,+f.people||1), f.area, r?.id);
+    box.className = 'cafe-res ' + (k.ok?'ok':'no');
+    box.innerHTML = k.ok ? `Yer var: <b>${CAFE_AREAS[k.area]} · ${k.names.map(esc).join(' + ')}</b> (${k.seats} kişilik)`
+      : `<b>${esc(k.msg)}.</b> ${k.alternatives?.length?'Uygun saatler: '+k.alternatives.join(', '):''}`; };
+  F.oninput = upd; F.onchange = upd; upd();
+  F.onsubmit = ev => { ev.preventDefault(); const f = Object.fromEntries(new FormData(F));
+    const data = {name:f.name.trim(), phone:f.phone.trim(), date:f.date, time:f.time, people:Math.max(1,+f.people||1), area:f.area, status:f.status, source:f.source, note:f.note.trim()};
+    if(!data.name) return;
+    data.tables = [];
+    if(CAFE_ACTIVE.includes(data.status)){ const k = cafeTry(data.date, data.time, data.people, data.area, r?.id);
+      if(k.ok) data.tables = k.tables;
+      else if(!confirm(`${k.msg}.\n\nYine de kaydedilsin mi? (Masa atanmayacak, listede "Masa yok" görünecek.)`)) return; }
+    if(r) Object.assign(r, data); else S.cafeRes.push({id:uid(), created:today(), by:me()?.name||'', ...data});
+    save(); closeModal(); cDate = data.date; render(); toast('Kaydedildi'); };
+}
+function delCafeRes(id){ if(!confirm('Cafe rezervasyonu silinsin mi?')) return; S.cafeRes = S.cafeRes.filter(x=>x.id!==id); save(); closeModal(); render(); }
+
+/* Ayarlar kartı */
+function cafeSet(fn){ fn(); S.cafe.configured = true; save(); render(); }
+function cafeSettingsCard(){
+  const sum = a => { const t = S.cafe.tables.filter(x=>x.area===a); return `${t.length} masa · ${t.reduce((s,x)=>s + +x.seats,0)} kişi`; };
+  return `<div class="card"><h3>${ic('cup')} Cafe &amp; Restoran</h3>
+    ${!S.cafe.configured?`<p style="color:var(--warn)"><b>Aşağıdaki masa düzeni örnektir.</b> Gerçek masalarınızı girin ya da doğruysa onaylayın.
+      <button class="btn sm" onclick="cafeSet(()=>{})">Masa düzenim doğru</button></p>`:''}
+    <div class="muted" style="margin-bottom:6px">Yaz dönemi (dış alan açık) ayları</div>
+    <div class="row" style="margin-bottom:12px">${AY_TAM.map((a,i)=>`<label style="display:flex;gap:4px;align-items:center;margin:0;color:var(--ink);font-size:13px"><input type="checkbox" style="width:auto" ${S.cafe.summer.includes(i+1)?'checked':''}
+      onchange="cafeSet(()=>{ const s=new Set(S.cafe.summer); this.checked?s.add(${i+1}):s.delete(${i+1}); S.cafe.summer=[...s].sort((a,b)=>a-b); })">${a}</label>`).join('')}</div>
+    <div class="two">
+      <label>Yaz açılış<input type="time" value="${S.cafe.sOpen}" onchange="cafeSet(()=>S.cafe.sOpen=this.value)"></label>
+      <label>Yaz kapanış<input type="time" value="${S.cafe.sClose}" onchange="cafeSet(()=>S.cafe.sClose=this.value)"></label>
+      <label>Kış açılış<input type="time" value="${S.cafe.wOpen}" onchange="cafeSet(()=>S.cafe.wOpen=this.value)"></label>
+      <label>Kış kapanış<input type="time" value="${S.cafe.wClose}" onchange="cafeSet(()=>S.cafe.wClose=this.value)"></label>
+      <label>Ortalama oturma süresi (dk)<input type="number" min="30" step="15" value="${S.cafe.stay}" onchange="cafeSet(()=>S.cafe.stay=Math.max(30,+this.value||120))"></label>
+    </div>
+    <div class="muted" style="margin:4px 0 6px"><b>İç alan:</b> ${sum('ic')} &nbsp; <b>Dış alan:</b> ${sum('dis')}</div>
+    <div class="tablewrap"><table><tr><th>Masa</th><th>Alan</th><th>Kişi</th><th></th></tr>
+    ${S.cafe.tables.map((t,i)=>`<tr>
+      <td><input style="width:90px" value="${esc(t.name)}" onchange="cafeSet(()=>S.cafe.tables[${i}].name=this.value.trim()||'Masa')"></td>
+      <td><select onchange="cafeSet(()=>S.cafe.tables[${i}].area=this.value)">${Object.entries(CAFE_AREAS).map(([k,l])=>`<option value="${k}" ${t.area===k?'selected':''}>${l}</option>`).join('')}</select></td>
+      <td><input type="number" min="1" style="width:70px" value="${t.seats}" onchange="cafeSet(()=>S.cafe.tables[${i}].seats=Math.max(1,+this.value||1))"></td>
+      <td><button class="btn ghost sm" onclick="cafeSet(()=>S.cafe.tables.splice(${i},1))">Sil</button></td></tr>`).join('')}</table></div>
+    <div class="row" style="margin-top:10px"><b style="font-size:13px">Toplu ekle:</b>
+      <select id="cb-area">${Object.entries(CAFE_AREAS).map(([k,l])=>`<option value="${k}">${l}</option>`).join('')}</select>
+      <input id="cb-n" type="number" min="1" value="1" style="width:64px"> adet
+      <input id="cb-s" type="number" min="1" value="4" style="width:64px"> kişilik
+      <button class="btn sm" onclick="cafeBulkAdd()">Ekle</button></div>
+    <p class="muted">Masalar birleştirilebilir kabul edilir: büyük gruplar için aynı alandaki boş masalar toplanır.</p>
+  </div>`;
+}
+function cafeBulkAdd(){ const area = $('#cb-area').value, n = Math.min(50, +$('#cb-n').value||0), s = Math.max(1, +$('#cb-s').value||4);
+  const pre = area==='ic' ? 'İ' : 'D'; let k = S.cafe.tables.filter(t=>t.area===area).length;
+  cafeSet(()=>{ for(let i=0;i<n;i++) S.cafe.tables.push({id:uid(), name:pre+(++k), area, seats:s}); }); }
+
+/* ================== PANSİYON ================== */
+const CHARGE_TYPES = ['Pansiyon','Veteriner','Nalbant','Aşı / İlaç','Ek yem','Antrenman / Çalıştırma','Diğer'];
+const SERVICES = ['Yem','Saman / Talaş','Tımar / Bakım','Gezdirme','Padok','Antrenman'];
+const owner = id => S.owners.find(x=>x.id===id);
+const boarder = id => S.boarders.find(x=>x.id===id);
+const pensionHorses = () => S.boarders.filter(h=>!h.own);   // müşteri (pansiyon) atları
+const lessonHorses = () => [...new Set([...S.boarders.filter(h=>h.own && boarderActive(h)).map(h=>h.name), ...S.horses])];
+const HORSE_ROLES = ['Okul atı','Tur atı','Manej','Yarışma','Damızlık','Genç at / eğitimde','Emekli','Satılık'];
+const ym = s => s.slice(0,7);
+const monthName = m => { const [y,mo]=m.split('-').map(Number); return `${['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'][mo-1]} ${y}`; };
+function boarderActive(h, m){ m = m || ym(today());
+  return h.startDate && ym(h.startDate) <= m && (!h.endDate || ym(h.endDate) >= m); }
+function ownerBalance(oid){ const hs = S.boarders.filter(h=>h.ownerId===oid).map(h=>h.id);
+  return S.charges.filter(c=>hs.includes(c.horseId) && !c.paid).reduce((a,c)=>a+(+c.amount||0),0); }
+function careDue(days){ const lim = addDays(today(),days), out=[];
+  S.boarders.filter(h=>boarderActive(h)).forEach(h=>{
+    [['nextFarrier','Nalbant'],['nextVaccine','Aşı'],['nextDeworm','Parazit'],['nextDental','Diş'],['insuranceEnd','Sigorta bitişi']].forEach(([k,t])=>{ if(h[k] && h[k]<=lim) out.push({h,t,d:h[k]}); });
+  }); return out.sort((a,b)=>a.d.localeCompare(b.d)); }
+let pMonth = ym(today());
+
+function vPansiyon(){
+  const active = pensionHorses().filter(h=>boarderActive(h, pMonth));
+  const mc = S.charges.filter(c=>c.month===pMonth);
+  const total = mc.reduce((a,c)=>a+(+c.amount||0),0), paid = mc.filter(c=>c.paid).reduce((a,c)=>a+(+c.amount||0),0);
+  const missing = active.filter(h=>!mc.some(c=>c.horseId===h.id && c.type==='Pansiyon'));
+  const prevM = m => { const d=parse(m+'-01'); d.setMonth(d.getMonth()-1); return ym(ymd(d)); };
+  const nextM = m => { const d=parse(m+'-01'); d.setMonth(d.getMonth()+1); return ym(ymd(d)); };
+  const owners = S.owners.slice().sort((a,b)=>a.name.localeCompare(b.name,'tr'));
+  return `
+  <div class="row" style="margin-bottom:14px"><h2 style="margin:0">Pansiyon</h2><span class="spacer"></span>
+    <button class="btn ghost" onclick="openOwnerForm()">+ At sahibi</button>
+    <button class="btn" onclick="openBoarderForm(null,null,false)">+ Pansiyon atı</button></div>
+  <div class="row" style="margin-bottom:12px">
+    <button class="btn ghost sm" onclick="pMonth='${prevM(pMonth)}';render()">‹</button>
+    <b>${monthName(pMonth)}</b>
+    <button class="btn ghost sm" onclick="pMonth='${nextM(pMonth)}';render()">›</button>
+    <span class="spacer"></span>
+    ${missing.length?`<button class="btn sm money" onclick="genMonth('${pMonth}')">${monthName(pMonth)} pansiyon ücretlerini oluştur (${missing.length} at)</button>`:''}
+  </div>
+  <div class="grid g4">
+    <div class="card"><div class="muted">Pansiyondaki at</div><div class="stat">${active.length}</div></div>
+    <div class="card money"><div class="muted">Bu ay tahakkuk</div><div class="stat">${money(total)}</div></div>
+    <div class="card money"><div class="muted">Tahsil edilen</div><div class="stat" style="color:var(--ok)">${money(paid)}</div></div>
+    <div class="card money"><div class="muted">Bu ay bekleyen</div><div class="stat" style="color:${total-paid?'var(--bad)':'var(--brand)'}">${money(total-paid)}</div></div>
+  </div>
+  <div class="card"><h3>Atlar · ${monthName(pMonth)}</h3>
+    ${active.length?`<div class="tablewrap"><table class="resp"><tr><th>At</th><th>Sahibi</th><th>Boks</th><th class="money">Aylık ücret</th><th class="money">Bu ay</th><th>Sonraki nalbant</th><th>Sonraki aşı</th></tr>
+    ${active.sort((a,b)=>a.name.localeCompare(b.name,'tr')).map(h=>{ const cs = mc.filter(c=>c.horseId===h.id);
+      const pc = cs.find(c=>c.type==='Pansiyon'); const extra = cs.filter(c=>c.type!=='Pansiyon').reduce((a,c)=>a+(+c.amount||0),0);
+      const st = !pc ? '<span class="badge b-mut">Oluşturulmadı</span>' : pc.paid ? '<span class="badge b-ok">Ödendi</span>' : '<span class="badge b-bad">Bekliyor</span>';
+      const dd = d => !d ? '-' : `<span class="${d<today()?'badge b-bad':d<=addDays(today(),14)?'badge b-warn':''}">${fmtShort(d)}</span>`;
+      return `<tr class="click" onclick="openOwner('${h.ownerId}')"><td><b>${esc(h.name)}</b><div class="muted">${esc([h.breed,h.gender].filter(Boolean).join(' · '))}</div></td>
+        <td>${esc(owner(h.ownerId)?.name)}</td><td>${esc(h.box)}</td><td class="money">${money(h.monthlyFee)}</td>
+        <td class="money">${st}${extra?`<div class="muted">+ ${money(extra)} ekstra</div>`:''}</td><td>${dd(h.nextFarrier)}</td><td>${dd(h.nextVaccine)}</td></tr>`}).join('')}
+    </table></div>`:`<div class="empty">Bu ay pansiyonda at yok.</div>`}
+  </div>
+  <div class="card"><h3>At sahipleri (${owners.length})</h3>
+    ${owners.length?`<div class="tablewrap"><table class="resp"><tr><th>Ad Soyad</th><th>Telefon</th><th>Atları</th><th class="money">Açık bakiye</th></tr>
+    ${owners.map(o=>{const hs=S.boarders.filter(h=>h.ownerId===o.id && boarderActive(h)); const bal=ownerBalance(o.id);
+      return `<tr class="click" onclick="openOwner('${o.id}')"><td><b>${esc(o.name)}</b></td><td>${esc(o.phone)}</td>
+      <td>${hs.map(h=>esc(h.name)).join(', ')||'<span class="muted">-</span>'}</td>
+      <td class="money">${bal?`<b style="color:var(--bad)">${money(bal)}</b>`:'<span style="color:var(--ok)">Borç yok</span>'}</td></tr>`}).join('')}
+    </table></div>`:`<div class="empty">Henüz at sahibi yok.</div>`}
+  </div>`;
+}
+function genMonth(m){
+  const hs = pensionHorses().filter(h=>boarderActive(h,m) && !S.charges.some(c=>c.horseId===h.id && c.month===m && c.type==='Pansiyon'));
+  hs.forEach(h=>S.charges.push({id:uid(), horseId:h.id, month:m, type:'Pansiyon', desc:monthName(m)+' pansiyon', amount:+h.monthlyFee||0, paid:false, date:today()}));
+  save(); render(); toast(`${hs.length} pansiyon ücreti oluşturuldu`);
+}
+
+function openOwnerForm(id){
+  const o = id ? owner(id) : {name:'',phone:'',email:'',tc:'',address:'',note:''};
+  modal(`<h3>${id?'At sahibini düzenle':'Yeni at sahibi'}</h3>
+  <form id="of"><div class="two">
+    <label>Ad Soyad *<input name="name" required value="${esc(o.name)}"></label>
+    <label>Telefon<input name="phone" value="${esc(o.phone)}"></label>
+    <label>E-posta<input name="email" type="email" value="${esc(o.email)}"></label>
+    <label>Fatura bilgisi (vergi no / TC)<input name="tax" value="${esc(o.tax)}"></label></div>
+    <label>Adres<textarea name="address">${esc(o.address)}</textarea></label>
+    <label>Not<textarea name="note">${esc(o.note)}</textarea></label>
+    <div class="row">${id?`<button type="button" class="btn danger sm" onclick="delOwner('${id}')">Sil</button>`:''}<span class="spacer"></span>
+      <button type="button" class="btn ghost" onclick="${id?`openOwner('${id}')`:'closeModal()'}">Vazgeç</button><button class="btn">Kaydet</button></div>
+  </form>`);
+  $('#of').onsubmit = ev => { ev.preventDefault(); const f = Object.fromEntries(new FormData(ev.target)); f.name=f.name.trim(); if(!f.name) return;
+    let oid=id; if(id) Object.assign(o,f); else { oid=uid(); S.owners.push({id:oid, created:today(), ...f}); }
+    save(); render(); openOwner(oid); toast('Kaydedildi'); };
+}
+function delOwner(id){ const hs=S.boarders.filter(h=>h.ownerId===id).map(h=>h.id);
+  if(!confirm(`${owner(id).name}, ${hs.length} atı ve tüm ücret kayıtları silinsin mi? Geri alınamaz.`)) return;
+  S.charges=S.charges.filter(c=>!hs.includes(c.horseId)); S.boarders=S.boarders.filter(h=>h.ownerId!==id); S.owners=S.owners.filter(o=>o.id!==id);
+  save(); closeModal(); render(); }
+
+function openOwner(id){
+  const o = owner(id); if(!o) return closeModal();
+  const hs = S.boarders.filter(h=>h.ownerId===id).sort((a,b)=>(a.endDate?1:0)-(b.endDate?1:0));
+  const hIds = hs.map(h=>h.id);
+  const cs = S.charges.filter(c=>hIds.includes(c.horseId)).sort((a,b)=>(b.month+b.date).localeCompare(a.month+a.date));
+  const bal = ownerBalance(id);
+  modal(`
+  <div class="row"><h3 style="margin:0">${esc(o.name)}</h3><span class="badge b-mut">At sahibi</span><span class="spacer"></span>
+    <button class="btn ghost sm" onclick="openOwnerForm('${id}')">Düzenle</button><button class="btn ghost sm" onclick="closeModal()">Kapat</button></div>
+  <p class="muted">${[o.phone&&ic('phone')+' '+esc(o.phone), o.email&&ic('mail')+' '+esc(o.email), o.tax&&'Vergi/TC: '+esc(o.tax)].filter(Boolean).join(' · ')}</p>
+  ${o.note?`<div class="card" style="background:var(--warnbg);border-color:#f0dcb6;padding:10px">${esc(o.note)}</div>`:''}
+  <div class="row" style="margin:10px 0"><h3 style="margin:0">Atları</h3><span class="spacer"></span><button class="btn sm" onclick="openBoarderForm(null,'${id}',false)">+ At ekle</button></div>
+  ${hs.length?hs.map(h=>`<div class="card" style="padding:12px">
+    <div class="row"><b>${ic('horse')} ${esc(h.name)}</b>${boarderActive(h)?'<span class="badge b-ok">Pansiyonda</span>':`<span class="badge b-mut">${h.endDate&&h.endDate<today()?'Ayrıldı':'Başlamadı'}</span>`}
+      <span class="spacer"></span><button class="btn ghost sm money" onclick="openChargeForm({horseId:'${h.id}'})">+ Masraf</button><button class="btn ghost sm" onclick="go('at','${h.id}')">Künye ›</button></div>
+    <div class="muted" style="margin-top:4px">${[h.breed,h.gender,h.birthYear&&h.birthYear+' doğumlu',h.box&&'Boks: '+h.box].filter(Boolean).map(esc).join(' · ')}</div>
+    <div class="muted">Giriş: ${fmt(h.startDate)}${h.endDate?' · Çıkış: '+fmt(h.endDate):''}<span class="money"> · Aylık: <b>${money(h.monthlyFee)}</b></span></div>
+    ${(h.services||[]).length?`<div class="muted">Dahil: ${h.services.map(esc).join(', ')}</div>`:''}
+    <div class="muted">Nalbant: ${fmt(h.nextFarrier)} · Aşı: ${fmt(h.nextVaccine)} · Parazit: ${fmt(h.nextDeworm)}</div>
+    ${h.note?`<div class="muted">${ic('note')} ${esc(h.note)}</div>`:''}
+  </div>`).join(''):`<div class="empty">Kayıtlı at yok.</div>`}
+  <div class="money"><div class="row" style="margin:14px 0 8px"><h3 style="margin:0">Hesap hareketleri</h3><span class="spacer"></span>
+    ${bal?`<b style="color:var(--bad)">Açık bakiye: ${money(bal)}</b> <button class="btn sm" onclick="payAll('${id}')">Tümünü tahsil et</button>`:'<span style="color:var(--ok)">Borç yok</span>'}</div>
+  ${cs.length?`<div class="tablewrap"><table class="resp"><tr><th>Dönem</th><th>At</th><th>Tür</th><th>Açıklama</th><th>Tutar</th><th>Durum</th><th></th></tr>
+    ${cs.map(c=>`<tr><td>${monthName(c.month)}</td><td>${esc(boarder(c.horseId)?.name)}</td><td>${esc(c.type)}</td><td class="muted">${esc(c.desc)}</td><td>${money(c.amount)}</td>
+      <td>${c.paid?`<span class="badge b-ok">Ödendi</span><div class="muted">${fmt(c.paidDate)}</div>`:`<button class="btn sm" onclick="payCharge('${c.id}','${id}')">Tahsil et</button>`}</td>
+      <td><button class="btn ghost sm" onclick="openChargeForm({id:'${c.id}'})">${ic('edit')}</button></td></tr>`).join('')}</table></div>`
+    :`<div class="empty">Henüz hareket yok.</div>`}</div>
+  `, true);
+}
+function payCharge(cid, oid){ const c=S.charges.find(x=>x.id===cid); c.paid=true; c.paidDate=today(); save(); render(); openOwner(oid); toast('Tahsil edildi'); }
+function payAll(oid){ const hs=S.boarders.filter(h=>h.ownerId===oid).map(h=>h.id); const bal=ownerBalance(oid);
+  if(!confirm(`${money(bal)} tutarındaki tüm açık kalemler tahsil edildi olarak işaretlensin mi?`)) return;
+  S.charges.filter(c=>hs.includes(c.horseId)&&!c.paid).forEach(c=>{c.paid=true;c.paidDate=today();}); save(); render(); openOwner(oid); }
+
+function openChargeForm(o){
+  const c = o.id ? S.charges.find(x=>x.id===o.id) : {horseId:o.horseId, month:ym(today()), type:'Veteriner', desc:'', amount:'', paid:false};
+  const h = boarder(c.horseId);
+  modal(`<h3>${o.id?'Kalemi düzenle':'Ekstra masraf'} · ${esc(h?.name)}</h3>
+  <form id="cf"><div class="two">
+    <label>Tür<select name="type">${CHARGE_TYPES.map(t=>`<option ${c.type===t?'selected':''}>${t}</option>`).join('')}</select></label>
+    <label>Dönem (ay)<input type="month" name="month" required value="${c.month}"></label>
+    <label>Tutar (₺) *<input type="number" min="0" name="amount" required value="${esc(c.amount)}"></label>
+    <label style="display:flex;gap:8px;align-items:center;color:var(--ink);margin-top:22px"><input type="checkbox" name="paid" style="width:auto" ${c.paid?'checked':''}> Ödendi</label>
+  </div>
+  <label>Açıklama<input name="desc" value="${esc(c.desc)}" placeholder="örn. 4 nal değişimi, kolik muayenesi…"></label>
+  <div class="row">${o.id?`<button type="button" class="btn danger sm" onclick="delCharge('${o.id}')">Sil</button>`:''}<span class="spacer"></span>
+    <button type="button" class="btn ghost" onclick="openOwner('${h?.ownerId}')">Vazgeç</button><button class="btn">Kaydet</button></div>
+  </form>`);
+  $('#cf').onsubmit = ev => { ev.preventDefault(); const f = Object.fromEntries(new FormData(ev.target));
+    const data = {type:f.type, month:f.month, amount:+f.amount||0, desc:f.desc, paid:!!f.paid};
+    data.paidDate = data.paid ? (c.paidDate || today()) : '';
+    if(o.id) Object.assign(c,data); else S.charges.push({id:uid(), horseId:c.horseId, date:today(), ...data});
+    save(); render(); openOwner(h.ownerId); toast('Kaydedildi'); };
+}
+function delCharge(id){ const c=S.charges.find(x=>x.id===id); const oid=boarder(c.horseId)?.ownerId;
+  if(!confirm('Kalem silinsin mi?')) return; S.charges=S.charges.filter(x=>x.id!==id); save(); render(); openOwner(oid); }
+
+/* ================== AT KÜNYESİ ================== */
+const COLORS = ['','Doru','Al','Kır','Yağız','Kula','Demirkır','Alaca','Kestane','Diğer'];
+const LOG_TYPES = ['Veteriner muayenesi','Aşı','Nalbant','Parazit','Diş','Sakatlık / tedavi','Antrenman / yarışma','Diğer'];
+const LOG_NEXT = {'Aşı':'nextVaccine','Nalbant':'nextFarrier','Parazit':'nextDeworm','Diş':'nextDental'};
+let aFilter = {q:'', st:'aktif'};
+function horseAge(h){ if(h.birthDate) return Math.floor((parse(today())-parse(h.birthDate))/31557600000); if(h.birthYear) return new Date().getFullYear()-(+h.birthYear); return null; }
+function photoStyle(h){ return h.photo ? `style="background-image:url('${h.photo}')"` : ''; }
+
+function vAtlar(){
+  const q = aFilter.q.toLocaleLowerCase('tr');
+  const list = S.boarders.filter(h=>{
+    if(aFilter.st==='ayrildi' ? boarderActive(h) : aFilter.st!=='tumu' && !boarderActive(h)) return false;
+    if(aFilter.st==='vadi' && !h.own) return false;
+    if(aFilter.st==='pansiyon' && h.own) return false;
+    return !q || [h.name,h.fedName,h.chip,h.passportNo,owner(h.ownerId)?.name].join(' ').toLocaleLowerCase('tr').includes(q);
+  }).sort((a,b)=>a.name.localeCompare(b.name,'tr'));
+  const due = new Set(careDue(14).map(x=>x.h.id));
+  return `
+  <div class="row" style="margin-bottom:12px"><h2 style="margin:0">At Künyeleri</h2><span class="spacer"></span>
+    <button class="btn ghost" onclick="openBoarderForm(null,null,false)">+ Pansiyon atı</button>
+    <button class="btn" onclick="openBoarderForm(null,null,true)">+ Vadi atı</button></div>
+  <div class="row" style="margin-bottom:12px">
+    <input style="flex:1;min-width:180px" placeholder="At adı, federasyon adı, çip no, sahip…" value="${esc(aFilter.q)}" oninput="aFilter.q=this.value;rerenderKeepFocus(this)">
+    <select style="max-width:170px" onchange="aFilter.st=this.value;render()">
+      ${[['aktif','Tüm atlar'],['vadi','Vadi atları'],['pansiyon','Pansiyon atları'],['ayrildi','Ayrılan / satılan'],['tumu','Hepsi (ayrılanlar dahil)']].map(([v,l])=>`<option value="${v}" ${aFilter.st===v?'selected':''}>${l}</option>`).join('')}</select>
+  </div>
+  ${list.length?`<div class="horses">${list.map(h=>`<div class="hcard" onclick="go('at','${h.id}')">
+      <div class="ph" ${photoStyle(h)}>${h.photo?'':ic('horse')}</div>
+      <div class="tx"><b>${esc(h.name)} ${due.has(h.id)?`<span title="Yaklaşan bakım" style="color:var(--warn)">${ic('health')}</span>`:''}</b>
+        ${h.fedName?`<div class="muted">${ic('award')} ${esc(h.fedName)}</div>`:''}
+        <div class="muted">${h.own?`<span class="badge b-ok">Vadi atı</span>${h.role?' '+esc(h.role):''}`:esc(owner(h.ownerId)?.name||'')}${h.box?' · Boks '+esc(h.box):''}</div></div></div>`).join('')}</div>`
+    :`<div class="empty">At bulunamadı.</div>`}`;
+}
+
+function vAt(id){
+  const h = boarder(id); if(!h) return `<div class="empty">At bulunamadı. <button class="btn ghost sm" onclick="go('atlar')">Listeye dön</button></div>`;
+  const o = owner(h.ownerId), age = horseAge(h);
+  const kv = rows => { const r = rows.filter(([,v])=>v!==undefined && v!==null && v!=='');
+    return r.length ? `<div class="kv">${r.map(([k,v,cls])=>`<div class="${cls||''}"><span>${k}</span><b>${v}</b></div>`).join('')}</div>` : `<div class="muted">Bilgi girilmemiş.</div>`; };
+  const dd = d => !d ? '' : `${fmt(d)} ${d<today()?'<span class="badge b-bad">Gecikti</span>':d<=addDays(today(),14)?'<span class="badge b-warn">Yaklaşıyor</span>':''}`;
+  const log = (h.log||[]).slice().sort((a,b)=>b.date.localeCompare(a.date));
+  return `
+  <div class="hero ${h.photo?'':'noimg'}" ${photoStyle(h)}>
+    <div class="cap"><h2>${esc(h.name)}</h2>
+      ${h.fedName?`<div>${ic('award')} Federasyon adı: <b>${esc(h.fedName)}</b></div>`:''}
+      <div style="opacity:.9;font-size:14px">${[h.breed, h.gender, age!=null?age+' yaş':'', h.color].filter(Boolean).map(esc).join(' · ')}</div></div>
+  </div>
+  <div class="row" style="margin-bottom:14px">
+    <button class="btn" onclick="openBoarderForm('${h.id}')">${ic('edit')} Künyeyi düzenle</button>
+    <label class="btn ghost" style="margin:0;background:#fff;color:var(--brand);border:1px solid var(--line);display:inline-flex;align-items:center;gap:6px">${ic('camera')} Fotoğraf
+      <input type="file" accept="image/*" style="display:none" onchange="setHorsePhoto('${h.id}', this.files[0])"></label>
+    <button class="btn ghost" onclick="openLogForm('${h.id}')">${ic('health')} Bakım / sağlık kaydı</button>
+  </div>
+  <div class="grid g2">
+    <div class="card"><h3>${ic('idcard')} Kimlik</h3>${kv([
+      ['Ahır adı', esc(h.name)], ['Federasyon / tescil adı', esc(h.fedName)], ['Kayıtlı federasyon', esc(h.federation)],
+      ['Pasaport / lisans no', esc(h.passportNo)], ['Mikroçip no', esc(h.chip)], ['UELN', esc(h.ueln)],
+      ['Irk', esc(h.breed)], ['Cinsiyet', esc(h.gender)], ['Doğum', h.birthDate?fmt(h.birthDate):esc(h.birthYear)], ['Yaş', age!=null?age:''],
+      ['Don (renk)', esc(h.color)], ['Boy', h.height?esc(h.height)+' cm':''], ['Doğduğu ülke', esc(h.origin)], ['Eşkal / belirgin işaretler', esc(h.markings)],
+    ])}</div>
+    <div class="card"><h3>${ic('pedigree')} Pedigri</h3>${kv([['Baba', esc(h.sire)], ['Anne', esc(h.dam)], ['Annenin babası', esc(h.damSire)], ['Yetiştirici', esc(h.breeder)]])}</div>
+    ${h.own?`<div class="card"><h3>${ic('valley')} Vadi atı</h3>${kv([
+      ['Sahibi', 'Vadi At Çiftliği'], ['Görevi', esc(h.role)], ['Boks / padok', esc(h.box)],
+      ['Çiftliğe geliş', fmt(h.startDate)], ['Ayrılış (satış / emeklilik)', h.endDate?fmt(h.endDate):''],
+    ])}</div>`:`<div class="card"><h3>${ic('barn')} Sahip &amp; pansiyon</h3>${kv([
+      ['Sahibi', o?`<a href="#" onclick="openOwner('${o.id}');return false">${esc(o.name)}</a>`:'-'], ['Telefon', o?.phone?`<a href="tel:${esc(o.phone)}">${esc(o.phone)}</a>`:''],
+      ['Boks / padok', esc(h.box)], ['Giriş', fmt(h.startDate)], ['Çıkış', h.endDate?fmt(h.endDate):''],
+      ['Aylık ücret', money(h.monthlyFee), 'money'], ['Ücrete dahil', (h.services||[]).map(esc).join(', ')],
+    ])}</div>`}
+    <div class="card"><h3>${ic('trophy')} Spor</h3>${kv([['Branş', esc(h.discipline)], ['Binicisi', esc(h.rider)], ['Seviye / kategori', esc(h.level)], ['Yarışma geçmişi / başarılar', esc(h.achievements)]])}</div>
+    <div class="card"><h3>${ic('health')} Sağlık &amp; bakım</h3>${kv([
+      ['Sonraki nalbant', dd(h.nextFarrier)], ['Sonraki aşı', dd(h.nextVaccine)], ['Sonraki parazit', dd(h.nextDeworm)], ['Sonraki diş kontrolü', dd(h.nextDental)],
+      ['Veteriner', esc(h.vet)+(h.vetPhone?` · <a href="tel:${esc(h.vetPhone)}">${esc(h.vetPhone)}</a>`:'')], ['Nalbant', esc(h.farrier)],
+      ['Sigorta', esc(h.insurance)], ['Sigorta bitişi', dd(h.insuranceEnd)], ['Sağlık durumu / alerji / ilaç', esc(h.health)],
+    ])}</div>
+    <div class="card"><h3>${ic('wheat')} Beslenme</h3>${kv([['Yem programı', esc(h.feed)], ['Takviyeler', esc(h.supplements)]])}
+      ${h.note?`<h3 style="margin-top:12px">${ic('note')} Notlar</h3><div style="white-space:pre-wrap">${esc(h.note)}</div>`:''}</div>
+  </div>
+  <div class="card"><div class="row"><h3 style="margin:0">${ic('history')} Bakım &amp; sağlık geçmişi</h3><span class="spacer"></span>
+    <button class="btn ghost sm" onclick="openLogForm('${h.id}')">+ Kayıt</button></div>
+    ${log.length?`<table class="resp" style="margin-top:6px"><tr><th>Tarih</th><th>Tür</th><th>Açıklama</th><th>Giren</th><th></th></tr>${log.map(l=>`<tr>
+      <td>${fmt(l.date)}</td><td><span class="badge b-info">${esc(l.type)}</span></td><td>${esc(l.desc)}</td><td class="muted">${esc(l.by)}</td>
+      <td style="text-align:right"><button class="btn ghost sm" onclick="delLog('${h.id}','${l.id}')">Sil</button></td></tr>`).join('')}</table>`
+    :`<div class="empty">Henüz kayıt yok. Veteriner, aşı, nalbant gibi işlemleri buraya yazın.</div>`}
+  </div>`;
+}
+
+function compressImage(file, max=1000, q=0.72){
+  return new Promise((res, rej)=>{
+    const r = new FileReader(); r.onerror = rej;
+    r.onload = () => { const img = new Image(); img.onerror = rej; img.onload = () => {
+      const k = Math.min(1, max/Math.max(img.width, img.height));
+      const c = document.createElement('canvas'); c.width = Math.round(img.width*k); c.height = Math.round(img.height*k);
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); res(c.toDataURL('image/jpeg', q)); }; img.src = r.result; };
+    r.readAsDataURL(file);
+  });
+}
+async function setHorsePhoto(id, file){ if(!file) return;
+  try{ const h = boarder(id); const old = h.photo; h.photo = await compressImage(file);
+    if(!save()){ h.photo = old; return; } render(); toast('Fotoğraf kaydedildi'); }
+  catch(e){ alert('Fotoğraf okunamadı.'); } }
+
+function openBoarderForm(id, ownerId, own){
+  if(!id && !own && !S.owners.length){ toast('Önce at sahibi ekleyin'); return openOwnerForm(); }
+  const h = id ? boarder(id) : {name:'', own:!!own, ownerId:ownerId||'', startDate:today(), monthlyFee:'', services:['Yem','Saman / Talaş','Tımar / Bakım','Padok']};
+  const I = (k, label, type='text', extra='') => `<label>${label}<input name="${k}" type="${type}" value="${esc(h[k]??'')}" ${extra}></label>`;
+  const T = (k, label) => `<label>${label}<textarea name="${k}">${esc(h[k]??'')}</textarea></label>`;
+  let photo = h.photo || '';
+  modal(`<h3>${id?'Künyeyi düzenle · '+esc(h.name):'Yeni at künyesi'}</h3>
+  <form id="hf">
+    <div class="photo-in"><div class="ph" id="hf-ph" ${photo?`style="background-image:url('${photo}')"`:''}>${photo?'':ic('horse')}</div>
+      <div><label class="btn ghost" style="margin:0 0 6px;background:#fff;color:var(--brand);border:1px solid var(--line);display:inline-flex;gap:6px;align-items:center">${ic('camera')} Fotoğraf seç
+        <input type="file" accept="image/*" id="hf-file" style="display:none"></label>
+        <div class="muted">Telefonda doğrudan kamerayla da çekebilirsiniz.</div>
+        ${photo?`<button type="button" class="btn ghost sm" id="hf-rm" style="margin-top:6px">Fotoğrafı kaldır</button>`:''}</div></div>
+    <fieldset><legend>Kimlik</legend><div class="two">
+      ${I('name','Ahır adı *','text','required')}
+      ${I('fedName','Federasyon / tescil adı','text','placeholder="Resmi kayıttaki adı farklıysa"')}
+      ${I('federation','Kayıtlı federasyon','text','placeholder="örn. TBF"')}
+      ${I('passportNo','Pasaport / lisans no')}
+      ${I('chip','Mikroçip no')}
+      ${I('ueln','UELN')}
+      ${I('breed','Irk','text','list="dl-breed"')}
+      <label>Cinsiyet<select name="gender">${['','Kısrak','Aygır','İğdiş'].map(g=>`<option ${h.gender===g?'selected':''}>${g}</option>`).join('')}</select></label>
+      ${I('birthDate','Doğum tarihi','date')}
+      <label>Don (renk)<select name="color">${COLORS.map(g=>`<option ${h.color===g?'selected':''}>${g}</option>`).join('')}</select></label>
+      ${I('height','Boy (cm)','number','min="80" max="200"')}
+      ${I('origin','Doğduğu ülke')}
+    </div>${T('markings','Eşkal / belirgin işaretler (yıldız, sekili vb.)')}</fieldset>
+    <datalist id="dl-breed">${['Arap','İngiliz','Yarımkan','Hanoverian','Holsteiner','KWPN','Selle Français','Haflinger','Midilli (Pony)','Rahvan','Appaloosa','Quarter Horse','Friesian'].map(b=>`<option value="${b}">`).join('')}</datalist>
+    <fieldset><legend>Pedigri</legend><div class="two">
+      ${I('sire','Baba')}${I('dam','Anne')}${I('damSire','Annenin babası')}${I('breeder','Yetiştirici')}</div></fieldset>
+    <fieldset><legend>Sahip</legend>
+    <div class="row" style="margin-bottom:12px">${[['vadi','Vadi\'nin kendi atı'],['pansiyon','Pansiyon atı (müşterinin)']].map(([v,l])=>`<label style="display:flex;gap:6px;align-items:center;margin:0;color:var(--ink)"><input type="radio" name="kind" value="${v}" style="width:auto" ${(v==='vadi')===!!h.own?'checked':''}>${l}</label>`).join('')}</div>
+    <div id="hf-own"><div class="two">
+      <label>Görevi<input name="role" list="dl-role" value="${esc(h.role??'')}" placeholder="örn. Okul atı, Tur atı"></label>
+      ${I('box','Boks / padok no')}
+      ${I('startDate','Çiftliğe geliş tarihi','date')}
+      ${I('endDate','Ayrılış tarihi (satış / emeklilik)','date')}
+    </div></div>
+    <datalist id="dl-role">${HORSE_ROLES.map(b=>`<option value="${b}">`).join('')}</datalist>
+    <div id="hf-pen"><div class="two">
+      <label>Sahibi *<select name="ownerId" required><option value="">Seçin…</option>${S.owners.slice().sort((a,b)=>a.name.localeCompare(b.name,'tr')).map(o=>`<option value="${o.id}" ${h.ownerId===o.id?'selected':''}>${esc(o.name)}</option>`).join('')}</select></label>
+      ${I('box','Boks / padok no')}
+      ${I('startDate','Giriş tarihi *','date','required')}
+      ${I('endDate','Çıkış tarihi','date')}
+      <label class="money">Aylık pansiyon ücreti (₺)<input type="number" min="0" name="monthlyFee" value="${esc(h.monthlyFee??'')}"></label>
+    </div>
+    <div class="muted" style="margin-bottom:6px">Ücrete dahil hizmetler</div>
+    <div class="row" style="margin-bottom:12px">${SERVICES.map(s=>`<label style="display:flex;gap:6px;align-items:center;margin:0;color:var(--ink)"><input type="checkbox" name="svc" value="${s}" style="width:auto" ${(h.services||[]).includes(s)?'checked':''}>${s}</label>`).join('')}</div></div></fieldset>
+    <fieldset><legend>Spor</legend><div class="two">
+      ${I('discipline','Branş','text','list="dl-disc"')}${I('rider','Binicisi')}${I('level','Seviye / kategori')}</div>
+      ${T('achievements','Yarışma geçmişi / başarılar')}</fieldset>
+    <datalist id="dl-disc">${['Engel atlama','Dresaj','Gezinti / doğa','Endurans','Western','Yarış','Okul atı'].map(b=>`<option value="${b}">`).join('')}</datalist>
+    <fieldset><legend>Sağlık &amp; bakım</legend><div class="two">
+      ${I('vet','Veteriner')}${I('vetPhone','Veteriner telefonu','tel')}${I('farrier','Nalbant')}
+      ${I('insurance','Sigorta (şirket / poliçe no)')}${I('insuranceEnd','Sigorta bitiş tarihi','date')}
+      ${I('nextFarrier','Sonraki nalbant','date')}${I('nextVaccine','Sonraki aşı','date')}
+      ${I('nextDeworm','Sonraki parazit uygulaması','date')}${I('nextDental','Sonraki diş kontrolü','date')}</div>
+      ${T('health','Sağlık durumu / alerji / kullandığı ilaçlar')}</fieldset>
+    <fieldset><legend>Beslenme &amp; notlar</legend>${T('feed','Yem programı')}${T('supplements','Takviyeler')}${T('note','Diğer notlar')}</fieldset>
+    <div class="row">${id && isAdmin()?`<button type="button" class="btn danger sm" onclick="delBoarder('${id}')">Sil</button>`:''}<span class="spacer"></span>
+      <button type="button" class="btn ghost" onclick="closeModal()">Vazgeç</button><button class="btn">Kaydet</button></div>
+  </form>`, true);
+  const setPh = () => { const p=$('#hf-ph'); p.style.backgroundImage = photo?`url('${photo}')`:''; p.innerHTML = photo?'':ic('horse'); };
+  $('#hf-file').onchange = async ev => { const f = ev.target.files[0]; if(!f) return; try{ photo = await compressImage(f); setPh(); }catch(e){ alert('Fotoğraf okunamadı.'); } };
+  if($('#hf-rm')) $('#hf-rm').onclick = () => { photo=''; setPh(); };
+  // Vadi atı / pansiyon atı: ilgili alanları göster, gizli kopyaları devre dışı bırak (aynı isimli box/tarih alanları)
+  const kindUpd = () => { const own = $('#hf').kind.value==='vadi';
+    [['#hf-own',own],['#hf-pen',!own]].forEach(([sel,on])=>{ const w=$(sel); w.style.display = on?'':'none';
+      w.querySelectorAll('input,select,textarea').forEach(el=>el.disabled=!on); }); };
+  $('#hf').querySelectorAll('input[name=kind]').forEach(r=>r.onchange=kindUpd); kindUpd();
+  $('#hf').onsubmit = ev => { ev.preventDefault(); const fd = new FormData(ev.target); const f = Object.fromEntries(fd);
+    delete f.svc; const own = f.kind==='vadi'; delete f.kind;
+    const data = {...f, own, name:f.name.trim(), monthlyFee:own?0:(+f.monthlyFee||0), services:own?[]:fd.getAll('svc'), photo};
+    if(own){ data.ownerId=''; data.startDate = data.startDate || today(); } else data.role='';
+    let hid = id, prev = id ? {...h} : null;
+    if(id) Object.assign(h,data); else { hid = uid(); S.boarders.push({id:hid, created:today(), log:[], ...data}); }
+    if(!save()){ if(id) Object.assign(h, prev); else S.boarders = S.boarders.filter(x=>x.id!==hid); return; }
+    go('at', hid); toast('Kaydedildi'); };
+}
+function delBoarder(id){ const h=boarder(id); if(!confirm(`${h.name} künyesi ve ücret kayıtları silinsin mi? Geri alınamaz.\n(Ayrılan atlar için silmek yerine çıkış tarihi girmeniz önerilir.)`)) return;
+  S.charges=S.charges.filter(c=>c.horseId!==id); S.boarders=S.boarders.filter(x=>x.id!==id); save(); go('atlar'); }
+
+function openLogForm(hid){
+  const h = boarder(hid);
+  modal(`<h3>Bakım / sağlık kaydı · ${esc(h.name)}</h3>
+  <form id="lf"><div class="two">
+    <label>Tür<select name="type" id="lf-type">${LOG_TYPES.map(t=>`<option>${t}</option>`).join('')}</select></label>
+    <label>Tarih<input type="date" name="date" required value="${today()}"></label></div>
+    <label>Açıklama<textarea name="desc" placeholder="örn. Grip-tetanoz aşısı yapıldı / 4 nal değişti / sol ön ayakta şişlik…"></textarea></label>
+    <label id="lf-next-w" style="display:none">Bir sonraki tarih (hatırlatma)<input type="date" name="next"></label>
+    ${h.own?'':`<div class="money"><fieldset><legend>Sahibe masraf olarak yansıt</legend>
+      <label>Tutar (₺) <span class="muted">— boş bırakılırsa masraf eklenmez</span><input type="number" min="0" name="amount"></label></fieldset></div>`}
+    <div class="row"><span class="spacer"></span><button type="button" class="btn ghost" onclick="closeModal()">Vazgeç</button><button class="btn">Kaydet</button></div>
+  </form>`);
+  const upd = () => { $('#lf-next-w').style.display = LOG_NEXT[$('#lf-type').value] ? '' : 'none'; };
+  $('#lf-type').onchange = upd; upd();
+  $('#lf').onsubmit = ev => { ev.preventDefault(); const f = Object.fromEntries(new FormData(ev.target));
+    h.log = h.log || []; h.log.push({id:uid(), date:f.date, type:f.type, desc:f.desc.trim(), by:me()?.name||''});
+    if(f.next && LOG_NEXT[f.type]) h[LOG_NEXT[f.type]] = f.next;
+    if(isAdmin() && +f.amount>0){
+      const ct = {'Veteriner muayenesi':'Veteriner','Aşı':'Aşı / İlaç','Nalbant':'Nalbant','Parazit':'Aşı / İlaç','Sakatlık / tedavi':'Veteriner','Antrenman / yarışma':'Antrenman / Çalıştırma'}[f.type] || 'Diğer';
+      S.charges.push({id:uid(), horseId:h.id, month:ym(f.date), type:ct, desc:f.desc.trim()||f.type, amount:+f.amount, paid:false, date:today()});
+    }
+    save(); closeModal(); render(); toast('Kayıt eklendi'); };
+}
+function delLog(hid, lid){ if(!confirm('Kayıt silinsin mi?')) return; const h=boarder(hid); h.log=(h.log||[]).filter(l=>l.id!==lid); save(); render(); }
+
+/* ================== KULLANICILAR & YETKİ ================== */
+const SESSION_KEY = 'vadi-oturum';
+const MAX_USERS = 5;
+const ROLES = {yonetici:'Yönetici', personel:'Personel'};
+function hashPin(pin){ let h1=0xdeadbeef, h2=0x41c6ce57; const str = 'vadi:'+pin;
+  for(let i=0;i<str.length;i++){ const ch=str.charCodeAt(i); h1=Math.imul(h1^ch,2654435761); h2=Math.imul(h2^ch,1597334677); }
+  h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909); h2=Math.imul(h2^(h2>>>16),2246822507)^Math.imul(h1^(h1>>>13),3266489909);
+  return (4294967296*(2097151&h2)+(h1>>>0)).toString(36); }
+function me(){ let id; try{ id = localStorage.getItem(SESSION_KEY); }catch(e){ id = window._sess; } return S.users.find(u=>u.id===id) || null; }
+function setSession(id){ try{ id ? localStorage.setItem(SESSION_KEY,id) : localStorage.removeItem(SESSION_KEY); }catch(e){ window._sess = id; } }
+const isAdmin = () => me()?.role==='yonetici';
+let login = {sel:null, pin:''};
+
+function vLogin(){
+  const logo = brandLogoHtml();
+  if(!S.users.length) return `<div class="login card">
+    <div class="logo-big">${logo}</div><h2>${esc(S.settings.farmName||'Vadi At Çiftliği')}</h2>
+    <p class="muted">İlk kurulum: önce <b>yönetici</b> hesabını oluşturun. Diğer kullanıcıları (en fazla ${MAX_USERS} kişi) sonra Ayarlar'dan ekleyebilirsiniz.</p>
+    <form id="setup" style="text-align:left">
+      <label>Adınız<input name="name" required placeholder="Ad Soyad"></label>
+      <label>4 haneli PIN<input name="pin" required inputmode="numeric" pattern="[0-9]{4}" maxlength="4" type="password"></label>
+      <label>PIN tekrar<input name="pin2" required inputmode="numeric" pattern="[0-9]{4}" maxlength="4" type="password"></label>
+      <button class="btn" style="width:100%">Yönetici hesabını oluştur</button>
+    </form></div>`;
+  const sel = S.users.find(u=>u.id===login.sel);
+  return `<div class="login">
+    <div class="logo-big">${logo}</div><h2>${esc(S.settings.farmName||'Vadi At Çiftliği')}</h2>
+    <p class="muted">${sel?`<b>${esc(sel.name)}</b> için PIN girin`:'Kim giriş yapıyor?'}</p>
+    ${!sel?`<div class="users">${S.users.map(u=>`<button onclick="login.sel='${u.id}';login.pin='';render()">
+      <div style="font-size:28px;color:var(--brand)">${ic(u.role==='yonetici'?'shield':'user')}</div><b>${esc(u.name)}</b><div class="muted">${ROLES[u.role]}</div></button>`).join('')}</div>`
+    :`<div class="pin">${[0,1,2,3].map(i=>`<i class="${login.pin.length>i?'f':''}"></i>`).join('')}</div>
+      <div class="keypad">${[1,2,3,4,5,6,7,8,9].map(n=>`<button onclick="pinKey('${n}')">${n}</button>`).join('')}
+        <button onclick="login.sel=null;login.pin='';render()" style="font-size:14px">Geri</button><button onclick="pinKey('0')">0</button>
+        <button onclick="login.pin=login.pin.slice(0,-1);render()">⌫</button></div>`}
+  </div>`;
+}
+function pinKey(n){ login.pin += n; if(login.pin.length<4) return render();
+  const u = S.users.find(x=>x.id===login.sel);
+  if(u && u.pin===hashPin(login.pin)){ setSession(u.id); login={sel:null,pin:''}; view='home'; render(); toast('Hoş geldiniz, '+u.name.split(' ')[0]); }
+  else { login.pin=''; render(); toast('PIN hatalı'); if(navigator.vibrate) navigator.vibrate(200); } }
+document.addEventListener('submit', ev => { if(ev.target.id!=='setup') return; ev.preventDefault();
+  const f = Object.fromEntries(new FormData(ev.target));
+  if(!/^\d{4}$/.test(f.pin)) return toast('PIN 4 rakam olmalı'); if(f.pin!==f.pin2) return toast('PIN\'ler aynı değil');
+  const u = {id:uid(), name:f.name.trim(), role:'yonetici', pin:hashPin(f.pin), created:today()};
+  S.users.push(u); save(); setSession(u.id); view='home'; render(); toast('Yönetici hesabı oluşturuldu'); });
+
+function openMe(){
+  const u = me();
+  modal(`<div class="row"><h3 style="margin:0">${ic(u.role==='yonetici'?'shield':'user')} ${esc(u.name)}</h3><span class="badge b-mut">${ROLES[u.role]}</span><span class="spacer"></span>
+    <button class="btn ghost sm" onclick="closeModal()">Kapat</button></div>
+  <div class="card" style="margin-top:14px"><h3>Bu cihaz</h3>
+    <label style="display:flex;gap:10px;align-items:center;color:var(--ink)"><input type="checkbox" style="width:auto" ${wakeWanted()?'checked':''} onchange="setWake(this.checked)">
+      Ekranı açık tut (tablet / ahır ekranı için)</label>
+    <p class="muted">${'wakeLock' in navigator ? 'Uygulama açıkken ekran kararmaz.' : 'Bu tarayıcı ekranı açık tutmayı desteklemiyor; cihaz ayarlarından "Otomatik kilit"i kapatabilirsiniz.'}</p>
+    <p class="muted">Oturum bu cihazda açık kalır; her seferinde PIN sormaz. Cihazı başkası kullanacaksa çıkış yapın.</p>
+    <button class="btn ghost sm" onclick="installHelp()">${ic('smartphone')} Ana ekrana uygulama olarak ekle</button></div>
+  <div class="card"><h3>PIN değiştir</h3><form id="pinf"><div class="two">
+    <label>Yeni PIN<input name="p1" type="password" inputmode="numeric" maxlength="4" pattern="[0-9]{4}" required></label>
+    <label>Tekrar<input name="p2" type="password" inputmode="numeric" maxlength="4" pattern="[0-9]{4}" required></label></div>
+    <button class="btn sm">PIN'i güncelle</button></form></div>
+  <button class="btn danger" style="width:100%" onclick="logout()">Çıkış yap</button>`);
+  $('#pinf').onsubmit = ev => { ev.preventDefault(); const f=Object.fromEntries(new FormData(ev.target));
+    if(f.p1!==f.p2) return toast('PIN\'ler aynı değil'); u.pin = hashPin(f.p1); save(); closeModal(); toast('PIN güncellendi'); };
+}
+function logout(){ setSession(null); closeModal(); login={sel:null,pin:''}; render(); }
+
+function openUserForm(id){
+  const u = id ? S.users.find(x=>x.id===id) : {name:'', role:'personel'};
+  if(!id && S.users.length>=MAX_USERS) return toast(`En fazla ${MAX_USERS} kullanıcı eklenebilir`);
+  modal(`<h3>${id?'Kullanıcıyı düzenle':'Yeni kullanıcı'}</h3>
+  <form id="uf">
+    <label>Ad Soyad<input name="name" required value="${esc(u.name)}"></label>
+    <label>Yetki<select name="role">${Object.entries(ROLES).map(([k,v])=>`<option value="${k}" ${u.role===k?'selected':''}>${v}${k==='yonetici'?' — her şeyi görür, ücretler dahil':' — ücret ve ödemeleri göremez'}</option>`).join('')}</select></label>
+    <label>${id?'Yeni PIN (değiştirmeyecekseniz boş bırakın)':'4 haneli PIN'}<input name="pin" type="password" inputmode="numeric" maxlength="4" pattern="[0-9]{4}" ${id?'':'required'}></label>
+    <div class="row">${id && id!==me().id?`<button type="button" class="btn danger sm" onclick="delUser('${id}')">Sil</button>`:''}<span class="spacer"></span>
+      <button type="button" class="btn ghost" onclick="closeModal()">Vazgeç</button><button class="btn">Kaydet</button></div>
+  </form>`);
+  $('#uf').onsubmit = ev => { ev.preventDefault(); const f=Object.fromEntries(new FormData(ev.target));
+    if(id && u.role==='yonetici' && f.role!=='yonetici' && S.users.filter(x=>x.role==='yonetici').length<2) return toast('En az bir yönetici kalmalı');
+    const data = {name:f.name.trim(), role:f.role}; if(f.pin) data.pin = hashPin(f.pin);
+    if(id) Object.assign(u,data); else S.users.push({id:uid(), created:today(), ...data});
+    save(); closeModal(); render(); toast('Kaydedildi'); };
+}
+function delUser(id){ const u=S.users.find(x=>x.id===id);
+  if(u.role==='yonetici' && S.users.filter(x=>x.role==='yonetici').length<2) return toast('En az bir yönetici kalmalı');
+  if(!confirm(`${u.name} silinsin mi?`)) return; S.users=S.users.filter(x=>x.id!==id); save(); closeModal(); render(); }
+
+/* ================== ÜCRET & ÖDEMELER (yönetici) ================== */
+function packageDebt(e){ return Math.max(0,(+e.price||0)-(+e.paid||0)); }
+function totalReceivable(){
+  return S.enrollments.reduce((a,e)=>a+packageDebt(e),0)
+    + S.charges.filter(c=>!c.paid).reduce((a,c)=>a+(+c.amount||0),0)
+    + S.visits.filter(v=>v.status==='tamam' && !v.paid).reduce((a,v)=>a+(+v.price||0),0);
+}
+function vOdemeler(){
+  const m = ym(today());
+  const pk = S.enrollments.filter(e=>packageDebt(e)>0).map(e=>({e,s:student(e.studentId)})).filter(x=>x.s).sort((a,b)=>a.s.name.localeCompare(b.s.name,'tr'));
+  const pkTot = pk.reduce((a,x)=>a+packageDebt(x.e),0);
+  const own = S.owners.map(o=>({o, bal:ownerBalance(o.id)})).filter(x=>x.bal>0).sort((a,b)=>b.bal-a.bal);
+  const ownTot = own.reduce((a,x)=>a+x.bal,0);
+  const vis = S.visits.filter(v=>v.status==='tamam' && !v.paid).sort((a,b)=>a.date.localeCompare(b.date));
+  const visTot = vis.reduce((a,v)=>a+(+v.price||0),0);
+  const inMonth = d => d && ym(d)===m;
+  const collected = S.enrollments.flatMap(e=>e.payments||[]).filter(p=>inMonth(p.date)).reduce((a,p)=>a+p.amount,0)
+    + S.charges.filter(c=>c.paid && inMonth(c.paidDate)).reduce((a,c)=>a+(+c.amount||0),0)
+    + S.visits.filter(v=>v.paid && inMonth(v.paidDate)).reduce((a,v)=>a+(+v.price||0),0);
+  return `
+  <h2>Ücret &amp; Ödemeler <span class="badge b-mut" style="vertical-align:middle">${ic('lock')} Sadece yönetici</span></h2>
+  <div class="grid g4">
+    <div class="card"><div class="muted">Toplam alacak</div><div class="stat" style="color:${pkTot+ownTot+visTot?'var(--bad)':'var(--brand)'}">${money(pkTot+ownTot+visTot)}</div></div>
+    <div class="card"><div class="muted">${monthName(m)} tahsilat</div><div class="stat" style="color:var(--ok)">${money(collected)}</div></div>
+    <div class="card"><div class="muted">Ders paketleri</div><div class="stat">${money(pkTot)}</div></div>
+    <div class="card"><div class="muted">Pansiyon</div><div class="stat">${money(ownTot)}</div></div>
+    <div class="card"><div class="muted">Tur &amp; tek ders</div><div class="stat">${money(visTot)}</div></div>
+  </div>
+  <div class="card"><h3>${ic('book')} Ders paketi alacakları (${pk.length})</h3>
+    ${pk.length?`<div class="tablewrap"><table class="resp"><tr><th>Kursiyer</th><th>Paket</th><th>Ücret</th><th>Ödenen</th><th>Kalan</th><th></th></tr>
+    ${pk.map(({e,s})=>`<tr><td><a href="#" onclick="openStudent('${s.id}');return false"><b>${esc(s.name)}</b></a>${/Ödeme bilgisi defterde yok/.test(e.note||'')?'<div class="muted">Defterde ödeme bilgisi yoktu</div>':''}</td>
+      <td>${esc(e.packageName)}</td><td>${money(e.price)}</td><td>${money(e.paid)}</td><td><b style="color:var(--bad)">${money(packageDebt(e))}</b></td>
+      <td style="text-align:right;white-space:nowrap"><button class="btn sm" onclick="takePackagePayment('${e.id}')">Ödeme al</button></td></tr>`).join('')}</table></div>`
+    :`<div class="empty">Ders paketi alacağı yok.</div>`}</div>
+  <div class="card"><div class="row"><h3 style="margin:0">${ic('barn')} Pansiyon alacakları (${own.length})</h3><span class="spacer"></span>
+    <button class="btn ghost sm" onclick="go('pansiyon')">Aylık ücretleri oluştur ›</button></div>
+    ${own.length?`<table class="resp" style="margin-top:6px"><tr><th>At sahibi</th><th>Atları</th><th>Bakiye</th></tr>${own.map(({o,bal})=>`<tr class="click" onclick="openOwner('${o.id}')">
+      <td><b>${esc(o.name)}</b></td><td>${S.boarders.filter(h=>h.ownerId===o.id).map(h=>esc(h.name)).join(', ')}</td><td><b style="color:var(--bad)">${money(bal)}</b></td></tr>`).join('')}</table>`
+    :`<div class="empty">Pansiyon alacağı yok.</div>`}</div>
+  <div class="card"><h3>${ic('tree')} Ödemesi alınmamış tur / tek ders (${vis.length})</h3>
+    ${vis.length?`<table class="resp"><tr><th>Tarih</th><th>Müşteri</th><th>Hizmet</th><th>Tutar</th><th></th></tr>${vis.map(v=>`<tr>
+      <td>${fmt(v.date)}</td><td><b>${esc(v.name)}</b><div class="muted">${esc(v.phone)}</div></td><td>${esc(v.serviceName)}</td><td>${money(v.price)}</td>
+      <td style="text-align:right"><button class="btn sm" onclick="payVisit('${v.id}')">Tahsil et</button></td></tr>`).join('')}</table>`
+    :`<div class="empty">Yok.</div>`}</div>
+  <p class="muted">Bu sayfayı ve tüm ücret bilgilerini yalnızca "Yönetici" yetkili kullanıcılar görür. Personel; ders, tur, takvim ve at künyelerini kullanabilir.</p>`;
+}
+function takePackagePayment(eid){ const e = enrollment(eid); const kalan = packageDebt(e);
+  const v = prompt(`${student(e.studentId).name} — kalan ${money(kalan)}\nAlınan tutar (₺):`, kalan); if(v===null) return;
+  const amt = +String(v).replace(/[^\d.,]/g,'').replace(',','.'); if(!(amt>0)) return toast('Geçerli bir tutar girin');
+  e.paid = (+e.paid||0) + amt; (e.payments = e.payments||[]).push({date:today(), amount:amt, by:me()?.name||''});
+  save(); render(); toast(money(amt)+' tahsil edildi'); }
+
+/* ================== MARKA, EKRAN, KURULUM ================== */
+function brandLogoHtml(){ return S.settings.logo ? `<img src="${S.settings.logo}" alt="logo">` : '<img src="logo.png" alt="logo" onerror="this.outerHTML=ic(\'horse\')">'; }
+let _brandKey = '';
+function applyBrand(){ const k = (S.settings.logo||'').length+'|'+S.settings.farmName; if(k===_brandKey) return; _brandKey = k;
+  $('#logo').innerHTML = brandLogoHtml(); $('#farm-name').textContent = S.settings.farmName || 'Vadi At Çiftliği';
+  document.title = S.settings.farmName || 'Vadi At Çiftliği'; }
+async function setLogo(file){ if(!file) return;
+  try{ const d = await new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>{ const img=new Image(); img.onload=()=>{
+      const k=Math.min(1,512/Math.max(img.width,img.height)); const c=document.createElement('canvas'); c.width=img.width*k; c.height=img.height*k;
+      c.getContext('2d').drawImage(img,0,0,c.width,c.height); res(c.toDataURL('image/png')); }; img.onerror=rej; img.src=r.result; }; r.onerror=rej; r.readAsDataURL(file); });
+    S.settings.logo = d; save(); render(); toast('Logo güncellendi'); }catch(e){ alert('Logo okunamadı.'); } }
+
+const WAKE_KEY = 'vadi-ekran-acik'; let wakeLock = null;
+const wakeWanted = () => { try{ return localStorage.getItem(WAKE_KEY)==='1'; }catch(e){ return false; } };
+async function setWake(on){ try{ localStorage.setItem(WAKE_KEY, on?'1':'0'); }catch(e){}
+  if(on){ try{ wakeLock = await navigator.wakeLock?.request('screen'); toast('Ekran açık kalacak'); }catch(e){ toast('Ekran açık tutulamadı'); } }
+  else { try{ await wakeLock?.release(); }catch(e){} wakeLock = null; } }
+document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState==='visible' && wakeWanted()) navigator.wakeLock?.request('screen').then(l=>wakeLock=l).catch(()=>{}); });
+
+function installHelp(){
+  const ios = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform==='MacIntel' && navigator.maxTouchPoints>1);
+  modal(`<h3>${ic('smartphone')} Ana ekrana ekle</h3>
+  ${location.protocol==='file:'?`<div class="card" style="background:var(--warnbg);border-color:#f0dcb6">Uygulama şu an bilgisayardaki dosyadan açılıyor. Telefona kurmak için önce internette (https) yayınlanması gerekiyor; bu adım "Yapılacaklar" listesinde.</div>`:''}
+  <div class="card"><h3>iPhone / iPad (Safari)</h3><ol style="margin:0;padding-left:20px;line-height:1.7">
+    <li>Uygulama adresini <b>Safari</b>'de açın</li><li>Alttaki <b>Paylaş</b> (⬆️) düğmesine dokunun</li>
+    <li><b>Ana Ekrana Ekle</b>'yi seçin</li><li>Ana ekrandaki logoya dokunarak tam ekran uygulama gibi açın</li></ol></div>
+  <div class="card"><h3>Android (Chrome)</h3><ol style="margin:0;padding-left:20px;line-height:1.7">
+    <li>Adresi <b>Chrome</b>'da açın</li><li>Sağ üstteki <b>⋮</b> menüsüne dokunun</li><li><b>Uygulamayı yükle</b> / <b>Ana ekrana ekle</b></li></ol></div>
+  ${ios?'<p class="muted">Bu cihaz iPhone/iPad olarak algılandı.</p>':''}
+  <div class="row"><span class="spacer"></span><button class="btn" onclick="closeModal()">Tamam</button></div>`);
+}
+
+/* ================== YEDEK ================== */
+function download(name, text, type){ const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([text],{type})); a.download=name; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000); }
+function exportData(){ download(`vadi-yedek-${today()}.json`, JSON.stringify(S,null,2), 'application/json'); }
+function exportCSV(){
+  const rows = [['Tarih','Saat','Kursiyer','Telefon','Paket','Ders No','Toplam','At','Eğitmen','Durum','Not']];
+  S.bookings.slice().sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time)).forEach(b=>{
+    const e=enrollment(b.enrollmentId), s=e&&student(e.studentId);
+    rows.push([b.date,b.time,s?.name,s?.phone,e?.packageName,b.status==='iptal'?'':lessonNo(b),e?.lessons,b.horse,b.trainer,STATUS[b.status].t,b.note]);
+  });
+  const csv = rows.map(r=>r.map(v=>`"${String(v??'').replace(/"/g,'""')}"`).join(';')).join('\r\n');
+  download(`vadi-dersler-${today()}.csv`, '﻿'+csv, 'text/csv;charset=utf-8');
+}
+function importData(file){ if(!file) return; const r=new FileReader(); r.onload=()=>{ try{
+    const d=JSON.parse(r.result); if(!d.students||!d.bookings||!d.enrollments) throw 0;
+    if(!confirm('Mevcut tüm veriler yedekteki verilerle değiştirilecek. Devam edilsin mi?')) return;
+    S = Object.assign(defaults(), d); save(); render(); toast('Yedek yüklendi');
+  }catch(e){ alert('Geçersiz yedek dosyası.'); } }; r.readAsText(file); }
+
+/* ================== BAŞLAT ================== */
+(function init(){
+  const [hv, ha] = (location.hash||'').slice(1).split('/');
+  if(VIEWS[hv]) { view = hv; viewArg = ha || null; }
+  if(location.protocol.startsWith('http') && 'serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+  if(wakeWanted()) navigator.wakeLock?.request('screen').then(l=>wakeLock=l).catch(()=>{});
+  render();
+})();
+</script>
+</body>
+</html>
