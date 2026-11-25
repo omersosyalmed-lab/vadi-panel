@@ -292,7 +292,7 @@ html.phone .g4{grid-template-columns:1fr 1fr}
 
 <script>
 /* ================== VERİ ================== */
-const APP_VER = '8 · 25.11';
+const APP_VER = '9 · 25.11';
 const KEY = 'vadi-at-ciftligi-v1';
 const STATUS = {
   plan:    {t:'Planlandı', c:'b-info'},
@@ -1479,11 +1479,11 @@ function vAt(id){
     ${h.own?`<div class="card"><h3>${ic('valley')} Vadi atı</h3>${kv([
       ['Sahibi', 'Vadi At Çiftliği'], ['Görevi', esc(h.role)], ['Boks / padok', esc(h.box)],
       ['Çiftliğe geliş', fmt(h.startDate)], ['Ayrılış (satış / emeklilik)', h.endDate?fmt(h.endDate):''],
-    ])}</div>`:`<div class="card"><h3>${ic('barn')} Sahip &amp; pansiyon</h3>${kv([
+    ])}<button class="btn ghost sm" style="margin-top:10px" onclick="openOwnerChange('${h.id}')">${ic('owner')} Sahibi değiştir</button></div>`:`<div class="card"><h3>${ic('barn')} Sahip &amp; pansiyon</h3>${kv([
       ['Sahibi', o?`<a href="#" onclick="openOwner('${o.id}');return false">${esc(o.name)}</a>`:'-'], ['Telefon', o?.phone?`<a href="tel:${esc(o.phone)}">${esc(o.phone)}</a>`:''],
       ['Boks / padok', esc(h.box)], ['Giriş', fmt(h.startDate)], ['Çıkış', h.endDate?fmt(h.endDate):''],
       ['Aylık ücret', money(h.monthlyFee), 'money'], ['Ücrete dahil', (h.services||[]).map(esc).join(', ')],
-    ])}</div>`}
+    ])}<button class="btn ghost sm" style="margin-top:10px" onclick="openOwnerChange('${h.id}')">${ic('owner')} Sahibi değiştir</button></div>`}
     <div class="card"><h3>${ic('trophy')} Spor</h3>${kv([['Branş', esc(h.discipline)], ['Binicisi', esc(h.rider)], ['Seviye / kategori', esc(h.level)], ['Yarışma geçmişi / başarılar', esc(h.achievements)]])}</div>
     <div class="card"><h3>${ic('health')} Sağlık &amp; bakım</h3>${kv([
       ['Sonraki nalbant', dd(h.nextFarrier)], ['Sonraki aşı', dd(h.nextVaccine)], ['Sonraki parazit', dd(h.nextDeworm)], ['Sonraki diş kontrolü', dd(h.nextDental)],
@@ -1595,6 +1595,44 @@ function openBoarderForm(id, ownerId, own){
     if(id) Object.assign(h,data); else { hid = uid(); S.boarders.push({id:hid, created:today(), log:[], ...data}); }
     if(!save()){ if(id) Object.assign(h, prev); else S.boarders = S.boarders.filter(x=>x.id!==hid); return; }
     go('at', hid); toast('Kaydedildi'); };
+}
+/* Atın sahibini hızlıca değiştir: başka sahip, yeni sahip veya Vadi'nin kendi atı */
+function openOwnerChange(hid){
+  const h = boarder(hid); if(!h) return;
+  const cur = h.own ? '_vadi' : (h.ownerId||'');
+  const opts = S.owners.slice().sort((a,b)=>a.name.localeCompare(b.name,'tr'))
+    .map(o=>`<option value="${o.id}" ${cur===o.id?'selected':''}>${esc(o.name)}</option>`).join('');
+  modal(`<h3>Sahibi değiştir · ${esc(h.name)}</h3>
+  <form id="oc">
+    <label>Yeni sahibi<select name="to" id="oc-to">
+      <option value="_vadi" ${cur==='_vadi'?'selected':''}>Vadi At Çiftliği (kendi atı)</option>
+      ${opts}<option value="_new">+ Yeni sahip ekle…</option></select></label>
+    <div id="oc-new" style="display:none"><div class="two">
+      <label>Sahibin adı soyadı *<input name="nname" autocomplete="off"></label>
+      <label>Telefon<input name="nphone" type="tel"></label></div></div>
+    <p class="muted" id="oc-info"></p>
+    <div class="row"><span class="spacer"></span><button type="button" class="btn ghost" onclick="closeModal()">Vazgeç</button><button class="btn">Kaydet</button></div>
+  </form>`);
+  const unpaid = S.charges.filter(c=>c.horseId===hid && !c.paid).length;
+  const upd = () => { const v = $('#oc-to').value; $('#oc-new').style.display = v==='_new' ? '' : 'none';
+    $('#oc-new input[name=nname]').required = v==='_new';
+    $('#oc-info').textContent = v==='_vadi' ? 'At, Vadi\'nin kendi atı olarak işaretlenir; pansiyon ücreti hesaplanmaz.'
+      : (unpaid && isAdmin() ? `Bu atın ödenmemiş ${unpaid} ücret kaydı var; bunlar yeni sahibin hesabında görünecek.` : ''); };
+  $('#oc-to').onchange = upd; upd();
+  $('#oc').onsubmit = ev => { ev.preventDefault(); const f = Object.fromEntries(new FormData(ev.target));
+    const prev = {own:h.own, ownerId:h.ownerId, monthlyFee:h.monthlyFee, services:h.services, role:h.role}; let newOwner = null, wasNew = false;
+    if(f.to==='_vadi'){ Object.assign(h, {own:true, ownerId:'', monthlyFee:0, services:[]}); }
+    else {
+      let oid = f.to;
+      if(f.to==='_new'){ const name = (f.nname||'').trim(); if(!name) return;
+        newOwner = S.owners.find(o=>o.name.toLocaleLowerCase('tr')===name.toLocaleLowerCase('tr'));
+        if(!newOwner){ newOwner = {id:uid(), name, phone:(f.nphone||'').trim(), email:'', note:'', created:today()}; S.owners.push(newOwner); wasNew = true; }
+        oid = newOwner.id; }
+      if(h.own) Object.assign(h, {own:false, role:'', services:h.services?.length?h.services:['Yem','Saman / Talaş','Tımar / Bakım','Padok']});
+      h.ownerId = oid;
+    }
+    if(!save()){ Object.assign(h, prev); if(wasNew) S.owners = S.owners.filter(o=>o!==newOwner); return; }
+    closeModal(); render(); toast('Sahip güncellendi'); };
 }
 function delBoarder(id){ const h=boarder(id); if(!confirm(`${h.name} künyesi ve ücret kayıtları silinsin mi? Geri alınamaz.\n(Ayrılan atlar için silmek yerine çıkış tarihi girmeniz önerilir.)`)) return;
   S.charges=S.charges.filter(c=>c.horseId!==id); S.boarders=S.boarders.filter(x=>x.id!==id); save(); go('atlar'); }
