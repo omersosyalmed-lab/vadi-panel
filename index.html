@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#5b4636">
+<meta name="theme-color" content="#1c2b4a">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -52,8 +52,8 @@
 </script>
 <style>
 :root{
-  --bg:#f6f3ee; --card:#fff; --ink:#2b2620; --muted:#7a7066; --line:#e4ddd2;
-  --brand:#5b4636; --brand2:#8a6a4f; --ok:#2f7d4f; --warn:#b7791f; --bad:#b33a3a; --info:#2f5d8a;
+  --bg:#f5f2ec; --card:#fff; --ink:#1b2335; --muted:#667085; --line:#e2ddd4;
+  --brand:#1c2b4a; --brand2:#b5733f; --taba:#b5733f; --tabaLight:#f6ebdf; --navy2:#2c3f66; --ok:#2f7d4f; --warn:#b7791f; --bad:#b33a3a; --info:#2f5d8a;
   --okbg:#e6f3eb; --warnbg:#fbf1df; --badbg:#f8e5e5; --infobg:#e3edf7; --tur:#7a4fa0; --turbg:#efe7f6;
   --safe-b:env(safe-area-inset-bottom,0px); --safe-t:env(safe-area-inset-top,0px);
 }
@@ -62,7 +62,7 @@ html{-webkit-text-size-adjust:100%}
 body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);font-size:15px;
   padding-bottom:calc(74px + var(--safe-b))}
 /* üst çubuk */
-.appbar{position:sticky;top:0;z-index:5;background:var(--brand);color:#fff;padding:calc(10px + var(--safe-t)) 14px 10px;display:flex;align-items:center;gap:10px}
+.appbar{position:sticky;top:0;z-index:5;background:var(--brand);border-bottom:2px solid var(--taba);color:#fff;padding:calc(10px + var(--safe-t)) 14px 10px;display:flex;align-items:center;gap:10px}
 .appbar .logo{width:38px;height:38px;border-radius:10px;background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden;flex:none;font-size:22px}
 .appbar .logo img{width:100%;height:100%;object-fit:contain}
 .appbar h1{font-size:17px;margin:0;font-weight:650;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -71,11 +71,11 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,san
 .appbar .user{margin-left:auto;background:rgba(255,255,255,.15);border:0;color:#fff;border-radius:999px;padding:6px 12px;font-size:13px;cursor:pointer;white-space:nowrap;flex:none}
 /* alt sekme çubuğu */
 .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:6;background:#fff;border-top:1px solid var(--line);display:flex;justify-content:space-around;
-  padding:6px 4px calc(6px + var(--safe-b));box-shadow:0 -4px 14px rgba(60,40,20,.06), 0 80px 0 0 #fff}
+  padding:6px 4px calc(6px + var(--safe-b));box-shadow:0 -4px 14px rgba(20,30,52,.06), 0 80px 0 0 #fff}
 .tabbar button{flex:1;max-width:120px;background:none;border:0;color:var(--muted);font-size:11px;display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 0;cursor:pointer}
 .tabbar button .i{font-size:23px;line-height:1;display:flex}
 .tabbar button.active{color:var(--brand);font-weight:700}
-.tabbar button.add .i{background:var(--brand);color:#fff;width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;margin-top:-18px;box-shadow:0 4px 12px rgba(91,70,54,.35)}
+.tabbar button.add .i{background:var(--taba);color:#fff;width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;margin-top:-18px;box-shadow:0 4px 12px rgba(28,43,74,.35)}
 main{max-width:1100px;margin:0 auto;padding:16px 14px}
 h2{font-size:21px;margin:0 0 14px}
 h3{font-size:16px;margin:0 0 10px}
@@ -126,7 +126,7 @@ tr.click:active{background:#faf7f2}
 @media(max-width:420px){.tiles{grid-template-columns:1fr 1fr;gap:10px}}
 .tile{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px 14px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:6px;min-height:112px;font:inherit;color:var(--ink);position:relative}
 .tile:active{transform:scale(.98)}
-.tile .i{width:44px;height:44px;border-radius:12px;background:#f3ece4;color:var(--brand);display:flex;align-items:center;justify-content:center;font-size:23px}
+.tile .i{width:44px;height:44px;border-radius:12px;background:var(--tabaLight);color:var(--taba);display:flex;align-items:center;justify-content:center;font-size:23px}
 .tile b{font-size:15px}
 .tile .muted{font-size:12px}
 .tile .cnt{position:absolute;top:12px;right:12px;background:var(--brand);color:#fff;border-radius:999px;font-size:12px;font-weight:700;padding:2px 8px}
@@ -136,7 +136,7 @@ tr.click:active{background:#faf7f2}
 /* calendar */
 .week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px}
 .day{background:#fff;border:1px solid var(--line);border-radius:12px;min-height:160px;padding:8px;display:flex;flex-direction:column;gap:6px}
-.day.today{border-color:var(--brand2);box-shadow:0 0 0 2px #e8d9c8}
+.day.today{border-color:var(--brand2);box-shadow:0 0 0 2px #ecd5bd}
 .dayhead{display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:600;gap:4px;flex-wrap:wrap}
 .chip{border-radius:8px;padding:6px 8px;font-size:12px;cursor:pointer;border-left:3px solid}
 .chip.plan{background:var(--infobg);border-color:var(--info)}
@@ -148,7 +148,7 @@ tr.click:active{background:#faf7f2}
 .chip b{display:block}
 @media(max-width:900px){.week{grid-template-columns:1fr}.day{min-height:auto}}
 /* modal: telefonda tam ekran */
-.modal-bg{position:fixed;inset:0;background:rgba(30,20,10,.45);display:flex;align-items:flex-start;justify-content:center;padding:40px 12px;overflow:auto;z-index:10}
+.modal-bg{position:fixed;inset:0;background:rgba(14,22,40,.5);display:flex;align-items:flex-start;justify-content:center;padding:40px 12px;overflow:auto;z-index:10}
 .modal{background:#fff;border-radius:16px;max-width:640px;width:100%;padding:20px}
 .modal.wide{max-width:880px}
 @media(max-width:600px){
@@ -160,12 +160,12 @@ tr.click:active{background:#faf7f2}
 @media(max-width:560px){.two,.three{grid-template-columns:1fr}}
 fieldset{border:1px solid var(--line);border-radius:12px;padding:12px 14px 2px;margin:0 0 14px}
 legend{font-weight:700;font-size:14px;padding:0 6px;color:var(--brand)}
-.toast{position:fixed;bottom:calc(90px + var(--safe-b));left:50%;transform:translateX(-50%);background:#2b2620;color:#fff;padding:10px 16px;border-radius:10px;z-index:20;font-size:14px}
+.toast{position:fixed;bottom:calc(90px + var(--safe-b));left:50%;transform:translateX(-50%);background:#1c2b4a;color:#fff;padding:10px 16px;border-radius:10px;z-index:20;font-size:14px}
 .cafe-res{margin-top:12px;padding:12px 14px;border-radius:12px;font-size:14px;line-height:1.7}
 .cafe-res:empty{display:none}
 .cafe-res.ok{background:var(--okbg);color:var(--ok)} .cafe-res.no{background:#f8e5e3;color:var(--bad)}
 .occ{display:grid;grid-template-columns:48px 1fr auto;gap:10px;align-items:center;font-size:13px;margin:6px 0}
-.occ .bar{height:10px;background:#efe8de;border-radius:999px;overflow:hidden} .occ .bar i{display:block;height:100%;border-radius:999px}
+.occ .bar{height:10px;background:#efe5d8;border-radius:999px;overflow:hidden} .occ .bar i{display:block;height:100%;border-radius:999px}
 .empty{color:var(--muted);text-align:center;padding:20px;font-size:14px}
 .lessons{display:flex;flex-wrap:wrap;gap:4px;margin:6px 0}
 .lessons i{width:24px;height:24px;border-radius:5px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-style:normal;background:#eee;color:#888}
@@ -174,10 +174,10 @@ legend{font-weight:700;font-size:14px;padding:0 6px;color:var(--brand)}
 .horses{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
 @media(max-width:420px){.horses{grid-template-columns:1fr 1fr;gap:10px}}
 .hcard{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;cursor:pointer}
-.hcard .ph{aspect-ratio:4/3;background:#efe8de center/cover no-repeat;display:flex;align-items:center;justify-content:center;font-size:42px;color:#c9b8a4}
+.hcard .ph{aspect-ratio:4/3;background:#efe5d8 center/cover no-repeat;display:flex;align-items:center;justify-content:center;font-size:42px;color:#c9b8a4}
 .hcard .tx{padding:10px 12px}
 .hcard b{display:block;font-size:15px}
-.hero{position:relative;border-radius:18px;overflow:hidden;background:#efe8de center/cover no-repeat;aspect-ratio:16/9;max-height:380px;width:100%;display:flex;align-items:flex-end;margin-bottom:14px}
+.hero{position:relative;border-radius:18px;overflow:hidden;background:#efe5d8 center/cover no-repeat;aspect-ratio:16/9;max-height:380px;width:100%;display:flex;align-items:flex-end;margin-bottom:14px}
 .hero.noimg{aspect-ratio:auto;min-height:140px;background:linear-gradient(135deg,var(--brand),var(--brand2))}
 .hero .cap{width:100%;padding:40px 16px 14px;background:linear-gradient(transparent,rgba(0,0,0,.65));color:#fff}
 .hero h2{margin:0;font-size:26px}
@@ -186,14 +186,14 @@ legend{font-weight:700;font-size:14px;padding:0 6px;color:var(--brand)}
 .kv span{display:block;font-size:12px;color:var(--muted)}
 .kv b{font-weight:600}
 .photo-in{display:flex;gap:12px;align-items:center;margin-bottom:14px}
-.photo-in .ph{width:110px;height:84px;border-radius:12px;background:#efe8de center/cover no-repeat;display:flex;align-items:center;justify-content:center;font-size:30px;color:#c9b8a4;flex:none}
+.photo-in .ph{width:110px;height:84px;border-radius:12px;background:#efe5d8 center/cover no-repeat;display:flex;align-items:center;justify-content:center;font-size:30px;color:#c9b8a4;flex:none}
 /* giriş ekranı */
 .login{max-width:420px;margin:30px auto;text-align:center}
 .login .logo-big{width:96px;height:96px;border-radius:24px;background:#fff;border:1px solid var(--line);margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-size:52px;overflow:hidden}
 .login .logo-big img{width:100%;height:100%;object-fit:contain}
 .users{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0}
 .users button{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 8px;font:inherit;cursor:pointer}
-.users button.sel{border-color:var(--brand);box-shadow:0 0 0 2px #e8d9c8}
+.users button.sel{border-color:var(--brand);box-shadow:0 0 0 2px #ecd5bd}
 .pin{display:flex;gap:10px;justify-content:center;margin:14px 0}
 .pin i{width:16px;height:16px;border-radius:50%;border:2px solid var(--brand)}
 .pin i.f{background:var(--brand)}
@@ -206,11 +206,11 @@ body.nologin .tabbar,body.nologin .appbar .user{display:none}
 
 /* ============ iPhone arayüzü (telefon genişliği) ============ */
 /* telefon görünümü: html.phone sınıfıyla açılır (iPhone veya dar ekran) */
-html.phone{--bg:#f2efea; --line:#e3ddd4}
+html.phone{--bg:#f3f0ea; --line:#e2ddd4}
 html.phone,html.phone body{overscroll-behavior-y:none}
 html.phone body{font-size:16px;padding-bottom:calc(62px + var(--safe-b));-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 html.phone input,html.phone textarea,html.phone select,html.phone [contenteditable],html.phone .kv,html.phone td,html.phone .muted{-webkit-user-select:text;user-select:text}
-html.phone .appbar{background:rgba(91,70,54,.94);-webkit-backdrop-filter:saturate(170%) blur(18px);backdrop-filter:saturate(170%) blur(18px); padding:calc(6px + var(--safe-t)) 10px 6px;min-height:calc(50px + var(--safe-t));gap:8px}
+html.phone .appbar{background:rgba(28,43,74,.94);-webkit-backdrop-filter:saturate(170%) blur(18px);backdrop-filter:saturate(170%) blur(18px); padding:calc(6px + var(--safe-t)) 10px 6px;min-height:calc(50px + var(--safe-t));gap:8px}
 html.phone .appbar .logo{width:32px;height:32px;border-radius:8px;font-size:19px}
 html.phone body:not(.at-home) .appbar .logo{display:none}
 html.phone .appbar .back{background:none;width:auto;height:38px;padding:0 6px 0 0;font-size:34px;font-weight:300;line-height:1;display:flex;align-items:center}
@@ -223,25 +223,18 @@ html.phone .hello{margin:4px 0 16px}
 html.phone .hello h2{font-size:30px;font-weight:750;letter-spacing:-.02em;line-height:1.1}
 html.phone .hello .muted{font-size:14px;margin-top:4px}
 html.phone h2{font-size:24px;letter-spacing:-.01em}
-html.phone .card{border:0;border-radius:14px;padding:14px 16px;box-shadow:0 1px 2px rgba(60,40,20,.05)}
-html.phone .tiles{display:block;background:#fff;border-radius:14px;overflow:hidden;margin-bottom:18px;box-shadow:0 1px 2px rgba(60,40,20,.05)}
+html.phone .card{border:0;border-radius:14px;padding:14px 16px;box-shadow:0 1px 2px rgba(20,30,52,.05)}
+html.phone .tiles{display:block;background:#fff;border-radius:14px;overflow:hidden;margin-bottom:18px;box-shadow:0 1px 2px rgba(20,30,52,.05)}
 html.phone .tile{display:grid;grid-template-columns:34px 1fr auto 12px;grid-template-areas:"i b x c" "i m x c";column-gap:14px;row-gap:1px;align-items:center; width:100%;min-height:62px;padding:10px 16px;border:0;border-radius:0;background:#fff;position:relative}
 html.phone .tile + .tile::before{content:'';position:absolute;top:0;left:64px;right:0;height:1px;background:var(--line);transform:scaleY(.6)}
-html.phone .tile:active{transform:none;background:#ece6de}
+html.phone .tile:active{transform:none;background:#ebe6dd}
 html.phone .tile .i{grid-area:i;width:34px;height:34px;border-radius:9px;font-size:19px;color:#fff;background:var(--brand)}
 html.phone .tile b{grid-area:b;font-size:16px;font-weight:600;align-self:end}
 html.phone .tile .muted{grid-area:m;font-size:13px;align-self:start}
 html.phone .tile .cnt,html.phone .tile .lk{grid-area:x;position:static;align-self:center}
 html.phone .tile::after{content:'';grid-area:c;width:8px;height:8px;border-top:2px solid #c3b9ad;border-right:2px solid #c3b9ad;transform:rotate(45deg);justify-self:start}
-html.phone .tile:nth-child(8n+1) .i{background:#b0752f}
-html.phone .tile:nth-child(8n+2) .i{background:#c0563b}
-html.phone .tile:nth-child(8n+3) .i{background:#5b4636}
-html.phone .tile:nth-child(8n+4) .i{background:#4f7a46}
-html.phone .tile:nth-child(8n+5) .i{background:#8a5a3c}
-html.phone .tile:nth-child(8n+6) .i{background:#3f6f8f}
-html.phone .tile:nth-child(8n+7) .i{background:#7a5f9a}
-html.phone .tile:nth-child(8n+8) .i{background:#6b6b5e}
-html.phone .tabbar{background:rgba(255,255,255,.9);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px); border-top:.5px solid rgba(60,40,20,.18);box-shadow:0 80px 0 0 rgba(255,255,255,.95);padding:5px 2px calc(4px + var(--safe-b))}
+html.phone .tile:nth-child(8n+1) .i{background:#1c2b4a} html.phone .tile:nth-child(8n+2) .i{background:#b5733f} html.phone .tile:nth-child(8n+3) .i{background:#3a5683} html.phone .tile:nth-child(8n+4) .i{background:#8c5530} html.phone .tile:nth-child(8n+5) .i{background:#24375c} html.phone .tile:nth-child(8n+6) .i{background:#c58a55} html.phone .tile:nth-child(8n+7) .i{background:#4a6591} html.phone .tile:nth-child(8n+8) .i{background:#a0623a}
+html.phone .tabbar{background:rgba(255,255,255,.9);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px); border-top:.5px solid rgba(20,30,52,.18);box-shadow:0 80px 0 0 rgba(255,255,255,.95);padding:5px 2px calc(4px + var(--safe-b))}
 html.phone .tabbar button{font-size:10.5px;font-weight:500;gap:3px;padding:2px 0}
 html.phone .tabbar button .i{font-size:25px;height:28px;align-items:center}
 html.phone .tabbar button.active{font-weight:600}
@@ -252,7 +245,7 @@ html.phone input,html.phone select,html.phone textarea{min-height:46px;border-ra
 html.phone main .row > input:not([type=checkbox]):not([type=radio]),html.phone main .row > select{max-width:none!important;flex:1 1 140px;width:auto}
 html.phone .modal-bg{padding:0;align-items:stretch;background:#fff}
 html.phone .modal,html.phone .modal.wide{border-radius:0;min-height:100%;max-width:none;padding:0 16px calc(24px + var(--safe-b));position:relative;animation:pageIn .25s cubic-bezier(.2,.8,.2,1)}
-html.phone .mbar{display:flex;align-items:center;position:sticky;top:0;z-index:3;margin:0 -16px 16px;background:rgba(91,70,54,.96);color:#fff;padding:calc(6px + var(--safe-t)) 10px 6px;min-height:calc(50px + var(--safe-t))}
+html.phone .mbar{display:flex;align-items:center;position:sticky;top:0;z-index:3;margin:0 -16px 16px;background:rgba(28,43,74,.96);color:#fff;padding:calc(6px + var(--safe-t)) 10px 6px;min-height:calc(50px + var(--safe-t))}
 html.phone .mbar .back{background:none;border:0;color:#fff;font-size:34px;font-weight:300;line-height:1;height:38px;padding:0 10px 0 0;cursor:pointer}
 html.phone .mbar .t{position:absolute;left:60px;right:60px;bottom:6px;line-height:38px;text-align:center;font-size:17px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 html.phone .modal h3.mh{display:none}
@@ -294,7 +287,7 @@ html.phone .g4{grid-template-columns:1fr 1fr}
 
 <script>
 /* ================== VERİ ================== */
-const APP_VER = '12 · 25.11';
+const APP_VER = '13 · 27.11';
 const KEY = 'vadi-at-ciftligi-v1';
 const STATUS = {
   plan:    {t:'Planlandı', c:'b-info'},
